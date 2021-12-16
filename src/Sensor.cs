@@ -131,6 +131,10 @@ namespace Orbbec
 
         private void OnFrame(IntPtr framePtr, IntPtr userData)
         {
+            if(_callback == null)
+            {
+                return;
+            }
             IntPtr error;
             FrameType type = obNative.ob_frame_get_type(framePtr, out error);
             Frame frame;

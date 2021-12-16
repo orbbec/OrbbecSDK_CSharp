@@ -2,7 +2,10 @@ project(UnitTest_cs LANGUAGES CSharp)
 
 include(CSharpUtilities)
 
-add_library(${PROJECT_NAME} SHARED Context_Test.cs)
+add_library(${PROJECT_NAME} SHARED 
+                            Context_Test.cs
+                            Device_Test.cs
+                            )
 
 add_dependencies(${PROJECT_NAME} ob_csharp)
 

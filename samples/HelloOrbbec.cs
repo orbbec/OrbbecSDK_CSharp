@@ -70,6 +70,9 @@ class TestClass
             Console.WriteLine("IR {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
+        dev.SetBoolProperty(PropertyId.OB_DEVICE_PROPERTY_EMITTER_BOOL, false);
+        dev.SetBoolProperty(PropertyId.OB_DEVICE_PROPERTY_EMITTER_BOOL, true);
+
         while (true)
         {
             Thread.Sleep(100);

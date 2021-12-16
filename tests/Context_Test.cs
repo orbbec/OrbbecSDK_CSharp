@@ -5,42 +5,55 @@ using Orbbec;
 public class Context_Test
 {
     private Context _context;
+    private DeviceList _devList;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         _context = new Context();
+        _devList = _context.QueryDeviceList();
+    }
+
+    [OneTimeTearDown]
+    public void TearDown()
+    {
+        _context.Dispose();
+        _devList.Dispose();
     }
 
     [Test]
     public void Context_DeviceCount()
     {
-        DeviceList devList = _context.QueryDeviceList();
-        int devCount = (int)devList.DeviceCount();
+        int devCount = (int)_devList.DeviceCount();
         Assert.Greater(devCount, 0);
     }
 
     [Test]
     public void DeviceList_Name()
     {
-        DeviceList devList = _context.QueryDeviceList();
-        string name = devList.Name(0);
+        string name = _devList.Name(0);
         StringAssert.AreEqualIgnoringCase("Astra+", name);
     }
 
     [Test]
     public void DeviceList_Pid()
     {
-        DeviceList devList = _context.QueryDeviceList();
-        int pid = devList.Pid(0);
+        int pid = _devList.Pid(0);
         Assert.AreEqual(pid, 1590);
     }
 
     [Test]
     public void DeviceList_Vid()
     {
-        DeviceList devList = _context.QueryDeviceList();
-        int pid = devList.Vid(0);
+        int pid = _devList.Vid(0);
         Assert.AreEqual(pid, 11205);
+    }
+
+    [Test]
+    public void DeviceList_Uid()
+    {
+        string uid = _devList.Uid(0);
+        bool empty = string.IsNullOrEmpty(uid);
+        Assert.IsFalse(empty);
     }
 }

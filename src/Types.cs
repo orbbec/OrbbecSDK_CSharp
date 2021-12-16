@@ -7,33 +7,33 @@ namespace Orbbec
     [Serializable()]
     public struct IntPropertyRange
     {
-        Int32 cur;
-        Int32 max;
-        Int32 min;
-        Int32 step;
-        Int32 def;
+        public Int32 cur;
+        public Int32 max;
+        public Int32 min;
+        public Int32 step;
+        public Int32 def;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
     public struct FloatPropertyRange
     {
-        float cur;
-        float max;
-        float min;
-        float step;
-        float def;
+        public float cur;
+        public float max;
+        public float min;
+        public float step;
+        public float def;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
     public struct BoolPropertyRange
     {
-        bool cur;
-        bool max;
-        bool min;
-        bool step;
-        bool def;
+        public bool cur;
+        public bool max;
+        public bool min;
+        public bool step;
+        public bool def;
     }
 
     // [StructLayout(LayoutKind.Sequential)]
@@ -48,26 +48,26 @@ namespace Orbbec
     [Serializable()]
     public struct CameraIntrinsic
     {
-        float fx;      //  x方向焦距，单位：像素
-        float fy;      //  y方向焦距，单位：像素
-        float cx;      // 光心横坐标
-        float cy;      //  光心纵坐标
-        Int16 width;   // 图像宽度
-        Int16 height;  //  图像高度
+        public float fx;      //  x方向焦距，单位：像素
+        public float fy;      //  y方向焦距，单位：像素
+        public float cx;      // 光心横坐标
+        public float cy;      //  光心纵坐标
+        public Int16 width;   // 图像宽度
+        public Int16 height;  //  图像高度
     }
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
     public struct CameraDistortion
     {
-        float k1;
-        float k2;
-        float k3;
-        float k4;
-        float k5;
-        float k6;
-        float p1;
-        float p2;
+        public float k1;
+        public float k2;
+        public float k3;
+        public float k4;
+        public float k5;
+        public float k6;
+        public float p1;
+        public float p2;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -75,27 +75,27 @@ namespace Orbbec
     public struct D2CTransform
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        float[] rot;  // 旋转矩阵，行优先
+        public float[] rot;  // 旋转矩阵，行优先
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        float[] trans;
+        public float[] trans;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
     public struct AccelValue
     {
-        float x;
-        float y;
-        float z;
+        public float x;
+        public float y;
+        public float z;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
     public struct GyroValue
     {
-        float x;
-        float y;
-        float z;
+        public float x;
+        public float y;
+        public float z;
     }
 
     public enum AccelFullScaleRange
