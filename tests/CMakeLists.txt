@@ -5,6 +5,8 @@ include(CSharpUtilities)
 add_library(${PROJECT_NAME} SHARED 
                             Context_Test.cs
                             Device_Test.cs
+                            Sensor_Test.cs
+                            Pipeline_Test.cs
                             )
 
 add_dependencies(${PROJECT_NAME} ob_csharp)

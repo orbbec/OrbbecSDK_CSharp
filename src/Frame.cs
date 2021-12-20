@@ -201,6 +201,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_frame_set_depth_frame(_handle.Ptr, out error);
+            if(handle == IntPtr.Zero)
+            {
+                return null;
+            }
             return new DepthFrame(handle);
         }
 
@@ -208,6 +212,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_frame_set_color_frame(_handle.Ptr, out error);
+            if (handle == IntPtr.Zero)
+            {
+                return null;
+            }
             return new ColorFrame(handle);
         }
 
@@ -215,6 +223,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_frame_set_ir_frame(_handle.Ptr, out error);
+            if (handle == IntPtr.Zero)
+            {
+                return null;
+            }
             return new IRFrame(handle);
         }
 
@@ -222,6 +234,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_frame_set_points_frame(_handle.Ptr, out error);
+            if (handle == IntPtr.Zero)
+            {
+                return null;
+            }
             return new PointsFrame(handle);
         }
     }

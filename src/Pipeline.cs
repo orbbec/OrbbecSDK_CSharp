@@ -62,6 +62,10 @@ namespace Orbbec
         {
             IntPtr error;
             IntPtr handle = obNative.ob_pipeline_wait_for_frames(_handle.Ptr, timeoutMs, out error);
+            if(handle == IntPtr.Zero)
+            {
+                return null;
+            }
             return new Frameset(handle);
         }
 
