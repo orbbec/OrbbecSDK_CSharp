@@ -39,20 +39,24 @@ class TestClass
             Console.WriteLine("Color {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
-        byte[] data = null;
+        byte[] colorData = null;
         
         colorSen.Start(profiles[0], (frame)=>{
+            if(frame == null) 
+            {
+                Console.WriteLine("empty color frame");
+                return;
+            }
             var vf = (frame as VideoFrame);
             // Console.WriteLine(vf.GetDataSize());
             Console.WriteLine("Color {0} x {1} {2}", vf.GetWidth(), vf.GetHeight(), vf.GetDataSize());
-            if(data == null)
+            if(colorData == null)
             {
-                data = new byte[vf.GetDataSize()];
+                colorData = new byte[vf.GetDataSize()];
             }
-            vf.CopyData(ref data);
+            vf.CopyData(ref colorData);
             vf.Dispose();
-            Console.WriteLine("Color {0}-{1}", data[0], data[data.Length - 1]);
-            data = null;
+            Console.WriteLine("Color {0}-{1}", colorData[0], colorData[colorData.Length - 1]);
         });
 
         profiles = depthSen.GetStreamProfiles();
@@ -63,18 +67,24 @@ class TestClass
             Console.WriteLine("Depth {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
+        byte[] depthData = null;
+
         depthSen.Start(profiles[0], (frame) => {
+            if(frame == null) 
+            {
+                Console.WriteLine("empty depth frame");
+                return;
+            }
             var vf = (frame as VideoFrame);
             // Console.WriteLine(vf.GetDataSize());
             Console.WriteLine("Depth {0} x {1} {2}", vf.GetWidth(), vf.GetHeight(), vf.GetDataSize());
-            if (data == null)
+            if (depthData == null)
             {
-                data = new byte[vf.GetDataSize()];
+                depthData = new byte[vf.GetDataSize()];
             }
-            vf.CopyData(ref data);
+            vf.CopyData(ref depthData);
             vf.Dispose();
-            Console.WriteLine("Depth {0}-{1}", data[0], data[data.Length - 1]);
-            data = null;
+            Console.WriteLine("Depth {0}-{1}", depthData[0], depthData[depthData.Length - 1]);
         });
 
         profiles = irSen.GetStreamProfiles();

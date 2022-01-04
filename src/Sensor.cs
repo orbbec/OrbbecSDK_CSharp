@@ -126,12 +126,14 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, OnFrame, IntPtr.Zero, out error);
+            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, OnFrame, callbackPtr, out error);
         }
 
-        private void OnFrame(IntPtr framePtr, IntPtr userData)
+        private static void OnFrame(IntPtr framePtr, IntPtr userData)
         {
-            if(_callback == null)
+            FrameCallback callback = (FrameCallback)Marshal.GetDelegateForFunctionPointer(userData, typeof(FrameCallback));
+            if(callback == null)
             {
                 return;
             }
@@ -152,7 +154,7 @@ namespace Orbbec
                 default:
                     throw new Exception(string.Format("Unknown frame type: {0}", type));
             }
-            _callback(frame);
+            callback(frame);
         }
 
         public void Stop()
