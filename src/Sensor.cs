@@ -130,9 +130,9 @@ namespace Orbbec
             obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, OnFrame, callbackPtr, out error);
         }
 
-        private static void OnFrame(IntPtr framePtr, IntPtr userData)
+        private static void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
         {
-            FrameCallback callback = (FrameCallback)Marshal.GetDelegateForFunctionPointer(userData, typeof(FrameCallback));
+            FrameCallback callback = (FrameCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(FrameCallback));
             if(callback == null)
             {
                 return;

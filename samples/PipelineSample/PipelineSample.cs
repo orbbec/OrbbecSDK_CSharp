@@ -12,45 +12,47 @@ class TestClass
         Config config = new Config();
         config.EnableStream(colorProfile);
         config.EnableStream(depthProfile);
-        pipeline.Start(config);
-        byte[] data = null;
+
+        byte[] colorData = null;
+        byte[] depthData = null;
+
+        pipeline.Start(config, (frameset)=>{
+            if(frameset == null)
+            {
+                Console.WriteLine("empty frameset");
+                return;
+            }
+            ColorFrame colorFrame = frameset.GetColorFrame();
+            if(colorFrame != null)
+            {
+                if(colorData == null)
+                {
+                    colorData = new byte[colorFrame.GetDataSize()];
+                }
+                Console.WriteLine("Color {0} x {1} {2}", colorFrame.GetWidth(), colorFrame.GetHeight(), colorFrame.GetDataSize());
+                colorFrame.CopyData(ref colorData);
+                Console.WriteLine("Color {0}-{1}", colorData[0], colorData[colorData.Length - 1]);
+                colorFrame.Dispose();
+            }
+            
+            DepthFrame depthFrame = frameset.GetDepthFrame();
+            if(depthFrame != null)
+            {
+                if(depthData == null)
+                {
+                    depthData = new byte[depthFrame.GetDataSize()];
+                }
+                Console.WriteLine("Depth {0} x {1} {2}", depthFrame.GetWidth(), depthFrame.GetHeight(), depthFrame.GetDataSize());
+                depthFrame.CopyData(ref depthData);
+                Console.WriteLine("Depth {0}-{1}", depthData[0], depthData[depthData.Length - 1]);
+                depthFrame.Dispose();
+            }
+            
+            frameset.Dispose();
+        });
 
         while(true)
         {
-            Frameset frameset = pipeline.WaitForFrames(1000);
-            if(frameset == null)
-            {
-                continue;
-            }
-            ColorFrame colorFrame = frameset.GetColorFrame();
-            DepthFrame depthFrame = frameset.GetDepthFrame();
-
-            if(colorFrame != null)
-            {
-                Console.WriteLine("Color {0} x {1} {2}", colorFrame.GetWidth(), colorFrame.GetHeight(), colorFrame.GetDataSize());
-                if (data == null)
-                {
-                    data = new byte[colorFrame.GetDataSize()];
-                }
-                colorFrame.CopyData(ref data);
-                colorFrame.Dispose();
-                Console.WriteLine("Color {0}-{1}", data[0], data[data.Length - 1]);
-                data = null;
-            }
-
-            if(depthFrame != null)
-            {
-                Console.WriteLine("Depth {0} x {1} {2}", depthFrame.GetWidth(), depthFrame.GetHeight(), depthFrame.GetDataSize());
-                if (data == null)
-                {
-                    data = new byte[depthFrame.GetDataSize()];
-                }
-                depthFrame.CopyData(ref data);
-                depthFrame.Dispose();
-                Console.WriteLine("Depth {0}-{1}-{2}", data[0], data[data.Length - 1], data[data.Length / 2]);
-                data = null;
-            }
-
             Thread.Sleep(100);
         }
     }

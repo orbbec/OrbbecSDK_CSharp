@@ -42,7 +42,8 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, OnFrameset, IntPtr.Zero, out error);
+            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, OnFrameset, callbackPtr, out error);
         }
 
         public void Stop()
@@ -131,10 +132,15 @@ namespace Orbbec
             _handle.Dispose();
         }
 
-        private void OnFrameset(IntPtr framesetPtr, IntPtr userDataPtr)
+        private static void OnFrameset(IntPtr framesetPtr, IntPtr userDataPtr)
         {
+            FramesetCallback callback = (FramesetCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(FramesetCallback));
+            if(callback == null)
+            {
+                return;
+            }
             Frameset frameset = new Frameset(framesetPtr);
-            _callback(frameset);
+            callback(frameset);
         }
     }
 }
