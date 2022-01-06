@@ -5,7 +5,7 @@ namespace Orbbec
 {
     internal class obNative
     {
-        public const string obsdk = "OrbbecSDK_d";
+        public const string obsdk = "OrbbecSDK";
 
         #region Context
         [DllImport(obsdk, EntryPoint = "ob_create_context")]

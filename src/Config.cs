@@ -37,7 +37,7 @@ namespace Orbbec
             obNative.ob_config_enable_all_stream(_handle.Ptr, out error);
         }
 
-        public void EnableStream(StreamType streamType)
+        public void DisableStream(StreamType streamType)
         {
             IntPtr error;
             obNative.ob_config_disable_stream(_handle.Ptr, streamType, out error);

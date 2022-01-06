@@ -87,30 +87,45 @@ public class Pipeline_Test
     public void Pipeline_StartColor()
     {
         _config.DisableAllStream();
-        _config.EnableStream(StreamType.OB_STREAM_COLOR);
+        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_COLOR);
+        _config.EnableStream(profiles[0]);
         _pipe.Start(_config);
         Thread.Sleep(2000);
         _pipe.Stop();
+        foreach (var profile in profiles)
+        {
+            profile.Dispose();
+        }
     }
 
     [Test]
     public void Pipeline_StartDepth()
     {
         _config.DisableAllStream();
-        _config.EnableStream(StreamType.OB_STREAM_DEPTH);
+        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_DEPTH);
+        _config.EnableStream(profiles[0]);
         _pipe.Start(_config);
         Thread.Sleep(2000);
         _pipe.Stop();
+        foreach (var profile in profiles)
+        {
+            profile.Dispose();
+        }
     }
 
     [Test]
     public void Pipeline_StartIR()
     {
         _config.DisableAllStream();
-        _config.EnableStream(StreamType.OB_STREAM_IR);
+        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_IR);
+        _config.EnableStream(profiles[0]);
         _pipe.Start(_config);
         Thread.Sleep(2000);
         _pipe.Stop();
+        foreach (var profile in profiles)
+        {
+            profile.Dispose();
+        }
     }
 
     [Test]
