@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
@@ -35,7 +36,8 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_device_changed_callback(_handle.Ptr, OnDeviceChanged, IntPtr.Zero, out error);
+            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            obNative.ob_set_device_changed_callback(_handle.Ptr, OnDeviceChanged, callbackPtr, out error);
         }
 
         public void SetLoggerServerity(LogServerity logServerity)
@@ -67,11 +69,16 @@ namespace Orbbec
             _handle.Dispose();
         }
 
-        private void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr)
+        private static void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr)
         {
+            DeviceChangedCallback callback = (DeviceChangedCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(DeviceChangedCallback));
+            if(callback == null)
+            {
+                return;
+            }
             DeviceList removed = new DeviceList(removedPtr);
             DeviceList added = new DeviceList(addedPtr);
-            _callback(removed, added);
+            callback(removed, added);
         }
     }
 }
