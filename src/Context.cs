@@ -48,7 +48,11 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error = IntPtr.Zero;
-            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            IntPtr callbackPtr = IntPtr.Zero;
+            if(callback != null)
+            {
+                callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            }
             obNative.ob_set_device_changed_callback(_handle.Ptr, OnDeviceChanged, callbackPtr, out error);
             if(error != IntPtr.Zero)
             {

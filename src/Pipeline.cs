@@ -58,7 +58,11 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            IntPtr callbackPtr = IntPtr.Zero;
+            if(callback != null)
+            {
+                callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            }
             obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, OnFrameset, callbackPtr, out error);
             if(error != IntPtr.Zero)
             {

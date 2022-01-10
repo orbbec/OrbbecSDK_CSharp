@@ -187,7 +187,11 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            IntPtr callbackPtr = IntPtr.Zero;
+            if(callback != null)
+            {
+                callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
+            }
             obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, OnFrame, callbackPtr, out error);
             if(error != IntPtr.Zero)
             {
