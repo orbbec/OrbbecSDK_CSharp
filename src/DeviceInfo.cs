@@ -16,25 +16,43 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_name(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
         public int Pid()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_device_info_pid(_handle.Ptr, out error);
+            int pid = obNative.ob_device_info_pid(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return pid;
         }
 
         public int Vid()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_device_info_vid(_handle.Ptr, out error);
+            int vid = obNative.ob_device_info_vid(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return vid;
         }
 
         public String Uid()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_uid(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -42,6 +60,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_serial_number(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -49,6 +71,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_firmware_version(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -56,6 +82,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_info_usb_type(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -63,6 +93,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_device_info(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void Dispose()

@@ -25,61 +25,106 @@ namespace Orbbec
         public SensorType GetSensorType()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_get_type(_handle.Ptr, out error);
+            SensorType sensorType = obNative.ob_sensor_get_type(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return sensorType;
         }
 
         public void SetIntProperty(PropertyId propertyId, Int32 property)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_sensor_set_int_property(_handle.Ptr, propertyId, property, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public Int32 GetIntProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_get_int_property(_handle.Ptr, propertyId, out error);
+            Int32 value = obNative.ob_sensor_get_int_property(_handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return value;
         }
 
         public void SetFloatProperty(PropertyId propertyId, float property)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_sensor_set_float_property(_handle.Ptr, propertyId, property, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public float GetFloatProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_get_float_property(_handle.Ptr, propertyId, out error);
+            float value = obNative.ob_sensor_get_float_property(_handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return value;
         }
 
         public void SetBoolProperty(PropertyId propertyId, bool property)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_sensor_set_bool_property(_handle.Ptr, propertyId, property, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public bool GetBoolProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_get_bool_property(_handle.Ptr, propertyId, out error);
+            bool value = obNative.ob_sensor_get_bool_property(_handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return value;
         }
 
         public void SetStructuredData(PropertyId propertyId, IntPtr data, UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_sensor_set_structured_data(_handle.Ptr, propertyId, data, dataSize, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void GetStructuredData(PropertyId propertyId, IntPtr data, ref UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_sensor_get_structured_data(_handle.Ptr, propertyId, data, ref dataSize, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public bool IsPropertySupported(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_is_property_supported(_handle.Ptr, propertyId, out error);
+            bool isSupported = obNative.ob_sensor_is_property_supported(_handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return isSupported;
         }
 
         public IntPropertyRange GetIntPropertyRange (PropertyId propertyId)
@@ -87,6 +132,10 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             IntPropertyRange range;
             obNative.ob_sensor_get_int_property_range(out range, _handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return range;
         }
 
@@ -95,6 +144,10 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             FloatPropertyRange range;
             obNative.ob_sensor_get_float_property_range(out range, _handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return range;
         }
 
@@ -103,6 +156,10 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             BoolPropertyRange range;
             obNative.ob_sensor_get_bool_property_range(out range, _handle.Ptr, propertyId, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return range;
         }
 
@@ -111,6 +168,10 @@ namespace Orbbec
             IntPtr error;
             UInt32 count = 0;
             IntPtr handles = obNative.ob_sensor_get_stream_profiles(_handle.Ptr, ref count, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             IntPtr[] handleArray = new IntPtr[count];
             Marshal.Copy(handles, handleArray, 0, (int)count);
             List<StreamProfile> profiles = new List<StreamProfile>();
@@ -128,6 +189,10 @@ namespace Orbbec
             IntPtr error;
             IntPtr callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
             obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, OnFrame, callbackPtr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         private static void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
@@ -139,6 +204,10 @@ namespace Orbbec
             }
             IntPtr error;
             FrameType type = obNative.ob_frame_get_type(framePtr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             Frame frame;
             switch (type)
             {
@@ -161,12 +230,20 @@ namespace Orbbec
         {
             IntPtr error;
             obNative.ob_sensor_stop(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_sensor(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void Dispose()

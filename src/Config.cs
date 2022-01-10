@@ -12,6 +12,10 @@ namespace Orbbec
         {
             IntPtr error;
             IntPtr handle = obNative.ob_create_config(out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             _handle = new NativeHandle(handle, Delete);
         }
 
@@ -29,30 +33,50 @@ namespace Orbbec
         {
             IntPtr error;
             obNative.ob_config_enable_stream(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void EnableAllStream()
         {
             IntPtr error;
             obNative.ob_config_enable_all_stream(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void DisableStream(StreamType streamType)
         {
             IntPtr error;
             obNative.ob_config_disable_stream(_handle.Ptr, streamType, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void DisableAllStream()
         {
             IntPtr error;
             obNative.ob_config_disable_all_stream(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_config(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void Dispose()

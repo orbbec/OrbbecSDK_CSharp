@@ -14,19 +14,33 @@ namespace Orbbec
         public UInt32 SensorCount()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_list_get_sensor_count(_handle.Ptr, out error);
+            UInt32 count = obNative.ob_sensor_list_get_sensor_count(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return count;
         }
 
         public SensorType SensorType(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_sensor_list_get_sensor_type(_handle.Ptr, index, out error);
+            SensorType sensorType = obNative.ob_sensor_list_get_sensor_type(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return sensorType;
         }
 
         public Sensor GetSensor(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_get_sensor_by_type(_handle.Ptr, sensorType, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return new Sensor(handle);
         }
 
@@ -34,6 +48,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_get_sensor(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return new Sensor(handle);
         }
 
@@ -41,6 +59,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_sensor_list(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void Dispose()

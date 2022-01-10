@@ -15,37 +15,66 @@ namespace Orbbec
         public UInt64 GetIndex()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_index(_handle.Ptr, out error);
+            UInt64 index = obNative.ob_frame_index(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return index;
         }
 
         public Format GetFormat()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_format(_handle.Ptr, out error);
+            Format format = obNative.ob_frame_format(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return format;
         }
 
         public FrameType GetFrameType()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_get_type(_handle.Ptr, out error);
+            FrameType frameType = obNative.ob_frame_get_type(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return frameType;
         }
 
         public UInt64 GetTimeStamp()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_time_stamp(_handle.Ptr, out error);
+            UInt64 timestamp = obNative.ob_frame_time_stamp(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return timestamp;
         }
 
         public UInt64 GetSystemTimeStamp()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_system_time_stamp(_handle.Ptr, out error);
+            UInt64 sysTimestamp = obNative.ob_frame_system_time_stamp(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return sysTimestamp;
         }
 
         public void CopyData(ref Byte[] data)
         {
             IntPtr error = IntPtr.Zero;
             IntPtr dataPtr = obNative.ob_frame_data(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             Marshal.Copy(dataPtr, data, 0, data.Length);
         }
 
@@ -53,19 +82,32 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr dataPtr = obNative.ob_frame_data(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return dataPtr; 
         }
 
         public UInt32 GetDataSize()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_data_size(_handle.Ptr, out error);
+            UInt32 dataSize = obNative.ob_frame_data_size(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return dataSize;
         }
 
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_frame(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void Dispose()

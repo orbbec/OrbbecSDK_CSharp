@@ -15,32 +15,55 @@ namespace Orbbec
         public UInt32 DeviceCount()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_device_list_count(_handle.Ptr, out error);
+            UInt32 count = obNative.ob_device_list_count(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return count;
         }
 
         public String Name(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_list_get_device_name(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
         public int Pid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_device_list_get_device_pid(_handle.Ptr, index, out error);
+            int pid = obNative.ob_device_list_get_device_pid(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return pid;
         }
 
         public int Vid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_device_list_get_device_vid(_handle.Ptr, index, out error);
+            int vid = obNative.ob_device_list_get_device_vid(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return vid;
         }
 
         public String Uid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_list_get_device_uid(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return Marshal.PtrToStringAnsi(ptr);
         }
 
@@ -48,6 +71,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_get_device(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
             return new Device(handle);
         }
 
@@ -55,6 +82,10 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_device_list(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         public void Dispose()

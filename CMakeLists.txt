@@ -13,6 +13,7 @@ add_library(${PROJECT_NAME} SHARED
     src/Error.cs
     src/Frame.cs
     src/NativeHandle.cs
+    src/NativeException.cs
     src/obNative.cs
     src/Pipeline.cs
     src/Sensor.cs
