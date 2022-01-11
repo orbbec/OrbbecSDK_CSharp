@@ -107,6 +107,10 @@ namespace Orbbec
 
         private static void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr)
         {
+            if(userDataPtr == IntPtr.Zero)
+            {
+                return;
+            }
             DeviceChangedCallback callback = (DeviceChangedCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(DeviceChangedCallback));
             if(callback == null)
             {

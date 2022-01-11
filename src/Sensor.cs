@@ -201,6 +201,10 @@ namespace Orbbec
 
         private static void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
         {
+            if(userDataPtr == IntPtr.Zero)
+            {
+                return;
+            }
             FrameCallback callback = (FrameCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(FrameCallback));
             if(callback == null)
             {
