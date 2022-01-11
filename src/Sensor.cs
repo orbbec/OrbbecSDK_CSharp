@@ -11,10 +11,12 @@ namespace Orbbec
     {
         private NativeHandle _handle;
         private FrameCallback _callback;
+        private FrameCallbackInternal _internalCallback;
 
         internal Sensor(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
+            _internalCallback = new FrameCallbackInternal(OnFrame);
         }
 
         internal NativeHandle GetNativeHandle()
@@ -187,29 +189,15 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            IntPtr callbackPtr = IntPtr.Zero;
-            if(callback != null)
-            {
-                callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
-            }
-            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, OnFrame, callbackPtr, out error);
+            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, _internalCallback, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
         }
 
-        private static void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
+        private void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
         {
-            if(userDataPtr == IntPtr.Zero)
-            {
-                return;
-            }
-            FrameCallback callback = (FrameCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(FrameCallback));
-            if(callback == null)
-            {
-                return;
-            }
             IntPtr error;
             FrameType type = obNative.ob_frame_get_type(framePtr, out error);
             if(error != IntPtr.Zero)
@@ -231,7 +219,14 @@ namespace Orbbec
                 default:
                     throw new Exception(string.Format("Unknown frame type: {0}", type));
             }
-            callback(frame);
+            if(_callback != null)
+            {
+                _callback(frame);
+            }
+            else
+            {
+                frame.Dispose();
+            }
         }
 
         public void Stop()

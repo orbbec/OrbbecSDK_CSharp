@@ -10,6 +10,7 @@ namespace Orbbec
     {
         private NativeHandle _handle;
         private DeviceChangedCallback _callback;
+        private DeviceChangedCallbackInternal _internalCallback;
 
         public Context()
         {
@@ -20,6 +21,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            _internalCallback = new DeviceChangedCallbackInternal(OnDeviceChanged);
         }
 
         public Context(String configPath)
@@ -48,12 +50,7 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error = IntPtr.Zero;
-            IntPtr callbackPtr = IntPtr.Zero;
-            if(callback != null)
-            {
-                callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
-            }
-            obNative.ob_set_device_changed_callback(_handle.Ptr, OnDeviceChanged, callbackPtr, out error);
+            obNative.ob_set_device_changed_callback(_handle.Ptr, _internalCallback, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -105,20 +102,14 @@ namespace Orbbec
             _handle.Dispose();
         }
 
-        private static void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr)
+        private void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr)
         {
-            if(userDataPtr == IntPtr.Zero)
-            {
-                return;
-            }
-            DeviceChangedCallback callback = (DeviceChangedCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(DeviceChangedCallback));
-            if(callback == null)
-            {
-                return;
-            }
             DeviceList removed = new DeviceList(removedPtr);
             DeviceList added = new DeviceList(addedPtr);
-            callback(removed, added);
+            if(_callback != null)
+            {
+                _callback(removed, added);
+            }
         }
     }
 }

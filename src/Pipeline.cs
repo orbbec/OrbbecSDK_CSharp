@@ -11,6 +11,7 @@ namespace Orbbec
     {
         private NativeHandle _handle;
         private FramesetCallback _callback;
+        private FramesetCallbackInternal _internalCallback;
 
         public Pipeline()
         {
@@ -21,6 +22,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
 
         public Pipeline(Device device)
@@ -58,12 +60,7 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            IntPtr callbackPtr = IntPtr.Zero;
-            if(callback != null)
-            {
-                callbackPtr = Marshal.GetFunctionPointerForDelegate(callback);
-            }
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, OnFrameset, callbackPtr, out error);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, _internalCallback, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -192,19 +189,17 @@ namespace Orbbec
             _handle.Dispose();
         }
 
-        private static void OnFrameset(IntPtr framesetPtr, IntPtr userDataPtr)
+        private void OnFrameset(IntPtr framesetPtr, IntPtr userDataPtr)
         {
-            if(userDataPtr == IntPtr.Zero)
-            {
-                return;
-            }
-            FramesetCallback callback = (FramesetCallback)Marshal.GetDelegateForFunctionPointer(userDataPtr, typeof(FramesetCallback));
-            if(callback == null)
-            {
-                return;
-            }
             Frameset frameset = new Frameset(framesetPtr);
-            callback(frameset);
+            if(_callback != null)
+            {
+                _callback(frameset);
+            }
+            else
+            {
+                frameset.Dispose();
+            }
         }
     }
 }
