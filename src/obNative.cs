@@ -5,8 +5,11 @@ namespace Orbbec
 {
     internal class obNative
     {
+#if ORBBEC_DEBUG
+        public const string obsdk = "OrbbecSDK_d";
+#else
         public const string obsdk = "OrbbecSDK";
-
+#endif
         #region Context
         [DllImport(obsdk, EntryPoint = "ob_create_context")]
         public static extern IntPtr ob_create_context([Out] out IntPtr error);

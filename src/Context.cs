@@ -110,6 +110,11 @@ namespace Orbbec
             {
                 _callback(removed, added);
             }
+            else
+            {
+                removed.Dispose();
+                added.Dispose();
+            }
         }
     }
 }
