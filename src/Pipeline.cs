@@ -10,6 +10,7 @@ namespace Orbbec
     public class Pipeline : IDisposable
     {
         private NativeHandle _handle;
+        private Device _device;
         private FramesetCallback _callback;
         private FramesetCallbackInternal _internalCallback;
 
@@ -27,6 +28,7 @@ namespace Orbbec
 
         public Pipeline(Device device)
         {
+            _device = device;
             IntPtr error;
             IntPtr handle = obNative.ob_create_pipeline_with_device(device.GetNativeHandle().Ptr, out error);
             if(error != IntPtr.Zero)
@@ -34,6 +36,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
 
         public void Start()
@@ -105,6 +108,10 @@ namespace Orbbec
 
         public Device GetDevice()
         {
+            if(_device != null)
+            {
+                return _device;
+            }
             IntPtr error;
             IntPtr handle = obNative.ob_pipeline_get_device(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
