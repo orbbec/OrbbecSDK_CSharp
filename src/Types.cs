@@ -29,10 +29,15 @@ namespace Orbbec
     [Serializable()]
     public struct BoolPropertyRange
     {
+        [MarshalAs(UnmanagedType.I1)]
         public bool cur;
+        [MarshalAs(UnmanagedType.I1)]
         public bool max;
+        [MarshalAs(UnmanagedType.I1)]
         public bool min;
+        [MarshalAs(UnmanagedType.I1)]
         public bool step;
+        [MarshalAs(UnmanagedType.I1)]
         public bool def;
     }
 
