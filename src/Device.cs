@@ -18,6 +18,11 @@ namespace Orbbec
             return _handle;
         }
 
+        /**
+        * @brief 获取设备信息
+        *
+        * @return DeviceInfo 返回设备的信息
+        */
         public DeviceInfo GetDeviceInfo()
         {
             IntPtr error = IntPtr.Zero;
@@ -29,6 +34,11 @@ namespace Orbbec
             return new DeviceInfo(handle);
         }
 
+        /**
+        * @brief 获取设备传感器列表
+        *
+        * @return SensorList 返回传感器列表
+        */
         public SensorList GetSensorList()
         {
             IntPtr error = IntPtr.Zero;
@@ -40,6 +50,12 @@ namespace Orbbec
             return new SensorList(handle);
         }
 
+        /**
+        * @brief 获取指定类型传感器
+        * 如果设备没有打开传感器，在SDK内部会自动打开设备并返回实例
+        *
+        * @return Sensor 返回传感器示例，如果设备没有该设备，返回null
+        */
         public Sensor GetSensor(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
@@ -51,6 +67,12 @@ namespace Orbbec
             return new Sensor(handle);
         }
 
+        /**
+        * @brief 设置int类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @param property 要设置的属性
+        */
         public void SetIntProperty(PropertyId propertyId, Int32 property)
         {
             IntPtr error = IntPtr.Zero;
@@ -61,6 +83,12 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取int类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @return int32_t 获取的属性数据
+        */
         public Int32 GetIntProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -72,6 +100,12 @@ namespace Orbbec
             return value;
         }
 
+        /**
+        * @brief 设置float类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @param property 要设置的属性
+        */
         public void SetFloatProperty(PropertyId propertyId, float property)
         {
             IntPtr error = IntPtr.Zero;
@@ -82,6 +116,12 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取float类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @return float 获取的属性数据
+        */
         public float GetFloatProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -93,6 +133,12 @@ namespace Orbbec
             return value;
         }
 
+        /**
+        * @brief 设置bool类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @param property 要设置的属性
+        */
         public void SetBoolProperty(PropertyId propertyId, bool property)
         {
             IntPtr error = IntPtr.Zero;
@@ -103,6 +149,12 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取bool类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @return bool 获取的属性数据
+        */
         public bool GetBoolProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -114,6 +166,13 @@ namespace Orbbec
             return value;
         }
 
+        /**
+        * @brief 设置结构体类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @param data 要设置的属性数据
+        * @param dataSize 要设置的属性大小
+        */
         public void SetStructuredData(PropertyId propertyId, IntPtr data, UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
@@ -124,6 +183,13 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取结构体类型的设备属性
+        *
+        * @param propertyId 属性id
+        * @param data 获取的属性数据
+        * @param dataSize 获取的属性大小
+        */
         public void GetStructuredData(PropertyId propertyId, IntPtr data, ref UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
@@ -134,6 +200,13 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 判断设备的属性是否支持
+        *
+        * @param propertyId 属性id
+        * @return true 支持该属性
+        * @return false 不支持该属性
+        */
         public bool IsPropertySupported(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -145,6 +218,12 @@ namespace Orbbec
             return isSupported;
         }
 
+        /**
+        * @brief 获取int类型的设备属性的范围(包括当前值和默认值)
+        *
+        * @param propertyId 属性id
+        * @return IntPropertyRange 属性的范围
+        */
         public IntPropertyRange GetIntPropertyRange (PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -157,6 +236,12 @@ namespace Orbbec
             return range;
         }
 
+        /**
+        * @brief 获取float类型的设备属性的范围(包括当前值和默认值)
+        *
+        * @param propertyId 属性id
+        * @return FloatPropertyRange 属性的范围
+        */
         public FloatPropertyRange GetFloatPropertyRange (PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -169,6 +254,12 @@ namespace Orbbec
             return range;
         }
 
+        /**
+        * @brief 获取bool类型的设备属性的范围(包括当前值和默认值)
+        *
+        * @param propertyId 属性id
+        * @return BoolPropertyRange 属性的范围
+        */
         public BoolPropertyRange GetBoolPropertyRange(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -195,6 +286,11 @@ namespace Orbbec
         //     obNative.ob_device_state_changed(_handle.Ptr, callback, IntPtr.Zero, out error);
         // }
 
+        /**
+        * @brief 验证设备授权码
+        * @param authCode 授权码
+        * @return bool 激活是否成功
+        */
         public bool ActivateAuthorization(String authCode)
         {
             IntPtr error = IntPtr.Zero;
@@ -206,6 +302,10 @@ namespace Orbbec
             return authorization;
         }
 
+        /**
+        * @brief 写入设备授权码
+        * @param authCode 授权码
+        */
         public void WriteAuthorizationCode(String authCode)
         {
             IntPtr error = IntPtr.Zero;
@@ -216,6 +316,12 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取当前内参（会根据sensor镜像状态做转换）
+        * @param sensorType 需要获取内参的Sensor
+        *
+        * @return CameraIntrinsic 内参结构体
+        */
         public CameraIntrinsic GetCameraIntrinsic(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
@@ -228,6 +334,12 @@ namespace Orbbec
             return intrinsic;
         }
 
+        /**
+        * @brief 获取当前去畸变参数（会根据sensor镜像状态做转换）
+        * @param sensorType 需要获取内参的Sensor
+        *
+        * @return CameraDistortion 去畸变参数结构体
+        */
         public CameraDistortion GetCameraDistortion(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
@@ -240,6 +352,11 @@ namespace Orbbec
             return distortion;
         }
 
+        /**
+        * @brief 获取旋转矩阵（会根据sensor镜像状态做转换）
+        *
+        * @return D2CTransform 旋转矩阵结构体
+        */
         public D2CTransform GetD2CTransform()
         {
             IntPtr error = IntPtr.Zero;

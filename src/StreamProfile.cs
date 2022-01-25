@@ -16,6 +16,10 @@ namespace Orbbec
             return _handle;
         }
 
+        /**
+        * @brief 获取流的格式
+        * @return Format 返回流的格式
+        */
         public Format GetFormat()
         {
             IntPtr error;
@@ -27,6 +31,10 @@ namespace Orbbec
             return format;
         }
 
+        /**
+        * @brief 获取流的类型
+        * @return StreamType 返回流的类型
+        */
         public StreamType GetStreamType()
         {
             IntPtr error;
@@ -38,6 +46,10 @@ namespace Orbbec
             return streamType;
         }
 
+        /**
+        * @brief 获取流的帧率
+        * @return UInt32 返回流的帧率
+        */
         public UInt32 GetFPS()
         {
             IntPtr error;
@@ -49,6 +61,10 @@ namespace Orbbec
             return fps;
         }
 
+        /**
+        * @brief 获取流的宽
+        * @return UInt32 返回流的宽
+        */
         public UInt32 GetWidth()
         {
             IntPtr error;
@@ -60,6 +76,10 @@ namespace Orbbec
             return width;
         }
 
+        /**
+        * @brief 获取流的高
+        * @return UInt32 返回流的高
+        */
         public UInt32 GetHeight()
         {
             IntPtr error;
@@ -71,6 +91,10 @@ namespace Orbbec
             return height;
         } 
 
+        /**
+        * @brief 获取满量程范围
+        * @return AccelFullScaleRange  返回量程范围值
+        */
         public AccelFullScaleRange GetAccelFullScaleRange()
         {
             IntPtr error;
@@ -82,6 +106,10 @@ namespace Orbbec
             return accelFullScaleRange;
         } 
 
+        /**
+        * @brief 获取采样频率
+        * @return AccelSampleRate  返回采样频率
+        */
         public AccelSampleRate GetAccelSampleRate()
         {
             IntPtr error;
@@ -93,6 +121,10 @@ namespace Orbbec
             return accelSampleRate;
         } 
 
+        /**
+        * @brief 获取满量程范围
+        * @return GyroFullScaleRange  返回量程范围值
+        */
         public GyroFullScaleRange GetGyroFullScaleRange()
         {
             IntPtr error;
@@ -104,6 +136,10 @@ namespace Orbbec
             return gyroFullScaleRange;
         } 
 
+        /**
+        * @brief 获取采样频率
+        * @return GyroSampleRate  返回采样频率
+        */
         public GyroSampleRate GetGyroSampleRate()
         {
             IntPtr error;

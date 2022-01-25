@@ -14,6 +14,12 @@ namespace Orbbec
         private FramesetCallback _callback;
         private FramesetCallbackInternal _internalCallback;
 
+        /**
+        * @brief Pipeline 是SDK的高级接口，适用于应用，算法等重点关注RGBD数据流常见，Pipeline在SDK内部可以提供对齐，同步后的FrameSet桢集合
+        * 直接方便客户使用。
+        * Pipeline()无参数版本，默认打开连接到OS的设备列表中的第一个设备。若应用已经通过DeviceList获取设备，此时打开Pipeline()会抛出设备已经创建异常。
+        * 需要开发者捕获异常处理。
+        */
         public Pipeline()
         {
             IntPtr error;
@@ -26,6 +32,10 @@ namespace Orbbec
             _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
 
+        /**
+        * @brief
+        * 适用于多设备操作常见，此时需要通过DeviceList获取多个设备，通过该接口实现device和pipeline绑定。
+        */
         public Pipeline(Device device)
         {
             _device = device;
@@ -39,6 +49,9 @@ namespace Orbbec
             _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
 
+        /**
+        * @brief 启动pipeline
+        */
         public void Start()
         {
             IntPtr error;
@@ -49,6 +62,10 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 启动pipeline并配置参数
+        * @param config pipeline的参数配置
+        */
         public void Start(Config config)
         {
             IntPtr error;
@@ -59,6 +76,11 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 启动pipeline并设置帧集合数据回调
+        * @param config pipeline的参数配置
+        * @param callback 设置帧集合中的所有帧数据都到达时触发回调
+        */
         public void Start(Config config, FramesetCallback callback)
         {
             _callback = callback;
@@ -70,6 +92,9 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 停止pipeline
+        */
         public void Stop()
         {
             IntPtr error;
@@ -80,6 +105,10 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取pipeline的配置参数
+        * @return Config 返回配置的参数
+        */
         public Config GetConfig()
         {
             IntPtr error;
@@ -91,6 +120,11 @@ namespace Orbbec
             return new Config(handle);
         }
 
+        /**
+        * @brief 等待帧集合数据
+        * @param timeoutMs 等待超时时间(毫秒)
+        * @return Frameset 返回等待的帧集合数据
+        */
         public Frameset WaitForFrames(UInt32 timeoutMs)
         {
             IntPtr error;
@@ -106,6 +140,10 @@ namespace Orbbec
             return new Frameset(handle);
         }
 
+        /**
+        * @brief 获取设备对象
+        * @return Device 返回设备对象
+        */
         public Device GetDevice()
         {
             if(_device != null)
@@ -121,6 +159,11 @@ namespace Orbbec
             return new Device(handle);
         }
 
+        /**
+        * @brief 获取指定传感器的流配置
+        * @param sensorType 传感器的类型
+        * @return StreamProfile[] 返回流配置列表
+        */
         public StreamProfile[] GetStreamProfiles(SensorType sensorType)
         {
             IntPtr error;
@@ -141,6 +184,10 @@ namespace Orbbec
             return profiles.ToArray();
         }
 
+        /**
+        * @brief 获取所有传感器的所有流的配置
+        * @return StreamProfile[] 返回流配置列表
+        */
         public StreamProfile[] GetAllStreamProfiles()
         {
             IntPtr error;
@@ -161,6 +208,9 @@ namespace Orbbec
             return profiles.ToArray();
         }
 
+        /**
+        * @brief 打开帧同步功能
+        */
         public void EnableFrameSync()
         {
             IntPtr error;
@@ -171,6 +221,9 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 关闭帧同步功能
+        */
         public void DisableFrameSync()
         {
             IntPtr error;

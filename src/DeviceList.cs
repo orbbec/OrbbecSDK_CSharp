@@ -12,6 +12,11 @@ namespace Orbbec
             _handle = new NativeHandle(handle, Delete);
         }
 
+        /**
+        * @brief 获取设备数量
+        *
+        * @return UInt32 返回设备的数量
+        */
         public UInt32 DeviceCount()
         {
             IntPtr error = IntPtr.Zero;
@@ -23,6 +28,12 @@ namespace Orbbec
             return count;
         }
 
+        /**
+        * @brief 获取指定设备的名称
+        *
+        * @param index 设备索引
+        * @return String 返回设备的名称
+        */
         public String Name(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
@@ -34,6 +45,12 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        /**
+        * @brief 获取指定设备的pid
+        *
+        * @param index 设备索引
+        * @return int 返回设备的pid
+        */
         public int Pid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
@@ -45,6 +62,12 @@ namespace Orbbec
             return pid;
         }
 
+        /**
+        * @brief 获取指定设备的vid
+        *
+        * @param index 设备索引
+        * @return int 返回设备的vid
+        */
         public int Vid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
@@ -56,6 +79,12 @@ namespace Orbbec
             return vid;
         }
 
+        /**
+        * @brief 获取指定设备的uid
+        *
+        * @param index 设备索引
+        * @return String 返回设备的uid
+        */
         public String Uid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
@@ -67,6 +96,12 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        /**
+        * @brief 从设备列表中获取指定设备对象,
+        * @attention 如果设备有在其他地方被获取创建，重复获取将会抛异常
+        * @param index 要创建设备的索引
+        * @return Device 返回设备对象
+        */
         public Device GetDevice(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;

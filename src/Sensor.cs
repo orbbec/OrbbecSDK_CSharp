@@ -24,6 +24,10 @@ namespace Orbbec
             return _handle;
         }
 
+        /**
+        * @brief 传感器类型
+        * @return SensorType 返回传感器类型
+        */
         public SensorType GetSensorType()
         {
             IntPtr error = IntPtr.Zero;
@@ -35,6 +39,11 @@ namespace Orbbec
             return sensorType;
         }
 
+        /**
+        * @brief 设置int类型的设备属性
+        * @param propertyId 属性id
+        * @param property 要设置的属性
+        */
         public void SetIntProperty(PropertyId propertyId, Int32 property)
         {
             IntPtr error = IntPtr.Zero;
@@ -45,6 +54,11 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取int类型的设备属性
+        * @param propertyId 属性id
+        * @return Int32 获取的属性数据
+        */
         public Int32 GetIntProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -56,6 +70,11 @@ namespace Orbbec
             return value;
         }
 
+        /**
+        * @brief 设置float类型的设备属性
+        * @param propertyId 属性id
+        * @param property 要设置的属性
+        */
         public void SetFloatProperty(PropertyId propertyId, float property)
         {
             IntPtr error = IntPtr.Zero;
@@ -66,6 +85,11 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取float类型的设备属性
+        * @param propertyId 属性id
+        * @return float 获取的属性数据
+        */
         public float GetFloatProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -77,6 +101,11 @@ namespace Orbbec
             return value;
         }
 
+        /**
+        * @brief 设置bool类型的设备属性
+        * @param propertyId 属性id
+        * @param property 要设置的属性
+        */
         public void SetBoolProperty(PropertyId propertyId, bool property)
         {
             IntPtr error = IntPtr.Zero;
@@ -87,6 +116,11 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取bool类型的设备属性
+        * @param propertyId 属性id
+        * @return bool 获取的属性数据
+        */
         public bool GetBoolProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -98,6 +132,12 @@ namespace Orbbec
             return value;
         }
 
+        /**
+        * @brief 设置结构体定义数据类型的设备属性
+        * @param propertyId 属性id
+        * @param data 要设置的属性数据
+        * @param dataSize 要设置的属性大小
+        */
         public void SetStructuredData(PropertyId propertyId, IntPtr data, UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
@@ -108,6 +148,12 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 获取结构体定义数据类型的设备属性
+        * @param propertyId 属性id
+        * @param data 获取的属性数据
+        * @param dataSize 获取的属性大小
+        */
         public void GetStructuredData(PropertyId propertyId, IntPtr data, ref UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
@@ -118,6 +164,12 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 判断传感器属性是否支持
+        * @param propertyId 属性id
+        * @return true 支持该属性
+        * @return false 不支持该属性
+        */
         public bool IsPropertySupported(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -129,6 +181,11 @@ namespace Orbbec
             return isSupported;
         }
 
+        /**
+        * @brief 获取int类型的设备属性的范围
+        * @param propertyId 属性id
+        * @return IntPropertyRange 属性的范围
+        */
         public IntPropertyRange GetIntPropertyRange (PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -141,6 +198,11 @@ namespace Orbbec
             return range;
         }
 
+        /**
+        * @brief 获取float类型的设备属性的范围
+        * @param propertyId 属性id
+        * @return FloatPropertyRange 属性的范围
+        */
         public FloatPropertyRange GetFloatPropertyRange (PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -153,6 +215,11 @@ namespace Orbbec
             return range;
         }
 
+        /**
+        * @brief 获取bool类型的设备属性的范围
+        * @param propertyId 属性id
+        * @return BoolPropertyRange 属性的范围
+        */
         public BoolPropertyRange GetBoolPropertyRange(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
@@ -165,6 +232,10 @@ namespace Orbbec
             return range;
         }
 
+        /**
+        * @brief 获取传感器的流配置列表
+        * @return StreamProfile[] 返回流配置列表
+        */
         public StreamProfile[] GetStreamProfiles()
         {
             IntPtr error;
@@ -185,6 +256,11 @@ namespace Orbbec
             return profiles.ToArray();
         }
 
+        /**
+        * @brief 开启流并设置帧数据回调
+        * @param streamProfile 流的配置
+        * @param callback 设置帧数据到达时的回调
+        */
         public void Start(StreamProfile streamProfile, FrameCallback callback)
         {
             _callback = callback;
@@ -229,6 +305,9 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 停止流
+        */
         public void Stop()
         {
             IntPtr error;

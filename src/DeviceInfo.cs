@@ -12,6 +12,11 @@ namespace Orbbec
             _handle = new NativeHandle(handle, Delete);
         }
 
+        /**
+        * @brief 获取设备名称
+        *
+        * @return String 返回设备名称
+        */
         public String Name()
         {
             IntPtr error = IntPtr.Zero;
@@ -23,6 +28,11 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        /**
+        * @brief 获取设备的pid
+        *
+        * @return int 返回设备的pid
+        */
         public int Pid()
         {
             IntPtr error = IntPtr.Zero;
@@ -34,6 +44,11 @@ namespace Orbbec
             return pid;
         }
 
+        /**
+        * @brief 获取设备的vid
+        *
+        * @return int 返回设备的vid
+        */
         public int Vid()
         {
             IntPtr error = IntPtr.Zero;
@@ -45,6 +60,11 @@ namespace Orbbec
             return vid;
         }
 
+        /**
+        * @brief 获取设备的uid，该uid标识设备接入os操作系统时，给当前设备分派的唯一id，用来区分不同的设备
+        *
+        * @return String 返回设备的uid
+        */
         public String Uid()
         {
             IntPtr error = IntPtr.Zero;
@@ -56,6 +76,11 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        /**
+        * @brief 获取设备的序列号
+        *
+        * @return String 返回设备的序列号
+        */
         public String SerialNumber()
         {
             IntPtr error = IntPtr.Zero;
@@ -67,6 +92,11 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        /**
+        * @brief 获取固件的版本号
+        *
+        * @return String 返回固件的版本号
+        */
         public String FirmwareVersion()
         {
             IntPtr error = IntPtr.Zero;
@@ -78,6 +108,11 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        /**
+        * @brief 获取usb连接类型
+        *
+        * @return String 返回usb连接类型
+        */
         public String UsbType()
         {
             IntPtr error = IntPtr.Zero;

@@ -11,6 +11,10 @@ namespace Orbbec
             _handle = new NativeHandle(handle, Delete);
         }
 
+        /**
+        * @brief 获取Sensor数量
+        * @return UInt32 返回Sensor的数量
+        */
         public UInt32 SensorCount()
         {
             IntPtr error = IntPtr.Zero;
@@ -22,6 +26,11 @@ namespace Orbbec
             return count;
         }
 
+        /**
+        * @brief 获取指定Sensor的类型
+        * @param index Sensor索引
+        * @return SensorType 返回Sensor类型
+        */
         public SensorType SensorType(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
@@ -33,6 +42,11 @@ namespace Orbbec
             return sensorType;
         }
 
+        /**
+        * @brief 通过Sensor类型获取Sensor
+        * @param sensorType 要获取的Sensor类型
+        * @return Sensor 返回Sensor对象，如果指定类型Sensor不存在，将返回空
+        */
         public Sensor GetSensor(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
@@ -44,6 +58,11 @@ namespace Orbbec
             return new Sensor(handle);
         }
 
+        /**
+        * @brief 通过索引号获取Sensor
+        * @param index 要创建设备的索，范围 [0, count-1]，如果index超出范围将抛异常
+        * @return Sensor 返回Sensor对象
+        */
         public Sensor GetSensor(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
