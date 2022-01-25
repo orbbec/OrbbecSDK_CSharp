@@ -29,6 +29,10 @@ namespace Orbbec
             return _handle;
         }
 
+        /**
+        * @brief 设置要打开的流配置
+        * @param streamProfile 流的配置
+        */
         public void EnableStream(StreamProfile streamProfile)
         {
             IntPtr error;
@@ -39,6 +43,9 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 设置打开所有的流
+        */
         public void EnableAllStream()
         {
             IntPtr error;
@@ -49,6 +56,10 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 设置要关闭的流配置
+        * @param streamType 流的配置
+        */
         public void DisableStream(StreamType streamType)
         {
             IntPtr error;
@@ -59,6 +70,9 @@ namespace Orbbec
             }
         }
 
+        /**
+        * @brief 设置关闭所有的流
+        */
         public void DisableAllStream()
         {
             IntPtr error;
