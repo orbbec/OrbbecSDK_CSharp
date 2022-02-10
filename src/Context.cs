@@ -29,6 +29,11 @@ namespace Orbbec
             _internalCallback = new DeviceChangedCallbackInternal(OnDeviceChanged);
         }
 
+        /**
+        * @brief 可以传入自定义的配置文件
+        *
+        * @param configPath 配置文件的路径
+        */
         public Context(String configPath)
         {
             IntPtr error = IntPtr.Zero;

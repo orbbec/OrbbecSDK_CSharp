@@ -105,6 +105,10 @@ namespace Orbbec
             Marshal.Copy(dataPtr, data, 0, data.Length);
         }
 
+        /**
+        * @brief 获取帧数据
+        * @return IntPtr 获取数据在非托管内存的原始指针
+        */
         public IntPtr GetDataPtr()
         {
             IntPtr error = IntPtr.Zero;
@@ -215,7 +219,7 @@ namespace Orbbec
         * @brief 获取深度帧的值刻度，单位为 mm/step，
         *      如valueScale=0.1, 某坐标像素值为pixelValue=10000，
         *     则表示深度值value = pixelValue*valueScale = 10000*0.1=1000mm。
-        * @return float
+        * @return float 返回帧的值刻度
         */
         public float GetValueScale()
         {
@@ -245,8 +249,8 @@ namespace Orbbec
         }
 
         /**
-        * @brief 获取加速度帧X数据
-        * @return AccelValue
+        * @brief 获取帧的加速度值
+        * @return AccelValue 返回加速度值
         */
         public AccelValue GetAccelValue()
         {
@@ -258,7 +262,7 @@ namespace Orbbec
 
         /**
         * @brief 获取帧采样时的温度
-        * @return float 温度值
+        * @return float 返回温度值
         */
         public float GetTemperature()
         {
@@ -275,7 +279,7 @@ namespace Orbbec
 
         /**
         * @brief 获取陀螺仪帧数据
-        * @return GyroValue
+        * @return GyroValue 返回陀螺仪的值
         */
         public GyroValue GetGyroValue()
         {
@@ -287,7 +291,7 @@ namespace Orbbec
 
         /**
         * @brief 获取帧采样时的温度
-        * @return float 温度值
+        * @return float 返回温度值
         */
         public float GetTemperature()
         {

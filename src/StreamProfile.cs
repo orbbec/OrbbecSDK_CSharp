@@ -92,7 +92,7 @@ namespace Orbbec
         } 
 
         /**
-        * @brief 获取满量程范围
+        * @brief 获取加速计满量程范围
         * @return AccelFullScaleRange  返回量程范围值
         */
         public AccelFullScaleRange GetAccelFullScaleRange()
@@ -107,7 +107,7 @@ namespace Orbbec
         } 
 
         /**
-        * @brief 获取采样频率
+        * @brief 获取加速计采样频率
         * @return AccelSampleRate  返回采样频率
         */
         public AccelSampleRate GetAccelSampleRate()
@@ -122,7 +122,7 @@ namespace Orbbec
         } 
 
         /**
-        * @brief 获取满量程范围
+        * @brief 获取陀螺仪满量程范围
         * @return GyroFullScaleRange  返回量程范围值
         */
         public GyroFullScaleRange GetGyroFullScaleRange()
@@ -137,7 +137,7 @@ namespace Orbbec
         } 
 
         /**
-        * @brief 获取采样频率
+        * @brief 获取陀螺仪采样频率
         * @return GyroSampleRate  返回采样频率
         */
         public GyroSampleRate GetGyroSampleRate()
