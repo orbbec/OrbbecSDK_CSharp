@@ -105,7 +105,7 @@ namespace Orbbec
         public Device GetDevice(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_get_device(_handle.Ptr, index, out error);
+            IntPtr handle = obNative.ob_device_list_get_device(_handle.Ptr, index, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

@@ -26,47 +26,27 @@ public class Pipeline_Test
     }
 
     [Test]
-    public void Pipeline_AllStreamProfiles()
-    {
-        StreamProfile[] profiles = _pipe.GetAllStreamProfiles();
-        Assert.Greater(profiles.Length, 0);
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
-    }
-
-    [Test]
     public void Pipeline_ColorStreamProfiles()
     {
-        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_COLOR);
-        Assert.Greater(profiles.Length, 0);
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
+        StreamProfileList profiles = _pipe.GetStreamProfileList(SensorType.OB_SENSOR_COLOR);
+        Assert.Greater(profiles.ProfileCount(), 0);
+        profiles.Dispose();
     }
 
     [Test]
     public void Pipeline_DepthStreamProfiles()
     {
-        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_DEPTH);
-        Assert.Greater(profiles.Length, 0);
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
+        StreamProfileList profiles = _pipe.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH);
+        Assert.Greater(profiles.ProfileCount(), 0);
+        profiles.Dispose();
     }
 
     [Test]
     public void Pipeline_IRStreamProfiles()
     {
-        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_IR);
-        Assert.Greater(profiles.Length, 0);
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
+        StreamProfileList profiles = _pipe.GetStreamProfileList(SensorType.OB_SENSOR_IR);
+        Assert.Greater(profiles.ProfileCount(), 0);
+        profiles.Dispose();
     }
 
     [Test]
@@ -87,45 +67,36 @@ public class Pipeline_Test
     public void Pipeline_StartColor()
     {
         _config.DisableAllStream();
-        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_COLOR);
-        _config.EnableStream(profiles[0]);
+        StreamProfileList profiles = _pipe.GetStreamProfileList(SensorType.OB_SENSOR_COLOR);
+        _config.EnableStream(profiles.GetProfile(0));
         _pipe.Start(_config);
         Thread.Sleep(2000);
         _pipe.Stop();
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
+        profiles.Dispose();
     }
 
     [Test]
     public void Pipeline_StartDepth()
     {
         _config.DisableAllStream();
-        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_DEPTH);
-        _config.EnableStream(profiles[0]);
+        StreamProfileList profiles = _pipe.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH);
+        _config.EnableStream(profiles.GetProfile(0));
         _pipe.Start(_config);
         Thread.Sleep(2000);
         _pipe.Stop();
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
+        profiles.Dispose();
     }
 
     [Test]
     public void Pipeline_StartIR()
     {
         _config.DisableAllStream();
-        StreamProfile[] profiles = _pipe.GetStreamProfiles(SensorType.OB_SENSOR_IR);
-        _config.EnableStream(profiles[0]);
+        StreamProfileList profiles = _pipe.GetStreamProfileList(SensorType.OB_SENSOR_IR);
+        _config.EnableStream(profiles.GetProfile(0));
         _pipe.Start(_config);
         Thread.Sleep(2000);
         _pipe.Stop();
-        foreach (var profile in profiles)
-        {
-            profile.Dispose();
-        }
+        profiles.Dispose();
     }
 
     [Test]

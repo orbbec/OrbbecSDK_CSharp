@@ -128,7 +128,7 @@ namespace Orbbec
         public Frameset WaitForFrames(UInt32 timeoutMs)
         {
             IntPtr error;
-            IntPtr handle = obNative.ob_pipeline_wait_for_frames(_handle.Ptr, timeoutMs, out error);
+            IntPtr handle = obNative.ob_pipeline_wait_for_frameset(_handle.Ptr, timeoutMs, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -162,50 +162,18 @@ namespace Orbbec
         /**
         * @brief 获取指定传感器的流配置
         * @param sensorType 传感器的类型
-        * @return StreamProfile[] 返回流配置列表
+        * @return StreamProfileList 返回流配置列表
         */
-        public StreamProfile[] GetStreamProfiles(SensorType sensorType)
+        public StreamProfileList GetStreamProfileList(SensorType sensorType)
         {
             IntPtr error;
-            UInt32 count = 0;
-            IntPtr handles = obNative.ob_pipeline_get_stream_profiles(_handle.Ptr, sensorType, ref count, out error);
+            IntPtr handle = obNative.ob_pipeline_get_stream_profile_list(_handle.Ptr, sensorType, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            IntPtr[] handleArray = new IntPtr[count];
-            Marshal.Copy(handles, handleArray, 0, (int)count);
-            List<StreamProfile> profiles = new List<StreamProfile>();
-            foreach (var handle in handleArray)
-            {
-                StreamProfile profile = new StreamProfile(handle);
-                profiles.Add(profile);
-            }
-            return profiles.ToArray();
-        }
-
-        /**
-        * @brief 获取所有传感器的所有流的配置
-        * @return StreamProfile[] 返回流配置列表
-        */
-        public StreamProfile[] GetAllStreamProfiles()
-        {
-            IntPtr error;
-            UInt32 count = 0;
-            IntPtr handles = obNative.ob_pipeline_get_all_stream_profiles(_handle.Ptr, ref count, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            IntPtr[] handleArray = new IntPtr[count];
-            Marshal.Copy(handles, handleArray, 0, (int)count);
-            List<StreamProfile> profiles = new List<StreamProfile>();
-            foreach (var handle in handleArray)
-            {
-                StreamProfile profile = new StreamProfile(handle);
-                profiles.Add(profile);
-            }
-            return profiles.ToArray();
+            
+            return new StreamProfileList(handle);
         }
 
         /**

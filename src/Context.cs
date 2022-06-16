@@ -85,7 +85,7 @@ namespace Orbbec
         public void SetLoggerServerity(LogServerity logServerity)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_serverity(_handle.Ptr, logServerity, out error);
+            obNative.ob_set_logger_serverity(logServerity, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -101,7 +101,7 @@ namespace Orbbec
         public void SetLoggerToFile(LogServerity logServerity, String fileName)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_to_file(_handle.Ptr, logServerity, fileName, out error);
+            obNative.ob_set_logger_to_file(logServerity, fileName, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -116,7 +116,7 @@ namespace Orbbec
         public void SetLoggerToConsole(LogServerity logServerity)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_to_console(_handle.Ptr, logServerity, out error);
+            obNative.ob_set_logger_to_console(logServerity, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

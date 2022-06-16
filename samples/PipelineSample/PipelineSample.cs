@@ -7,8 +7,8 @@ class TestClass
     static void Main(string[] args)
     {
         Pipeline pipeline = new Pipeline();
-        StreamProfile colorProfile = pipeline.GetStreamProfiles(SensorType.OB_SENSOR_COLOR)[0];
-        StreamProfile depthProfile = pipeline.GetStreamProfiles(SensorType.OB_SENSOR_DEPTH)[0];
+        StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetProfile(0);
+        StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetProfile(0);
         Config config = new Config();
         config.EnableStream(colorProfile);
         config.EnableStream(depthProfile);

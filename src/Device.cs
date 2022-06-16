@@ -316,59 +316,6 @@ namespace Orbbec
             }
         }
 
-        /**
-        * @brief 获取当前内参（会根据sensor镜像状态做转换）
-        * @param sensorType 需要获取内参的Sensor
-        *
-        * @return CameraIntrinsic 内参结构体
-        */
-        public CameraIntrinsic GetCameraIntrinsic(SensorType sensorType)
-        {
-            IntPtr error = IntPtr.Zero;
-            CameraIntrinsic intrinsic;
-            obNative.ob_device_get_camera_intrinsic(out intrinsic, _handle.Ptr, sensorType, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return intrinsic;
-        }
-
-        /**
-        * @brief 获取当前去畸变参数（会根据sensor镜像状态做转换）
-        * @param sensorType 需要获取内参的Sensor
-        *
-        * @return CameraDistortion 去畸变参数结构体
-        */
-        public CameraDistortion GetCameraDistortion(SensorType sensorType)
-        {
-            IntPtr error = IntPtr.Zero;
-            CameraDistortion distortion;
-            obNative.ob_device_get_camera_distortion(out distortion, _handle.Ptr, sensorType, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return distortion;
-        }
-
-        /**
-        * @brief 获取旋转矩阵（会根据sensor镜像状态做转换）
-        *
-        * @return D2CTransform 旋转矩阵结构体
-        */
-        public D2CTransform GetD2CTransform()
-        {
-            IntPtr error = IntPtr.Zero;
-            D2CTransform d2CTransform;
-            obNative.ob_device_get_d2c_transform(out d2CTransform, _handle.Ptr, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return d2CTransform;
-        }
-
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;

@@ -31,17 +31,18 @@ class TestClass
         Sensor irSen = dev.GetSensor(SensorType.OB_SENSOR_IR);
         Console.WriteLine(irSen.GetSensorType());
 
-        StreamProfile[] profiles = colorSen.GetStreamProfiles();
-        Console.WriteLine(profiles.Length);
+        StreamProfileList profiles = colorSen.GetStreamProfileList();
+        Console.WriteLine(profiles.ProfileCount());
 
-        foreach (var profile in profiles)
+        for (int i = 0; i < profiles.ProfileCount(); i++)
         {
+            var profile = profiles.GetProfile(i);
             Console.WriteLine("Color {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
         byte[] colorData = null;
         
-        colorSen.Start(profiles[0], (frame)=>{
+        colorSen.Start(profiles.GetProfile(0), (frame)=>{
             if(frame == null) 
             {
                 Console.WriteLine("empty color frame");
@@ -59,17 +60,18 @@ class TestClass
             Console.WriteLine("Color {0}-{1}", colorData[0], colorData[colorData.Length - 1]);
         });
 
-        profiles = depthSen.GetStreamProfiles();
-        Console.WriteLine(profiles.Length);
+        profiles = depthSen.GetStreamProfileList();
+        Console.WriteLine(profiles.ProfileCount());
 
-        foreach (var profile in profiles)
+        for (int i = 0; i < profiles.ProfileCount(); i++)
         {
+            var profile = profiles.GetProfile(i);
             Console.WriteLine("Depth {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
         byte[] depthData = null;
 
-        depthSen.Start(profiles[0], (frame) => {
+        depthSen.Start(profiles.GetProfile(0), (frame) => {
             if(frame == null) 
             {
                 Console.WriteLine("empty depth frame");
@@ -87,11 +89,12 @@ class TestClass
             Console.WriteLine("Depth {0}-{1}", depthData[0], depthData[depthData.Length - 1]);
         });
 
-        profiles = irSen.GetStreamProfiles();
-        Console.WriteLine(profiles.Length);
+        profiles = irSen.GetStreamProfileList();
+        Console.WriteLine(profiles.ProfileCount());
 
-        foreach (var profile in profiles)
+        for (int i = 0; i < profiles.ProfileCount(); i++)
         {
+            var profile = profiles.GetProfile(i);
             Console.WriteLine("IR {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 

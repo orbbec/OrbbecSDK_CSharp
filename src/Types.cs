@@ -87,6 +87,18 @@ namespace Orbbec
 
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
+    public struct CameraParam
+    {
+        CameraIntrinsic  depthIntrinsic;   ///< \if English Depth camera internal parameters \else 深度相机内参 \endif    
+        CameraIntrinsic  rgbIntrinsic;     ///< \if English Color camera internal parameters \else 彩色相机内参 \endif    
+        CameraDistortion depthDistortion;  ///< \if English Depth camera distortion parameters \else 深度相机畸变参数 \endif   
+        CameraDistortion rgbDistortion;    ///< \if English Color camera distortion parameters 1 \else 彩色相机畸变参数 \endif   
+        D2CTransform     transform;        ///< \if English rotation/transformation matrix \else 旋转/变换矩阵 \endif   
+        bool             isMirrored;       ///< \if English Whether the image frame corresponding to this group of parameters is mirrored \else 本组参数对应的图像帧是否被镜像 \endif   
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
     public struct AccelValue
     {
         public float x;

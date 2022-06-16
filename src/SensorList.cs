@@ -50,7 +50,7 @@ namespace Orbbec
         public Sensor GetSensor(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_get_sensor_by_type(_handle.Ptr, sensorType, out error);
+            IntPtr handle = obNative.ob_sensor_list_get_sensor_by_type(_handle.Ptr, sensorType, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -66,7 +66,7 @@ namespace Orbbec
         public Sensor GetSensor(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_get_sensor(_handle.Ptr, index, out error);
+            IntPtr handle = obNative.ob_sensor_list_get_sensor(_handle.Ptr, index, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

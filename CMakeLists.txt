@@ -13,6 +13,7 @@ add_library(${PROJECT_NAME} SHARED
     src/DeviceInfo.cs
     src/DeviceList.cs
     src/Error.cs
+    src/Filter.cs
     src/Frame.cs
     src/NativeHandle.cs
     src/NativeException.cs
@@ -21,6 +22,7 @@ add_library(${PROJECT_NAME} SHARED
     src/Sensor.cs
     src/SensorList.cs
     src/StreamProfile.cs
+    src/StreamProfileList.cs
     src/Types.cs
     src/Version.cs
 )

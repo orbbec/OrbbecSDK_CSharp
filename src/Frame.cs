@@ -184,8 +184,8 @@ namespace Orbbec
         public Byte[] GetMetadata()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr data = obNative.ob_frame_metadata(_handle.Ptr, out error);
-            UInt32 dataSize = obNative.ob_frame_metadata_size(_handle.Ptr, out error);
+            IntPtr data = obNative.ob_video_frame_metadata(_handle.Ptr, out error);
+            UInt32 dataSize = obNative.ob_video_frame_metadata_size(_handle.Ptr, out error);
             Byte[] buffer = new Byte[dataSize];
             Marshal.Copy(data, buffer, 0, (int)dataSize);
             return buffer;
@@ -198,7 +198,7 @@ namespace Orbbec
         public UInt32 GetMetadataSize()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_metadata_size(_handle.Ptr, out error);
+            return obNative.ob_video_frame_metadata_size(_handle.Ptr, out error);
         }
     }
 
@@ -313,7 +313,7 @@ namespace Orbbec
         public UInt32 GetFrameCount()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_set_frame_count(_handle.Ptr, out error);
+            return obNative.ob_frameset_frame_count(_handle.Ptr, out error);
         }
 
         /**
@@ -323,7 +323,7 @@ namespace Orbbec
         public DepthFrame GetDepthFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frame_set_depth_frame(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_frameset_depth_frame(_handle.Ptr, out error);
             if(handle == IntPtr.Zero)
             {
                 return null;
@@ -338,7 +338,7 @@ namespace Orbbec
         public ColorFrame GetColorFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frame_set_color_frame(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_frameset_color_frame(_handle.Ptr, out error);
             if (handle == IntPtr.Zero)
             {
                 return null;
@@ -353,7 +353,7 @@ namespace Orbbec
         public IRFrame GetIRFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frame_set_ir_frame(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_frameset_ir_frame(_handle.Ptr, out error);
             if (handle == IntPtr.Zero)
             {
                 return null;
@@ -368,7 +368,7 @@ namespace Orbbec
         public PointsFrame GetPointsFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frame_set_points_frame(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_frameset_points_frame(_handle.Ptr, out error);
             if (handle == IntPtr.Zero)
             {
                 return null;
