@@ -48,7 +48,7 @@ class TestClass
                 Console.WriteLine("empty color frame");
                 return;
             }
-            var vf = (frame as VideoFrame);
+            var vf = frame.As<ColorFrame>(FrameType.OB_FRAME_COLOR);
             // Console.WriteLine(vf.GetDataSize());
             Console.WriteLine("Color {0} x {1} {2}", vf.GetWidth(), vf.GetHeight(), vf.GetDataSize());
             if(colorData == null)
@@ -77,7 +77,7 @@ class TestClass
                 Console.WriteLine("empty depth frame");
                 return;
             }
-            var vf = (frame as VideoFrame);
+            var vf = frame.As<DepthFrame>(FrameType.OB_FRAME_DEPTH);
             // Console.WriteLine(vf.GetDataSize());
             Console.WriteLine("Depth {0} x {1} {2}", vf.GetWidth(), vf.GetHeight(), vf.GetDataSize());
             if (depthData == null)

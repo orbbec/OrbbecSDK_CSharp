@@ -188,7 +188,7 @@ namespace Orbbec
 
         // //ob_camera_param_list *ob_device_get_calibration_camera_param_list(ob_device *device, ob_error **error);
         // [DllImport(obsdk, EntryPoint = "ob_device_get_calibration_camera_param_list")]
-        // public static extern void ob_device_get_calibration_camera_param_list(out CameraParamList cameraParamList, IntPtr device, [Out] out IntPtr error);
+        // public static extern IntPtr ob_device_get_calibration_camera_param_list(IntPtr device, [Out] out IntPtr error);
 
         //void ob_device_reboot(ob_device *device, ob_error **error);
 
@@ -456,10 +456,20 @@ namespace Orbbec
 
         //void ob_pipeline_switch_config(ob_pipeline *pipeline, ob_config *config, ob_error **error);
         //ob_camera_param ob_pipeline_get_camera_param(ob_pipeline *pipeline, ob_error **error);
+        
+        [DllImport(obsdk, EntryPoint = "ob_pipeline_get_camera_param")]
+        public static extern void ob_pipeline_get_camera_param(out CameraParam cameraParam, IntPtr pipeline, [Out] out IntPtr error);
+        
         //ob_stream_profile_list *ob_get_d2c_depth_profile_list(ob_pipeline *pipeline, ob_stream_profile *color_profile,ob_align_mode align_mode, ob_error **error);
         //ob_rect ob_get_d2c_valid_area(ob_pipeline *pipeline, uint32_t distance, ob_error **error);
+        
         //void ob_pipeline_start_record(ob_pipeline *pipeline, const char *file_name, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_pipeline_start_record")]
+        public static extern void ob_pipeline_start_record(IntPtr pipeline, String fileName, [Out] out IntPtr error);
+        
         //void ob_pipeline_stop_record(ob_pipeline *pipeline, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_pipeline_stop_record")]
+        public static extern void ob_pipeline_stop_record(IntPtr pipeline, [Out] out IntPtr error);
 
         //ob_config* ob_create_config( ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_create_config")]

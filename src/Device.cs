@@ -316,6 +316,17 @@ namespace Orbbec
             }
         }
 
+        // public CameraParamList GetCameraParamList()
+        // {
+        //     IntPtr error = IntPtr.Zero;
+        //     IntPtr handle = obNative.ob_device_get_calibration_camera_param_list(_handle.Ptr, out error);
+        //     if(error != IntPtr.Zero)
+        //     {
+        //         throw new NativeException(new Error(error));
+        //     }
+        //     return new CameraParamList(handle);
+        // }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;

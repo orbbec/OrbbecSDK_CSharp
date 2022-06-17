@@ -202,6 +202,38 @@ namespace Orbbec
             }
         }
 
+        public CameraParam GetCameraParam()
+        {
+            IntPtr error;
+            CameraParam cameraParam;
+            obNative.ob_pipeline_get_camera_param(out cameraParam, _handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return cameraParam;
+        }
+
+        public void StartRecord(String fileName)
+        {
+            IntPtr error;
+            obNative.ob_pipeline_start_record(_handle.Ptr, fileName, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void StopRecord()
+        {
+            IntPtr error;
+            obNative.ob_pipeline_stop_record(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;

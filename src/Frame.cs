@@ -17,6 +17,29 @@ namespace Orbbec
             return _handle;
         }
 
+        public T As<T>(FrameType frameType) where T : Frame {
+            switch (frameType)
+            {
+                case FrameType.OB_FRAME_VIDEO:
+                    return new VideoFrame(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_IR:
+                    return new IRFrame(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_COLOR:
+                    return new ColorFrame(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_DEPTH:
+                    return new DepthFrame(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_ACCEL:
+                    return new AccelFrame(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_SET:
+                    return new Frameset(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_POINTS:
+                    return new PointsFrame(_handle.Ptr) as T;
+                case FrameType.OB_FRAME_GYRO:
+                    return new GyroFrame(_handle.Ptr) as T;    
+            }
+            return null;
+        }
+
         /**
         * @brief 获取帧的序号
         *
