@@ -292,7 +292,7 @@ namespace Orbbec
 
         //void ob_filter_set_callback( ob_filter* filter, ob_filter_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_set_callback")]
-        public static extern void ob_filter_set_callback(IntPtr filter, [MarshalAs(UnmanagedType.FunctionPtr)] FrameCallbackInternal callback, IntPtr userData, [Out] out IntPtr error);
+        public static extern void ob_filter_set_callback(IntPtr filter, [MarshalAs(UnmanagedType.FunctionPtr)] FilterCallbackInternal callback, IntPtr userData, [Out] out IntPtr error);
 
         //void ob_filter_push_frame( ob_filter* filter, ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_push_frame")]

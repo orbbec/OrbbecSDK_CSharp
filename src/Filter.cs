@@ -32,15 +32,15 @@ namespace Orbbec
         public Frame Process(Frame frame)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_filter_process(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_filter_process(_handle.Ptr, frame.GetNativeHandle().Ptr, out error);
             if(handle == IntPtr.Zero)
             {
                 return null;
             }
-            return Frame(handle);
+            return new Frame(handle);
         }
 
-        public void SetCallback(FrameCallback callback)
+        public void SetCallback(FilterCallback callback)
         {
             _callback = callback;
             IntPtr error;
@@ -53,7 +53,6 @@ namespace Orbbec
 
         public void PushFrame(Frame frame)
         {
-            _callback = callback;
             IntPtr error;
             obNative.ob_filter_push_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, out error);
             if(error != IntPtr.Zero)
