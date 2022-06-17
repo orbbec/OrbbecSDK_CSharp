@@ -17,8 +17,8 @@ namespace Orbbec
             return _handle;
         }
 
-        public T As<T>(FrameType frameType) where T : Frame {
-            switch (frameType)
+        public T As<T>() where T : Frame {
+            switch (GetFrameType())
             {
                 case FrameType.OB_FRAME_VIDEO:
                     return new VideoFrame(_handle.Ptr) as T;
