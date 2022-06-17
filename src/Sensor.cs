@@ -72,27 +72,7 @@ namespace Orbbec
 
         private void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
         {
-            IntPtr error;
-            FrameType type = obNative.ob_frame_get_type(framePtr, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            Frame frame;
-            switch (type)
-            {
-                case FrameType.OB_FRAME_COLOR:
-                    frame = new ColorFrame(framePtr);
-                    break;
-                case FrameType.OB_FRAME_DEPTH:
-                    frame = new DepthFrame(framePtr);
-                    break;
-                case FrameType.OB_FRAME_IR:
-                    frame = new IRFrame(framePtr);
-                    break;
-                default:
-                    throw new Exception(string.Format("Unknown frame type: {0}", type));
-            }
+            Frame frame = new Frame(framePtr);
             if(_callback != null)
             {
                 _callback(frame);

@@ -12,6 +12,11 @@ namespace Orbbec
             _handle = new NativeHandle(handle, Delete);
         }
 
+        internal NativeHandle GetNativeHandle()
+        {
+            return _handle;
+        }
+
         /**
         * @brief 获取帧的序号
         *
