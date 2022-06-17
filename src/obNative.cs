@@ -455,8 +455,10 @@ namespace Orbbec
         public static extern void ob_pipeline_disable_frame_sync(IntPtr pipeline, [Out] out IntPtr error);
 
         //void ob_pipeline_switch_config(ob_pipeline *pipeline, ob_config *config, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_pipeline_switch_config")]
+        public static extern void ob_pipeline_switch_config(IntPtr pipeline, IntPtr config, [Out] out IntPtr error);
+
         //ob_camera_param ob_pipeline_get_camera_param(ob_pipeline *pipeline, ob_error **error);
-        
         [DllImport(obsdk, EntryPoint = "ob_pipeline_get_camera_param")]
         public static extern void ob_pipeline_get_camera_param(out CameraParam cameraParam, IntPtr pipeline, [Out] out IntPtr error);
         

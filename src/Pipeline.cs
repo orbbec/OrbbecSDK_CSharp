@@ -202,6 +202,16 @@ namespace Orbbec
             }
         }
 
+        public void SwitchConfig(Config config)
+        {
+            IntPtr error;
+            obNative.ob_pipeline_switch_config(_handle.Ptr, config.GetNativeHandle().Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         public CameraParam GetCameraParam()
         {
             IntPtr error;
