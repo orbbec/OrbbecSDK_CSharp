@@ -498,6 +498,8 @@ namespace Orbbec
         public static extern void ob_config_disable_all_stream(IntPtr config, [Out] out IntPtr error);
 
         //void ob_config_set_align_mode(ob_config *config, ob_align_mode mode, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_config_set_align_mode")]
+        public static extern void ob_config_set_align_mode(IntPtr config, AlignMode mode, [Out] out IntPtr error);
         #endregion
 
         #region RecordPlayback

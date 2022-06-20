@@ -83,6 +83,16 @@ namespace Orbbec
             }
         }
 
+        public void SetAlignMode(AlignMode mode)
+        {
+            IntPtr error;
+            obNative.ob_config_set_align_mode(_handle.Ptr, mode, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;

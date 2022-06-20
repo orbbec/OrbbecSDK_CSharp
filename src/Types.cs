@@ -272,6 +272,13 @@ namespace Orbbec
         OB_STREAM_GYRO = 5,
     }
 
+    public enum AlignMode
+    {
+        ALIGN_DISABLE = 0,     /**< \if English turn off alignment \else 关闭对齐 \endif */
+        ALIGN_D2C_HW_MODE = 1, /**< \if English Hardware D2C alignment mode \else 硬件D2C对齐模式 \endif */
+        ALIGN_D2C_SW_MODE = 2, /**< \if English Software D2C alignment mode \else 软件D2C对齐模式 \endif */
+    }
+
     public enum PropertyId
     {
         // 0~999为设备端int, bool及float类型控制命令
