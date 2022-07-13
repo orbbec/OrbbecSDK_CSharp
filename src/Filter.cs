@@ -13,6 +13,11 @@ namespace Orbbec
         private FilterCallback _callback;
         private FilterCallbackInternal _internalCallback;
 
+        internal Filter()
+        {
+            _internalCallback = new FilterCallbackInternal(OnFrame);
+        }
+
         internal Filter(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
@@ -87,6 +92,74 @@ namespace Orbbec
         public void Dispose()
         {
             _handle.Dispose();
+        }
+    }
+
+    public class PointCloudFilter : Filter
+    {
+        public PointCloudFilter()
+        {
+            IntPtr error;
+            IntPtr handle = obNative.ob_create_pointcloud_filter(out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+        }
+
+        public void SetCameraParam(CameraParam cameraParam)
+        {
+            IntPtr error;
+            obNative.ob_pointcloud_filter_set_camera_param(_handle.Ptr, cameraParam, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void SetPointFormat(Format format)
+        {
+            IntPtr error;
+            obNative.ob_pointcloud_filter_set_point_format(_handle.Ptr, format, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void SetAlignState(bool state)
+        {
+            IntPtr error;
+            obNative.ob_pointcloud_filter_set_frame_align_state(_handle.Ptr, state, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+    }
+
+    public class FormatConvertFilter : Filter
+    {
+        public FormatConvertFilter()
+        {
+            IntPtr error;
+            IntPtr handle = obNative.ob_create_format_convert_filter(out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+        }
+
+        public void SetConvertFormat(ConvertFormat format)
+        {
+            IntPtr error;
+            obNative.ob_format_convert_filter_set_format(_handle.Ptr, format, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
     }
 }

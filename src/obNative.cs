@@ -264,7 +264,7 @@ namespace Orbbec
 
         //void ob_pointcloud_filter_set_camera_param(ob_filter *filter, ob_camera_param param, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_pointcloud_filter_set_camera_param")]
-        public static extern void ob_pointcloud_filter_set_camera_parameter(IntPtr filter, CameraParam param, [Out] out IntPtr error);
+        public static extern void ob_pointcloud_filter_set_camera_param(IntPtr filter, CameraParam param, [Out] out IntPtr error);
 
         //void ob_pointcloud_filter_set_point_format(ob_filter *filter, ob_format type, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_pointcloud_filter_set_point_format")]
@@ -272,7 +272,7 @@ namespace Orbbec
 
         //void ob_pointcloud_filter_set_frame_align_state(ob_filter *filter, bool state, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_pointcloud_filter_set_frame_align_state")]
-        public static extern void ob_pointcloud_filter_set_frame_align_state(IntPtr filter, bool status, [Out] out IntPtr error);
+        public static extern void ob_pointcloud_filter_set_frame_align_state(IntPtr filter, bool state, [Out] out IntPtr error);
 
         //ob_filter *ob_create_format_convert_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_format_convert_filter")]
@@ -280,7 +280,7 @@ namespace Orbbec
 
         //void ob_format_convert_filter_set_format(ob_filter *filter, ob_convert_format type, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_format_convert_filter_set_format")]
-        public static extern void ob_format_convert_filter_set_format(IntPtr filter, [Out] out IntPtr error);
+        public static extern void ob_format_convert_filter_set_format(IntPtr filter, ConvertFormat format, [Out] out IntPtr error);
 
         //void ob_filter_reset( ob_filter* filter, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_reset")]
