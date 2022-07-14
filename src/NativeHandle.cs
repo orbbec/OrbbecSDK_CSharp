@@ -12,6 +12,7 @@ namespace Orbbec
         private readonly ReleaseAction _action;
 
         public IntPtr Ptr { get; private set; }
+        public int ReferenceCount { get; private set; }
         public bool IsValid { get { return Ptr != IntPtr.Zero; } }
 
         public NativeHandle(IntPtr ptr, ReleaseAction releaseAction)
@@ -19,6 +20,7 @@ namespace Orbbec
             ThrowIfNull(ptr);
 
             Ptr = ptr;
+            ReferenceCount = 1;
             _action = releaseAction;
         }
 
@@ -38,17 +40,17 @@ namespace Orbbec
             throw new NullReferenceException("NativeHandle has previously been released");
         }
 
-        public void Release()
+        public void Retain()
         {
-            ThrowIfInvalid();
-            TryRelease();
+            ++ReferenceCount;
         }
 
-        private void TryRelease()
+        public void Release()
         {
-            if (!IsValid)
+            if (--ReferenceCount > 0) 
                 return;
 
+            ThrowIfInvalid();
             if (_action != null)
             {
                 _action(Ptr);
@@ -59,13 +61,13 @@ namespace Orbbec
 
         public void Dispose()
         {
-            TryRelease();
+            Release();
             GC.SuppressFinalize(this);
         }
 
         ~NativeHandle()
         {
-            TryRelease();
+            Release();
         }
     }
 }

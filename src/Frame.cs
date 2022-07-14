@@ -21,20 +21,28 @@ namespace Orbbec
             switch (GetFrameType())
             {
                 case FrameType.OB_FRAME_VIDEO:
+                    _handle.Retain();
                     return new VideoFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_IR:
+                    _handle.Retain();
                     return new IRFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_COLOR:
+                    _handle.Retain();
                     return new ColorFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_DEPTH:
+                    _handle.Retain();
                     return new DepthFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_ACCEL:
+                    _handle.Retain();
                     return new AccelFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_SET:
+                    _handle.Retain();
                     return new Frameset(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_POINTS:
+                    _handle.Retain();
                     return new PointsFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_GYRO:
+                    _handle.Retain();
                     return new GyroFrame(_handle.Ptr) as T;    
             }
             return null;
