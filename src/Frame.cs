@@ -48,6 +48,12 @@ namespace Orbbec
             return null;
         }
 
+        public Frame Copy()
+        {
+            _handle.Retain();
+            return new Frame(_handle.Ptr);
+        }
+
         /**
         * @brief 获取帧的序号
         *
