@@ -115,6 +115,27 @@ namespace Orbbec
         public float z;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
+    public struct Point 
+    {
+        public float x;  ///< \if English x coordinate \else X坐标 \endif     
+        public float y;  ///< \if English y coordinate \else Y坐标 \endif     
+        public float z;  ///< \if English z coordinate \else Z坐标 \endif     
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
+    public struct ColorPoint
+    {
+        public float x;  ///< \if English x coordinate \else X坐标 \endif    
+        public float y;  ///< \if English y coordinate \else Y坐标 \endif   
+        public float z;  ///< \if English z coordinate \else Z坐标 \endif    
+        public float r;  ///< \if English red channel component \else 红色通道分量 \endif    
+        public float g;  ///< \if English green channel component \else 绿色通道分量 \endif    
+        public float b;  ///< \if English blue channel component\else 蓝色通道分量 \endif    
+    }
+
     public enum AccelFullScaleRange
     {
         OB_ACCEL_FS_2g = 1,
