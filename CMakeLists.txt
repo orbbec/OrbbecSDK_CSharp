@@ -23,11 +23,14 @@ add_library(${PROJECT_NAME} SHARED
     src/SensorList.cs
     src/StreamProfile.cs
     src/StreamProfileList.cs
+    src/Recorder.cs
+    src/Playback.cs
     src/Types.cs
+    src/Property.cs
     src/Version.cs
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v3.5")
 
-add_subdirectory(samples)
-add_subdirectory(tests)
+# add_subdirectory(samples)
+# add_subdirectory(tests)

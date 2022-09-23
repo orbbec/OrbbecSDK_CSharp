@@ -97,6 +97,23 @@ namespace Orbbec
         }
 
         /**
+        * @brief 获取指定设备序列号
+        *
+        * @param[in] index 设备索引
+        * @return String 返回设备序列号
+        */
+        public String SerialNumber(UInt32 index)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_device_serial_number(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(handle);
+        }
+
+        /**
         * @brief 从设备列表中获取指定设备对象,
         * @attention 如果设备有在其他地方被获取创建，重复获取将会抛异常
         * @param index 要创建设备的索引
@@ -106,6 +123,46 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_device_list_get_device(_handle.Ptr, index, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Device(handle);
+        }
+
+        /**
+        * @brief 创建设备
+        * @attention 如果设备有在其他地方被获取创建，重复获取将会返回错误
+        *
+        * @param[in] list 设备列表对象
+        * @param[in] serial_number 要创建设备的序列号
+        * @param[out] error 记录错误信息
+        * @return ob_device* 返回创建的设备
+        */
+        public Device GetDeviceBySerialNumber(String serialNumber)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_device_by_serial_number(_handle.Ptr, serialNumber, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Device(handle);
+        }
+
+        /**
+        * @brief 创建设备
+        * @attention 如果设备有在其他地方被获取创建，重复获取将会返回错误
+        *
+        * @param[in] list 设备列表对象
+        * @param[in] uid  要创建设备的uid
+        * @param[out] error 记录错误信息
+        * @return ob_device* 返回创建的设备
+        */
+        public Device GetDeviceByUid(String uid)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_device_by_uid(_handle.Ptr, uid, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

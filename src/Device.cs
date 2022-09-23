@@ -2,7 +2,12 @@ using System;
 
 namespace Orbbec
 {
-    // public delegate void DeviceStateCallback();
+    public delegate void DeviceStateCallback(UInt64 state, String message);
+    public delegate void DeviceStateCallbackInternal(UInt64 state, IntPtr message, IntPtr userData);
+    public delegate void SetDataCallback(DataTranState state, uint percent);
+    public delegate void SetDataCallbackInternal(DataTranState state, uint percent, IntPtr userData);
+    public delegate void GetDataCallback(DataTranState state, DataChunk dataChunk);
+    public delegate void GetDataCallbackInternal(DataTranState state, IntPtr dataChunk, IntPtr userData);
 
     public class Device : IDisposable
     {
@@ -272,13 +277,16 @@ namespace Orbbec
             return range;
         }
 
-        // public DeviceState GetDeviceState()
-        // {
-        //     IntPtr error = IntPtr.Zero;
-        //     DeviceState state;
-        //     obNative.ob_device_get_device_state(out state, _handle.Ptr, out error);
-        //     return state;
-        // }
+        public UInt64 GetDeviceState()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt64 state = obNative.ob_device_get_device_state(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return state;
+        }
 
         // public void SetDeviceStateCallback(DeviceStateCallback callback)
         // {
