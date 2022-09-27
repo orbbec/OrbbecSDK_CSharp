@@ -161,9 +161,9 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_device_get_supported_property")]
         public static extern void ob_device_get_supported_property(out PropertyItem item, IntPtr device, UInt32 index, [Out] out IntPtr error);
 
-        //bool ob_device_is_property_supported( ob_device* device, ob_property_id property_id, ob_error** error );
+        //bool ob_device_is_property_supported(ob_device *device, ob_property_id property_id, ob_permission_type permission, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_is_property_supported")]
-        public static extern bool ob_device_is_property_supported(IntPtr device, PropertyId propertyId, [Out] out IntPtr error);
+        public static extern bool ob_device_is_property_supported(IntPtr device, PropertyId propertyId, PermissionType permissionType, [Out] out IntPtr error);
 
         //ob_int_property_range ob_device_get_int_property_range( ob_device* device, ob_property_id property_id, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_get_int_property_range")]

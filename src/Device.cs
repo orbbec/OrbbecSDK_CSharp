@@ -212,10 +212,10 @@ namespace Orbbec
         * @return true 支持该属性
         * @return false 不支持该属性
         */
-        public bool IsPropertySupported(PropertyId propertyId)
+        public bool IsPropertySupported(PropertyId propertyId, PermissionType permissionType)
         {
             IntPtr error = IntPtr.Zero;
-            bool isSupported = obNative.ob_device_is_property_supported(_handle.Ptr, propertyId, out error);
+            bool isSupported = obNative.ob_device_is_property_supported(_handle.Ptr, propertyId, permissionType, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
