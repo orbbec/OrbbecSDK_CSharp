@@ -50,6 +50,31 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Use the playback file to create a pipeline object
+        *
+        * @param fileName The playback file path used to create the pipeline
+        * @return Pipeline returns the pipeline object
+        * \else
+        * @brief 使用回放文件来创建pipeline对象
+        *
+        * @param fileName 用于创建pipeline的回放文件路径
+        * @return Pipeline 返回pipeline对象
+        * \endif
+        */
+        public Pipeline(string fileName)
+        {
+            IntPtr error;
+            IntPtr handle = obNative.ob_create_pipeline_with_playback_file(fileName, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            _internalCallback = new FramesetCallbackInternal(OnFrameset);
+        }
+
+        /**
         * @brief 启动pipeline
         */
         public void Start()
@@ -69,7 +94,7 @@ namespace Orbbec
         public void Start(Config config)
         {
             IntPtr error;
-            obNative.ob_pipeline_start_with_config(_handle.Ptr, config.GetNativeHandle().Ptr, out error);
+            obNative.ob_pipeline_start_with_config(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -85,7 +110,7 @@ namespace Orbbec
         {
             _callback = callback;
             IntPtr error;
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, _internalCallback, IntPtr.Zero, out error);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _internalCallback, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
