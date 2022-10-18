@@ -59,7 +59,7 @@ namespace Orbbec
         * @brief 获取指定类型传感器
         * 如果设备没有打开传感器，在SDK内部会自动打开设备并返回实例
         *
-        * @return Sensor 返回传感器示例，如果设备没有该设备，返回null
+        * @return Sensor 返回传感器示例
         */
         public Sensor GetSensor(SensorType sensorType)
         {

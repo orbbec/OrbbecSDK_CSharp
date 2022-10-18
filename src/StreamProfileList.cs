@@ -11,7 +11,7 @@ namespace Orbbec
             _handle = new NativeHandle(handle, Delete);
         }
 
-        public StreamProfile GetVideoStreamProfile(int width, int height, Format format, int fps)
+        public VideoStreamProfile GetVideoStreamProfile(int width, int height, Format format, int fps)
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_stream_profile_list_get_video_stream_profile(_handle.Ptr, width, height, format, fps, out error);
@@ -19,7 +19,7 @@ namespace Orbbec
             {
                 throw new NativeException(new Error(error));
             }
-            return new StreamProfile(handle);
+            return new VideoStreamProfile(handle);
         }
 
         public StreamProfile GetProfile(int index)

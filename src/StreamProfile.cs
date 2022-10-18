@@ -4,7 +4,7 @@ namespace Orbbec
 {    
     public class StreamProfile : IDisposable
     {
-        private NativeHandle _handle;
+        protected NativeHandle _handle;
 
         internal StreamProfile(IntPtr handle)
         {
@@ -14,6 +14,25 @@ namespace Orbbec
         internal NativeHandle GetNativeHandle()
         {
             return _handle;
+        }
+
+        public T As<T>() where T : StreamProfile {
+            switch (GetStreamType())
+            {
+                case StreamType.OB_STREAM_VIDEO:
+                case StreamType.OB_STREAM_IR:
+                case StreamType.OB_STREAM_COLOR:
+                case StreamType.OB_STREAM_DEPTH:
+                    _handle.Retain();
+                    return new VideoStreamProfile(_handle.Ptr) as T;
+                case StreamType.OB_STREAM_ACCEL:
+                    _handle.Retain();
+                    return new AccelStreamProfile(_handle.Ptr) as T;
+                case StreamType.OB_STREAM_GYRO:
+                    _handle.Retain();
+                    return new GyroStreamProfile(_handle.Ptr) as T;   
+            }
+            return null;
         }
 
         /**
@@ -44,6 +63,28 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             return streamType;
+        }
+
+        internal void Delete(IntPtr handle)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_delete_stream_profile(handle, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void Dispose()
+        {
+            _handle.Dispose();
+        }
+    }
+
+    public class VideoStreamProfile : StreamProfile
+    {
+        internal VideoStreamProfile(IntPtr handle) : base(handle)
+        {   
         }
 
         /**
@@ -90,6 +131,13 @@ namespace Orbbec
             }
             return height;
         } 
+    }
+
+    public class AccelStreamProfile : StreamProfile
+    {
+        internal AccelStreamProfile(IntPtr handle) : base(handle)
+        {   
+        }
 
         /**
         * @brief 获取加速计满量程范围
@@ -120,6 +168,13 @@ namespace Orbbec
             }
             return accelSampleRate;
         } 
+    }
+
+    public class GyroStreamProfile : StreamProfile
+    {
+        internal GyroStreamProfile(IntPtr handle) : base(handle)
+        {   
+        }
 
         /**
         * @brief 获取陀螺仪满量程范围
@@ -150,20 +205,5 @@ namespace Orbbec
             }
             return gyroSampleRate;
         } 
-
-        internal void Delete(IntPtr handle)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_stream_profile(handle, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        public void Dispose()
-        {
-            _handle.Dispose();
-        }
     }
 }
