@@ -13,8 +13,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Obtain detailed error logs of SDK internal exceptions.
+        * \else
         * @brief 获取SDK内部异常的详细错误日志。
-        * @return String 返回详细错误信息
+        * \endif
         */
         public String GetMessage()
         {
@@ -23,8 +26,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the name of the error function.
+        * \else
         * @brief 获取SDK内部异常的错误接口函数名称。
-        * @return String 返回出错的函数信息
+        * \endif
         */
         public String GetFunction()
         {
@@ -33,8 +39,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the parameter passed in to the error interface.
+        * \else
         * @brief 获取SDK内部异常的错误接口函数传入参数。
-        * @return String 返回出错的参数信息
+        * \endif
         */
         public String GetArgs()
         {
@@ -43,8 +52,12 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the exception type of the error, and determine which module is abnormal.
+        * @return ExceptionType
+        * \else
         * @brief 获取该错误的异常类型，判断是具体哪个模块异常。
-        * @return ExceptionType 返回错误类型
+        * @return ExceptionType
         */
         public ExceptionType GetExceptionType()
         {

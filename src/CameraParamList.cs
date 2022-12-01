@@ -12,8 +12,15 @@ namespace Orbbec
         }
 
         /**
-        * @brief 获取相机参数数量
-        * @return UInt32 返回相机参数的数量
+        * \if English
+        * @brief Number of camera parameter groups
+        *
+        * @return UInt32  returns the number of camera parameter groups
+        * \else
+        * @brief 相机参数组数
+        *
+        * @return UInt32  返回相机参数组数
+        * \endif
         */
         public UInt32 CameraParamCount()
         {
@@ -27,9 +34,17 @@ namespace Orbbec
         }
 
         /**
-        * @brief 通过索引号获取相机参数
-        * @param index 范围 [0, count-1]，如果index超出范围将抛异常
-        * @return Sensor 返回相机参数对象
+        * \if English
+        * @brief Get camera parameters
+        *
+        * @param index parameter index
+        * @return CameraParam returns the corresponding group parameters
+        * \else
+        * @brief 获取相机参数
+        *
+        * @param index 参数索引
+        * @return CameraParam 返回对应组参数
+        * \endif
         */
         public CameraParam GetCameraParam(UInt32 index)
         {

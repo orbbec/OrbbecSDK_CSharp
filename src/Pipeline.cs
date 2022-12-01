@@ -15,10 +15,15 @@ namespace Orbbec
         private FramesetCallbackInternal _internalCallback;
 
         /**
+        * \if English
+        * @brief Pipeline is a high-level interface for applications, algorithms related RGBD data streams. Pipeline can provide alignment inside and synchronized
+        * FrameSet. Pipeline() no parameter version, which opens the first device in the list of devices connected to the OS by default. If the application has
+        * obtained the device through the DeviceList, opening the Pipeline() at this time will throw an exception that the device has been created. \else
         * @brief Pipeline 是SDK的高级接口，适用于应用，算法等重点关注RGBD数据流常见，Pipeline在SDK内部可以提供对齐，同步后的FrameSet桢集合
         * 直接方便客户使用。
         * Pipeline()无参数版本，默认打开连接到OS的设备列表中的第一个设备。若应用已经通过DeviceList获取设备，此时打开Pipeline()会抛出设备已经创建异常。
         * 需要开发者捕获异常处理。
+        * \endif
         */
         public Pipeline()
         {
@@ -33,8 +38,13 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief
+        * For multi-device operations. Multiple devices need to be obtained through DeviceList, and the device
+        * and pipeline are bound through this interface. \else
         * @brief
         * 适用于多设备操作常见，此时需要通过DeviceList获取多个设备，通过该接口实现device和pipeline绑定。
+        * \endif
         */
         public Pipeline(Device device)
         {
@@ -77,19 +87,26 @@ namespace Orbbec
         /**
         * @brief 启动pipeline
         */
-        public void Start()
-        {
-            IntPtr error;
-            obNative.ob_pipeline_start(_handle.Ptr, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
+        // public void Start()
+        // {
+        //     IntPtr error;
+        //     obNative.ob_pipeline_start(_handle.Ptr, out error);
+        //     if(error != IntPtr.Zero)
+        //     {
+        //         throw new NativeException(new Error(error));
+        //     }
+        // }
 
         /**
+        * \if English
+        * @brief Start the pipeline with configuration parameters
+        *
+        * @param config Parameter configuration of pipeline
+        * \else
         * @brief 启动pipeline并配置参数
+        *
         * @param config pipeline的参数配置
+        * \endif
         */
         public void Start(Config config)
         {
@@ -102,9 +119,17 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Start the pipeline and set the frameset data callback
+        *
+        * @param config parameter configuration of pipeline
+        * @param callback  Set the callback to be triggered when all frame data in the frame set arrives
+        * \else
         * @brief 启动pipeline并设置帧集合数据回调
+        *
         * @param config pipeline的参数配置
         * @param callback 设置帧集合中的所有帧数据都到达时触发回调
+        * \endif
         */
         public void Start(Config config, FramesetCallback callback)
         {
@@ -118,7 +143,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Stop pipeline
+        * \else
         * @brief 停止pipeline
+        * \endif
         */
         public void Stop()
         {
@@ -131,8 +160,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get pipeline configuration parameters
+        *
+        * @return Config returns the configured parameters
+        * \else
         * @brief 获取pipeline的配置参数
+        *
         * @return Config 返回配置的参数
+        * \endif
         */
         public Config GetConfig()
         {
@@ -146,9 +182,17 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Waiting for frame set data
+        *
+        * @param timeout_ms  Waiting timeout (ms)
+        * @return Frameset returns the waiting frame set data
+        * \else
         * @brief 等待帧集合数据
-        * @param timeoutMs 等待超时时间(毫秒)
+        *
+        * @param timeout_ms 等待超时时间(毫秒)
         * @return Frameset 返回等待的帧集合数据
+        * \endif
         */
         public Frameset WaitForFrames(UInt32 timeoutMs)
         {
@@ -166,8 +210,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get device object
+        *
+        * @return Device returns the device object
+        * \else
         * @brief 获取设备对象
+        *
         * @return Device 返回设备对象
+        * \endif
         */
         public Device GetDevice()
         {

@@ -8,6 +8,13 @@ namespace Orbbec
     {
         private NativeHandle _handle;
 
+        /**
+        * \if English
+        * @brief Create a recorder for data recording
+        * \else
+        * @brief 创建录制器用于数据的录制
+        * \endif
+        */
         public Recorder()
         {
             IntPtr error = IntPtr.Zero;
@@ -19,6 +26,15 @@ namespace Orbbec
             _handle = new NativeHandle(handle, Delete);
         }
 
+        /**
+        * \if English
+        * @brief Create a recorder for data recording
+        * @param device Devices that need to record device information
+        * \else
+        * @brief 创建录制器用于数据的录制
+        * @param device 需要录制设备信息的设备
+        * \endif
+        */
         public Recorder(Device device)
         {
             IntPtr error = IntPtr.Zero;

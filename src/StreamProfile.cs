@@ -36,8 +36,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the format of the stream
+        *
+        * @return Format returns the format of the stream
+        * \else
         * @brief 获取流的格式
+        *
         * @return Format 返回流的格式
+        * \endif
         */
         public Format GetFormat()
         {
@@ -51,8 +58,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the type of stream
+        *
+        * @return StreamType returns the type of the stream
+        * \else
         * @brief 获取流的类型
+        *
         * @return StreamType 返回流的类型
+        * \endif
         */
         public StreamType GetStreamType()
         {
@@ -88,8 +102,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get stream frame rate
+        *
+        * @return UInt32 returns the frame rate of the stream
+        * \else
         * @brief 获取流的帧率
+        *
         * @return UInt32 返回流的帧率
+        * \endif
         */
         public UInt32 GetFPS()
         {
@@ -103,8 +124,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get stream width
+        *
+        * @return UInt32 returns the width of the stream
+        * \else
         * @brief 获取流的宽
+        *
         * @return UInt32 返回流的宽
+        * \endif
         */
         public UInt32 GetWidth()
         {
@@ -118,8 +146,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get stream height
+        *
+        * @return UInt32 returns the high of the stream
+        * \else
         * @brief 获取流的高
+        *
         * @return UInt32 返回流的高
+        * \endif
         */
         public UInt32 GetHeight()
         {
@@ -140,8 +175,15 @@ namespace Orbbec
         }
 
         /**
-        * @brief 获取加速计满量程范围
+        * \if English
+        * @brief Get full scale range
+        *
+        * @return AccelFullScaleRange  returns the scale range value
+        * \else
+        * @brief 获取满量程范围
+        *
         * @return AccelFullScaleRange  返回量程范围值
+        * \endif
         */
         public AccelFullScaleRange GetAccelFullScaleRange()
         {
@@ -155,8 +197,15 @@ namespace Orbbec
         } 
 
         /**
-        * @brief 获取加速计采样频率
+        * \if English
+        * @brief Get sampling frequency
+        *
+        * @return AccelSampleRate  returns the sampling frequency
+        * \else
+        * @brief 获取采样频率
+        *
         * @return AccelSampleRate  返回采样频率
+        * \endif
         */
         public AccelSampleRate GetAccelSampleRate()
         {
@@ -177,8 +226,15 @@ namespace Orbbec
         }
 
         /**
-        * @brief 获取陀螺仪满量程范围
+        * \if English
+        * @brief Get full scale range
+        *
+        * @return GyroFullScaleRange  returns the scale range value
+        * \else
+        * @brief 获取满量程范围
+        *
         * @return GyroFullScaleRange  返回量程范围值
+        * \endif
         */
         public GyroFullScaleRange GetGyroFullScaleRange()
         {
@@ -192,8 +248,15 @@ namespace Orbbec
         } 
 
         /**
-        * @brief 获取陀螺仪采样频率
+        * \if English
+        * @brief Get sampling frequency
+        *
+        * @return GyroSampleRate  returns the sampling frequency
+        * \else
+        * @brief 获取采样频率
+        *
         * @return GyroSampleRate  返回采样频率
+        * \endif
         */
         public GyroSampleRate GetGyroSampleRate()
         {

@@ -55,9 +55,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the sequence number of the frame
+        *
+        * @return UInt64 returns the sequence number of the frame
+        * \else
         * @brief 获取帧的序号
         *
         * @return UInt64 返回帧的序号
+        * \endif
         */
         public UInt64 GetIndex()
         {
@@ -71,9 +77,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the format of the frame
+        *
+        * @return Format returns the format of the frame
+        * \else
         * @brief 获取帧的格式
         *
         * @return Format 返回帧的格式
+        * \endif
         */
         public Format GetFormat()
         {
@@ -87,9 +99,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the type of frame
+        *
+        * @return FrameType returns the type of frame
+        * \else
         * @brief 获取帧的类型
         *
         * @return FrameType 返回帧的类型
+        * \endif
         */
         public FrameType GetFrameType()
         {
@@ -103,8 +121,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the hardware timestamp of the frame
+        *
+        * @return UInt64 returns the time stamp of the frame hardware
+        * \else
         * @brief 获取帧的硬件时间戳
+        *
         * @return UInt64 返回帧硬件的时间戳
+        * \endif
         */
         public UInt64 GetTimeStamp()
         {
@@ -118,8 +143,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get frame system timestamp
+        *
+        * @return UInt64 returns the time stamp of the frame hardware
+        * \else
         * @brief 获取帧的系统时间戳
+        *
         * @return UInt64 返回帧的系统时间戳
+        * \endif
         */
         public UInt64 GetSystemTimeStamp()
         {
@@ -163,8 +195,17 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the frame data size
+        *
+        * @return UInt32 returns the frame data size
+        * If it is point cloud data, it returns the number of bytes occupied by all point sets. If you need to find the number of points, you need to divide the
+        * dataSize by the structure size of the corresponding point type. \else
         * @brief 获取帧数据大小
-        * @return UInt32 返回帧数据大小
+        *
+        * @return UInt32 返回帧数据的大小
+        * 如果是点云数据返回的是所有点集合占的字节数，若需要求出点的个数需要将dataSize除以对应的点类型的结构体大小
+        * \endif
         */
         public UInt32 GetDataSize()
         {
@@ -200,8 +241,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get frame width
+        *
+        * @return UInt32 returns the width of the frame
+        * \else
         * @brief 获取帧的宽
+        *
         * @return UInt32 返回帧的宽
+        * \endif
         */
         public UInt32 GetWidth()
         {
@@ -210,8 +258,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get frame height
+        *
+        * @return UInt32 returns the height of the frame
+        * \else
         * @brief 获取帧的高
+        *
         * @return UInt32 返回帧的高
+        * \endif
         */
         public UInt32 GetHeight()
         {
@@ -220,8 +275,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the metadata of the frame
+        *
+        * @return Byte[] returns the metadata of the frame
+        * \else
         * @brief 获取帧的元数据
+        *
         * @return Byte[] 返回帧的元数据
+        * \endif
         */
         public Byte[] GetMetadata()
         {
@@ -234,8 +296,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the metadata size of the frame
+        *
+        * @return UInt32 returns the metadata size of the frame
+        * \else
         * @brief 获取帧的元数据大小
+        *
         * @return UInt32 返回帧的元数据大小
+        * \endif
         */
         public UInt32 GetMetadataSize()
         {
@@ -258,10 +327,19 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the value scale of the depth frame, the unit is mm/step,
+        *        such as valueScale=0.1, and a certain coordinate pixel value is pixelValue=10000,
+        *        then the depth value value = pixelValue*valueScale = 10000*0.1=1000mm.
+        *
+        * @return float
+        * \else
         * @brief 获取深度帧的值刻度，单位为 mm/step，
         *      如valueScale=0.1, 某坐标像素值为pixelValue=10000，
         *     则表示深度值value = pixelValue*valueScale = 10000*0.1=1000mm。
-        * @return float 返回帧的值刻度
+        *
+        * @return float
+        * \endif
         */
         public float GetValueScale()
         {
@@ -349,8 +427,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get frame count
+        *
+        * @return UInt32 returns the number of frames
+        * \else
         * @brief 帧集合中包含的帧数量
+        *
         * @return UInt32 返回帧的数量
+        * \endif
         */
         public UInt32 GetFrameCount()
         {
@@ -359,8 +444,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get depth frame
+        *
+        * @return DepthFrame returns the depth frame
+        * \else
         * @brief 获取深度帧
+        *
         * @return DepthFrame 返回深度帧
+        * \endif
         */
         public DepthFrame GetDepthFrame()
         {
@@ -374,8 +466,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get color frame
+        *
+        * @return ColorFrame returns the color frame
+        * \else
         * @brief 获取彩色帧
+        *
         * @return ColorFrame 返回彩色帧
+        * \endif
         */
         public ColorFrame GetColorFrame()
         {
@@ -389,8 +488,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get infrared frame
+        *
+        * @return IRFrame returns infrared frame
+        * \else
         * @brief 获取红外帧
+        *
         * @return IRFrame 返回红外帧
+        * \endif
         */
         public IRFrame GetIRFrame()
         {
@@ -404,8 +510,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get point cloud frame
+        *
+        * @return  PointsFrame returns the point cloud data frame
+        * \else
         * @brief 获取点云帧
-        * @return PointsFrame 返回点云据帧
+        *
+        * @return  PointsFrame 返回点云帧
+        * \endif
         */
         public PointsFrame GetPointsFrame()
         {
@@ -419,13 +532,21 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get frame by sensor type
+        *
+        * @param sensorType  Type of sensor
+        * @return Frame returns the corresponding type of frame
+        * \else
         * @brief 通过传感器类型获取帧
+        *
         * @param sensorType 传感器的类型
         * @return Frame 返回相应类型的帧
+        * \endif
         */
-        public Frame GetFrame(SensorType sensorType)
-        {
-            throw new NotImplementedException();
-        }
+        // public Frame GetFrame(SensorType sensorType)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 }

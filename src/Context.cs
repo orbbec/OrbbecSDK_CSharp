@@ -13,8 +13,13 @@ namespace Orbbec
         private DeviceChangedCallbackInternal _internalCallback;
 
         /**
+        * \if English
+        * @brief Context is a management class that describes the runtime of the SDK. It is responsible for the applying and releasing of resources for the SDK.
+        * The context has the ability to manage multiple devices, is responsible for enumerating devices, monitoring device callbacks, and enabling functions such
+        * as multi-device synchronization. \else
         * @brief context是描述SDK的runtime一个管理类，负责SDK的资源申请与释放
         * context具备多设备的管理能力，负责枚举设备，监听设备回调，启用多设备同步等功能
+        * \endif
         *
         */
         public Context()
@@ -30,9 +35,14 @@ namespace Orbbec
         }
 
         /**
-        * @brief 可以传入自定义的配置文件
+        * \if English
+        * @brief Context is a management class that describes the runtime of the SDK. It is responsible for the applying and releasing of resources for the SDK.
+        * The context has the ability to manage multiple devices, is responsible for enumerating devices, monitoring device callbacks, and enabling functions such
+        * as multi-device synchronization. \else
+        * @brief context是描述SDK的runtime一个管理类，负责SDK的资源申请与释放
+        * context具备多设备的管理能力，负责枚举设备，监听设备回调，启用多设备同步等功能
+        * \endif
         *
-        * @param configPath 配置文件的路径
         */
         public Context(String configPath)
         {
@@ -46,9 +56,15 @@ namespace Orbbec
         }
 
         /**
+        *\if English
+        * @brief Query enumerated device list
+        *
+        * @return DeviceList returns a pointer to the device list class
+        * \else
         * @brief 获取枚举到设备列表
         *
         * @return DeviceList返回设备列表类的指针
+        * \endif
         */
         public DeviceList QueryDeviceList()
         {
@@ -80,9 +96,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Set device plug-in callback function
+        *
+        * @param callback function triggered when the device is plugged and unplugged
+        * \else
         * @brief 设置设备插拔回调函数
         *
         * @param callback 设备插拔时触发的回调函数
+        * \endif
         */
         public void SetDeviceChangedCallback(DeviceChangedCallback callback)
         {
@@ -96,10 +118,16 @@ namespace Orbbec
         }
 
         /**
-         * @brief 启动多设备同步功能，同步已创建设备的时钟(需要使用的设备支持该功能)
-         *
-         * @param[in]  repeatInterval 定时同步时间间隔（单位ms；如果repeatInterval=0，表示只同步一次，不再定时执行）
-         */
+        * \if English
+        * @brief Activate the multi-device synchronization function to synchronize the clock of the created device(the device needs support this function)
+        *
+        * @param repeatInterval  synchronization time interval (unit: ms; if repeatInterval=0, it means that it will only be synchronized once and will not be
+        * executed regularly) \else
+        * @brief 启动多设备同步功能，同步已创建设备的时钟(需要使用的设备支持该功能)
+        *
+        * @param repeatInterval 定时同步时间间隔（单位ms；如果repeatInterval=0，表示只同步一次，不再定时执行）
+        * \endif
+        */
         public void EnableMultiDeviceSync(UInt64 repeatInterval)
         {
             IntPtr error = IntPtr.Zero;
@@ -111,9 +139,15 @@ namespace Orbbec
         }
 
         /**
-        * @brief 设置日志的输出等级
+        * \if English
+        * @brief Set the level of the global log will affect both the log level output to the terminal and output to the file
         *
-        * @param logSeverity log的输出等级
+        * @param severity log output level
+        * \else
+        * @brief 设置全局日志的等级，会同时作用于输出到终端和输出到文件的日志等级
+        *
+        * @param severity 日志输出等级
+        * \endif
         */
         public void SetLoggerServerity(LogSeverity logSeverity)
         {
@@ -126,10 +160,17 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Set log output to file
+        *
+        * @param severity log level output to file
+        * @param directory The log file output path. If the path is empty, the existing settings will continue to be used (if the existing configuration is also
+        * empty, the log will not be output to the file) \else
         * @brief 设置日志输出到文件
         *
-        * @param logSeverity 日志的输出等级
-        * @param fileName 输出的文件名
+        * @param severity 输出到文件的日志等级
+        * @param directory 日志文件输出路径，如果路径为空，则继续使用已有设置(已有配置也为空则不输出日志到文件)
+        * \endif
         */
         public void SetLoggerToFile(LogSeverity logSeverity, String fileName)
         {
@@ -142,9 +183,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Set log output to terminal
+        *
+        * @param severity 	log level output to the terminal
+        * \else
         * @brief 设置日志输出到终端
         *
-        * @param logSeverity 日志的输出等级
+        * @param severity 输出到终端的日志等级
+        * \endif
         */
         public void SetLoggerToConsole(LogSeverity logSeverity)
         {

@@ -13,6 +13,15 @@ namespace Orbbec
         private PlaybackCallback _callback;
         private PlaybackCallbackInternal _internalCallback;
 
+        /**
+        * \if English
+        * @brief Create playback object
+        * @param filename Playback filename
+        * \else
+        * @brief 创建回放对象
+        * @param filename 回放的文件名
+        * \endif
+        */
         public Playback(String fileName)
         {
             IntPtr error = IntPtr.Zero;
@@ -104,6 +113,17 @@ namespace Orbbec
             return new DeviceInfo(handle);
         }
 
+        /**
+        * \if English
+        * @brief Get the intrinsic and extrinsic parameter information in the recording file
+        *
+        * @return CameraParam returns internal and external parameter information
+        * \else
+        * @brief 获取录制文件内的内外参信息
+        *
+        * @return CameraParam 返回的内外参信息
+        * \endif
+        */
         public CameraParam GetCameraParam()
         {
             IntPtr error;

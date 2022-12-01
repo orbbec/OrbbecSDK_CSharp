@@ -25,8 +25,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief sensor type
+        *
+        * @return SensorType returns the sensor type
+        * \else
         * @brief 传感器类型
+        *
         * @return SensorType 返回传感器类型
+        * \endif
         */
         public SensorType GetSensorType()
         {
@@ -40,8 +47,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the list of stream profiles
+        *
+        * @return StreamProfileList returns the stream configuration list
+        * \else
         * @brief 获取传感器的流配置列表
+        *
         * @return StreamProfileList 返回流配置列表
+        * \endif
         */
         public StreamProfileList GetStreamProfileList()
         {
@@ -55,9 +69,17 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Open frame data stream and set up a callback
+        *
+        * @param streamProfile Stream configuration
+        * @param callback Set the callback when frame data arrives
+        * \else
         * @brief 开启流并设置帧数据回调
+        *
         * @param streamProfile 流的配置
         * @param callback 设置帧数据到达时的回调
+        * \endif
         */
         public void Start(StreamProfile streamProfile, FrameCallback callback)
         {
@@ -84,7 +106,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Stop stream
+        * \else
         * @brief 停止流
+        * \endif
         */
         public void Stop()
         {

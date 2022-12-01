@@ -30,8 +30,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Configure the stream to be enabled
+        *
+        * @param streamProfile Stream  configuration
+        * \else
         * @brief 设置要打开的流配置
+        *
         * @param streamProfile 流的配置
+        * \endif
         */
         public void EnableStream(StreamProfile streamProfile)
         {
@@ -44,7 +51,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Configure all streams to be enabled
+        * \else
         * @brief 设置打开所有的流
+        * \endif
         */
         public void EnableAllStream()
         {
@@ -57,8 +68,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Configure the stream to be disabled
+        *
+        * @param streamType Stream configuration
+        * \else
         * @brief 设置要关闭的流配置
+        *
         * @param streamType 流的配置
+        * \endif
         */
         public void DisableStream(StreamType streamType)
         {
@@ -71,7 +89,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Configure all streams to be disabled
+        * \else
         * @brief 设置关闭所有的流
+        * \endif
         */
         public void DisableAllStream()
         {
@@ -83,6 +105,17 @@ namespace Orbbec
             }
         }
 
+        /**
+        * \if English
+        * @brief Set the alignment mode
+        *
+        * @param mode Align State Mode
+        * \else
+        * @brief 设置对齐模式
+        *
+        * @param mode 对齐状态模式
+        * \endif
+        */
         public void SetAlignMode(AlignMode mode)
         {
             IntPtr error;

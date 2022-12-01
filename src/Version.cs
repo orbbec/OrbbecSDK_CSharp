@@ -5,8 +5,15 @@ namespace Orbbec
     public class Version
     {
         /**
+        * \if English
+        * @brief Get the SDK version number
+        *
+        * @return int returns the SDK version number
+        * \else
         * @brief 获取SDK版本号
+        *
         * @return int 返回SDK版本号
+        * \endif
         */
         public static int GetVersion()
         {
@@ -14,8 +21,15 @@ namespace Orbbec
         }
 
         /**
-        * @brief 获取SDK主版本号
-        * @return int 返回SDK主版本号
+        * \if English
+        * @brief Get the SDK minor version number
+        *
+        * @return int returns the SDK minor version number
+        * \else
+        * @brief 获取SDK副版本号
+        *
+        * @return int 返回SDK副版本号
+        * \endif
         */
         public static int GetMajorVersion()
         {
@@ -23,8 +37,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the SDK minor version number
+        *
+        * @return int returns the SDK minor version number
+        * \else
         * @brief 获取SDK副版本号
+        *
         * @return int 返回SDK副版本号
+        * \endif
         */
         public static int GetMinorVersion()
         {
@@ -32,8 +53,15 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get the SDK revision number
+        *
+        * @return int returns the SDK revision number
+        * \else
         * @brief 获取SDK修订版本号
+        *
         * @return int 返回SDK修订版本号
+        * \endif
         */
         public static int GetPatchVersion()
         {
