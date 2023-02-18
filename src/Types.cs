@@ -107,6 +107,9 @@ namespace Orbbec
         OB_STREAM_DEPTH = 3, /**< \if English depth stream \else 深度流 \endif */
         OB_STREAM_ACCEL = 4, /**< \if English Accelerometer data stream \else 加速度计数据流 \endif */
         OB_STREAM_GYRO = 5, /**< \if English Gyroscope data stream \else 陀螺仪数据流 \endif */
+        OB_STREAM_IR_LEFT  = 6, /**< \if English Left IR stream \else 左路红外流 \endif */
+        OB_STREAM_IR_RIGHT = 7, /**< \if English Right IR stream \else 右路红外流 \endif */
+
     }
 
     /**
@@ -127,6 +130,9 @@ namespace Orbbec
         OB_FRAME_SET = 5, /**< \if English Frame collection (internally contains a variety of data frames) \else 帧集合(内部包含多种数据帧) \endif */
         OB_FRAME_POINTS = 6, /**< \if English point cloud frame \else 点云帧 \endif */
         OB_FRAME_GYRO = 7, /**< \if English Gyroscope data frame \else 陀螺仪数据帧 \endif */
+        OB_FRAME_IR_LEFT  = 8, /**< \if English Left IR frame \else 左路红外帧 \endif */
+        OB_FRAME_IR_RIGHT = 9, /**< \if English Right IR frame \else 右路红外帧 \endif */
+
     }
 
     /**
@@ -167,6 +173,7 @@ namespace Orbbec
         OB_FORMAT_Y14 = 24,    /**< \if English Y14 format, single channel 14bit depth (SDK will unpack into Y16 by default) \else
                                  Y14格式，单通道14bit深度(SDK默认会解包成Y16) \endif */
         OB_FORMAT_BGRA = 25,   /**< BGRA */
+        OB_FORMAT_COMPRESSED = 26,   /**< 压缩格式 */
         OB_FORMAT_UNKNOWN = 0xff, /**< \if English unknown format \else 未知格式 \endif */
     }
 
@@ -387,6 +394,37 @@ namespace Orbbec
     }
 
     /**
+    * @brief 深度对齐校验参数
+    *
+    */
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
+    public struct DERectifyMaskParams
+    {
+        public CameraIntrinsic  leftIntrin;  // target ：单目结构光以及双目左 L
+        public CameraDistortion leftDisto;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public float[]              leftRot;
+        public CameraIntrinsic  rightIntrin;  // ref
+        public CameraDistortion rightDisto;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public float[]              rightRot;
+        public CameraIntrinsic leftVirtualIntrin;  // output intrinsics from rectification (and rotation)
+        public CameraIntrinsic rightVirtualIntrin;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
+    public struct MaskFilterConfig
+    {
+        public float scale;
+        public int   margin_th_u;     // 对应在 src 图像的边缘宽度
+        public int   margin_th_v;     // 对应在 src 图像的边缘宽度
+        public int   mask_margin_th;  // 在 mask 图像的边缘宽度
+        public bool  enable_undisto;
+    }
+
+    /**
      * \if English
      * @brief alignment mode
      * \else
@@ -437,6 +475,7 @@ namespace Orbbec
         FORMAT_MJPEG_TO_BGR888,    /**< \if English MJPG to BGR888 \else MJPG转换为BGR888 \endif */
         FORMAT_MJPEG_TO_BGRA,      /**< \if English MJPG to BGRA \else MJPG转换为BGRA \endif */
         FORMAT_UYVY_TO_RGB888,     /**< \if English UYVY to RGB888 \else MJPG转换为RGB888 \endif */
+        FORMAT_BGR_TO_RGB,         /**< \if English BGR to RGB \else BGR 转换为 RGB \endif */
     }
 
     /**
@@ -576,6 +615,10 @@ namespace Orbbec
         public float tecTemp;        ///< \if English TEC temperature \else TEC温度 \endif
         public float imuTemp;        ///< \if English IMU temperature \else IMU温度 \endif
         public float rgbTemp;        ///< \if English RGB temperature \else RGB温度 \endif
+        public float irLeftTemp;      ///< if English Left IR temperature \else 左IR温度 \endif
+        public float irRightTemp;     ///< if English Right IR temperature \else 右IR温度 \endif
+        public float chipTopTemp;     ///<  if English MX6600 top temperature \else MX6600 top 温度 \endif
+        public float chipBottomTemp;  ///<  if English MX6600 bottom temperature\else MX6600 bottom 温度 \endif
     }
 
     /**
@@ -623,6 +666,8 @@ namespace Orbbec
         OB_MEDIA_CAMERA_PARAM = 32,  /**< \if English camera parameter \else 相机参数 \endif */
         OB_MEDIA_DEVICE_INFO = 64,  /**< \if English device information \else 设备信息  \endif */
         OB_MEDIA_STREAM_INFO = 128, /**< \if English stream information \else 流信息 \endif */
+        OB_MEDIA_IR_LEFT_STREAM  = 256, /**< \if English Left IR stream \else 左 IR 流 \endif */
+        OB_MEDIA_IR_RIGHT_STREAM = 512, /**< \if English Right Left IR stream \else 右 IR 流 \endif */
 
         OB_MEDIA_ALL = OB_MEDIA_COLOR_STREAM | OB_MEDIA_DEPTH_STREAM | OB_MEDIA_IR_STREAM | OB_MEDIA_GYRO_STREAM | OB_MEDIA_ACCEL_STREAM | OB_MEDIA_CAMERA_PARAM
                        | OB_MEDIA_DEVICE_INFO | OB_MEDIA_STREAM_INFO, /**< \if English All media data types \else 所有媒体数据类型 \endif */
@@ -712,6 +757,34 @@ namespace Orbbec
         public float b;  ///< \if English blue channel component\else 蓝色通道分量 \endif    
     }
 
+    public enum CompressionMode
+    {
+        OB_COMPRESSION_LOSSLESS = 0,
+        OB_COMPRESSION_LOSSY    = 1,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
+    public struct CompressionParams
+    {
+        public int threshold;
+    }
+
+    /**
+    * \if English
+    * @brief TOF Exposure Threshold
+    * \else
+    * @brief TOF 曝光阈值
+    *\endif
+    */
+    [StructLayout(LayoutKind.Sequential)]
+    [Serializable()]
+    public struct TofExposureThresholdControl
+    {
+        Int32 upper;  ///< \if English Upper threshold, unit: ms \else 阈值上限， 单位：ms \endif
+        Int32 lower;  ///< \if English Lower threshold, unit: ms \else 阈值下限， 单位：ms \endif
+    }
+
     /**
      * \if English
      * @brief Multi-device sync mode
@@ -721,48 +794,283 @@ namespace Orbbec
      */
     public enum SyncMode
     {
-        OB_SYNC_STOP = 0x00,  /**< \if English turn off sync \else 关闭同步 \endif */
-        OB_SYNC_SINGLE_MODE = 0x01,  /**< \if English single device mode \else single device模式 \endif */
-        OB_SYNC_ONLINE_HOST_MODE = 0x02,  /**< \if English The single device mode is also the host mode, which is dominated by ir \else single
-                                         device模式，也是host模式，是ir作主的  \endif */
-        OB_SYNC_ONLINE_SLAVE_MODE = 0x03, /**< \if English slave mode (ext_in --> rgb、tof、ext_out) \else slave模式 (ext_in --> rgb、tof、ext_out)  \endif */
-        OB_SYNC_ONLY_MCU_MODE = 0x04, /**< \if English MCU as host mode \else mcu作host的模式 \endif */
-        OB_SYNC_ONLY_IR_MODE = 0x05, /**< \if English IR as host mode\else ir作host的模式  \endif */
+        /**
+        * \if English
+        * @brief Close Synchronize mode
+        * @brief Single device, neither process input trigger signal nor output trigger signal
+        * @brief Each Sensor in a single device automatically triggers
+        * \else
+        * @brief 同步关闭
+        * @brief 单机，不接收外部触发信号，不输出触发信号
+        * @brief 单机内各 Sensor 自触发
+        * \endif
+        *
+        */
+        OB_SYNC_MODE_CLOSE = 0x00,
+
+        /**
+        * \if English
+        * @brief Standalone sychronize mode
+        * @brief Single device, neither process input trigger signal nor output trigger signal
+        * @brief Inside single device, RGB as Major sensor: RGB -> IR/Depth/TOF
+        * \else
+        * @brief 单机模式
+        * @brief 单机，不接收外部触发信号，不输出触发信号
+        * @brief 单机内 RGB 做主： RGB -> IR/Depth/TOF
+        * \endif
+        */
+        OB_SYNC_MODE_STANDALONE = 0x01,
+
+        /**
+        * \if English
+        * @brief Primary synchronize mode
+        * @brief Primary device. Ignore process input trigger signal, only output trigger signal to secondary devices.
+        * @brief Inside single device, RGB as Major sensor: RGB -> IR/Depth/TOF
+        * \else
+        * @brief 主机模式
+        * @brief 主机，不接收外部触发信号，向外输出触发信号
+        * @brief 单机内 RGB 做主：RGB -> IR/Depth/TOF
+        *
+        * @attention 部分设备型号不支持该模式： Gemini 2 设备设置该模式会自动变更为 OB_SYNC_MODE_PRIMARY_MCU_TRIGGER 模式
+        *
+        */
+        OB_SYNC_MODE_PRIMARY = 0x02,
+
+        /**
+        * \if English
+        * @brief Secondary synchronize mode
+        * @brief Secondary device. Both process input trigger signal and output trigger signal to other devices.
+        * @brief Different sensors in a single devices receive trigger signals respectively：ext trigger -> RGB && ext trigger -> IR/Depth/TOF
+        *
+        * @attention With the current Gemini 2 device set to this mode, each Sensor receives the first external trigger signal
+        *     after the stream is turned on and starts timing self-triggering at the set frame rate until the stream is turned off
+        * \else
+        * @brief 从机模式
+        * @brief 从机，接收外部触发信号，同时向外中继输出触发信号
+        * @brief 单机内不同 Sensor 各自接收触发信号：ext trigger -> RGB && ext trigger -> IR/Depth/TOF
+        *
+        * @attention 当前 Gemini 2 设备设置为该模式后，各Sensor在开流后，接收到第一次外部触发信号即开始按照设置的帧率进行定时自触发，直到流关闭
+        * \endif
+        *
+        */
+        OB_SYNC_MODE_SECONDARY = 0x03,
+
+        /**
+        * \if English
+        * @brief MCU Primary synchronize mode
+        * @brief Primary device. Ignore process input trigger signal, only output trigger signal to secondary devices.
+        * @brief Inside device, MCU is the primary signal source:  MCU -> RGB && MCU -> IR/Depth/TOF
+        * \else
+        * @brief MCU 主模式
+        * @brief 主机，不接收外部触发信号，向外输出触发信号
+        * @brief 单机内 MCU 做主： MCU -> RGB && MCU -> IR/Depth/TOF
+        * \endif
+        */
+        OB_SYNC_MODE_PRIMARY_MCU_TRIGGER = 0x04,
+
+        /**
+        * \if English
+        * @brief IR Primary synchronize mode
+        * @brief Primary device. Ignore process input trigger signal, only output trigger signal to secondary devices.
+        * @brief Inside device, IR is the primary signal source: IR/Depth/TOF -> RGB
+        *
+        * \else
+        * @brief IR 主模式
+        * @brief 主机，不接收外部触发信号，向外输出触发信号
+        * @brief 单机内 IR 做主：IR/Depth/TOF -> RGB
+        * \endif
+        */
+        OB_SYNC_MODE_PRIMARY_IR_TRIGGER = 0x05,
+
+        /**
+        * \if English
+        * @brief Software trigger synchronize mode
+        * @brief Host, triggered by software control (receive the upper computer command trigger), at the same time to the trunk output trigger signal
+        * @brief Different sensors in a single machine receive trigger signals respectively: soft trigger -> RGB && soft trigger -> IR/Depth/TOF
+        *
+        * @attention Support product: Gemini2
+        * \else
+        * @brief 软触发模式
+        * @brief 主机，由软件控制触发（接收上位机命令触发），同时向外中继输出触发信号
+        * @brief 单机内不同 Sensor 各自接收触发信号：soft trigger -> RGB && soft trigger -> IR/Depth/TOF
+        *
+        * @attention 当前仅 Gemini2 支持该模式
+        * \endif
+        */
+        OB_SYNC_MODE_PRIMARY_SOFT_TRIGGER = 0x06,
+
+        /**
+        * \if English
+        * @brief Software trigger synchronize mode as secondary device
+        * @brief The slave receives the external trigger signal (the external trigger signal comes from the soft trigger host) and outputs the trigger signal to
+        * the external relay.
+        * @brief Different sensors in a single machine receive trigger signals respectively：ext trigger -> RGB && ext  trigger -> IR/Depth/TOF
+        * \else
+        * @brief 软触发从机模式
+        * @brief 从机，接收外部触发信号（外部触发信号来自软触发的主机），同时向外中继输出触发信号。
+        * @brief 单机内不同 Sensor 各自接收触发信号：ext trigger -> RGB && ext  trigger -> IR/Depth/TOF
+        *
+        * @attention 当前仅 Gemini2 支持该模式
+        * \endif
+        */
+        OB_SYNC_MODE_SECONDARY_SOFT_TRIGGER = 0x07,
+
+        /**
+        * \if English
+        * @brief Unknown type
+        * \else
+        * @brief 未知类型
+        * \endif
+        */
+        OB_SYNC_MODE_UNKNOWN = 0xff,
     }
 
     /**
-     * \if English
-     * @brief TOF Exposure Threshold
-     * \else
-     * @brief TOF曝光阈值
-     *\endif
-     */
+    * \if English
+    * @brief Device synchronization configuration
+    * \else
+    * @brief 设备同步配置
+    *
+    * @brief 单机内不同 Sensor 的同步 及 多机间同步 配置
+    * \endif
+    */
     [StructLayout(LayoutKind.Sequential)]
     [Serializable()]
-    public struct TofExposureThresholdControl
+    public struct DeviceSyncConfig
     {
-        public Int32 upper;  ///< \if English Upper threshold, unit: ms \else 阈值上限， 单位：ms \endif
-        public Int32 lower;  ///< \if English Lower threshold, unit: ms \else 阈值下限， 单位：ms \endif
+        /**
+        * \if English
+        * \else
+        * @brief 同步模式
+        * \endif
+        *
+        */
+        public SyncMode syncMode;
+
+        /**
+        * \if English
+        * @brief IR Trigger signal input delay: Used to configure the delay between the IR/Depth/TOF Sensor receiving the trigger signal and starting exposure,
+        * Unit: microsecond
+        *
+        * @attention This parameter is invalid when the synchronization MODE is set to @ref OB SYNC MODE HOST IR TRIGGER
+        * \else
+        * @brief IR 触发信号输入延时，用于 IR/Depth/TOF Sensor 接收到触发信号后到开始曝光的延时配置，单位为微秒
+        *
+        * @attention 同步模式配置为  @ref OB_SYNC_MODE_HOST_IR_TRIGGER 时无效
+        * \endif
+        */
+        public UInt16 irTriggerSignalInDelay;
+
+        /**
+        * \if English
+        * @brief RGB trigger signal input delay is used to configure the delay from the time when an RGB Sensor receives the trigger signal to the time when the
+        * exposure starts. Unit: microsecond
+        *
+        * @attention This parameter is invalid when the synchronization MODE is set to @ref OB SYNC MODE HOST
+        * \else
+        * @brief RGB 触发信号输入延时，用于 RGB Sensor 接收到触发信号后到开始曝光的延时配置，单位为微秒
+        *
+        * @attention 同步模式配置为  @ref OB_SYNC_MODE_HOST 时无效
+        * \endif
+        */
+        public UInt16 rgbTriggerSignalInDelay;
+
+        /**
+        * \if English
+        * @brief Device trigger signal output delay, used to control the delay configuration of the host device to output trigger signals or the slave device to
+        * output trigger signals. Unit: microsecond
+        *
+        * @attention This parameter is invalid when the synchronization MODE is set to @ref OB SYNC MODE CLOSE or @ref OB SYNC Mode SINGLE
+        * \else
+        * @brief 设备触发信号输出延时，用于控制主机设备向外输 或 从机设备向外中继输出 触发信号的延时配置，单位：微秒
+        *
+        * @attention 同步模式配置为 @ref OB_SYNC_MODE_CLOSE 和  @ref OB_SYNC_MODE_SINGLE 时无效
+        * \endif
+        */
+        public UInt16 deviceTriggerSignalOutDelay;
+
+        /**
+        * \if English
+        * @brief The device trigger signal output polarity is used to control the polarity configuration of the trigger signal output from the host device or the
+        * trigger signal output from the slave device
+        * @brief 0: forward pulse; 1: negative pulse
+        *
+        * @attention This parameter is invalid when the synchronization MODE is set to @ref OB SYNC MODE CLOSE or @ref OB SYNC Mode SINGLE
+        * \else
+        * @brief 设备触发信号输出极性，用于控制主机设备向外输 或 从机设备向外中继输出 触发信号的极性配置
+        * @brief 0: 正向脉冲；1: 负向脉冲
+        *
+        * @attention 同步模式配置为 @ref OB_SYNC_MODE_CLOSE 和  @ref OB_SYNC_MODE_SINGLE 时无效
+        * \endif
+        */
+        public UInt16 deviceTriggerSignalOutPolarity;
+
+        /**
+        * \if English
+        * @brief MCU trigger frequency, used to configure the output frequency of MCU trigger signal in MCU master mode, unit: Hz
+        * @brief This configuration will directly affect the image output frame rate of the Sensor. Unit: FPS （frame pre second）
+        *
+        * @attention This parameter is invalid only when the synchronization MODE is set to @ref OB SYNC MODE HOST MCU TRIGGER
+        * \else
+        * @brief MCU 触发频率，用于 MCU 主模式下，MCU触发信号输出频率配置，单位：Hz
+        * @brief 该配置会直接影响 Sensor 的图像输出帧率，即也可以认为单位为：FPS （frame pre second）
+        *
+        * @attention 仅当同步模式配置为 @ref OB_SYNC_MODE_HOST_MCU_TRIGGER 时无效
+        * \endif
+        */
+        public UInt16 mcuTriggerFrequency;
+
+        /**
+        * \if English
+        * @brief Device number. Users can mark the device with this number
+        * \else
+        * @brief 设备编号，用户可用该编号对设备进行标记
+        * \endif
+        */
+        public UInt16 deviceId;
     }
 
     /**
-     * \if English
-     * @brief Multi-device synchronization configuration
-     * \else
-     * @brief 多设备同步配置
-     * \endif
-     */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
-    public struct MultiDeviceSyncConfig
-    {
-        public SyncMode syncMode;       ///< \if English Sync mode \else 同步模式 \endif
-        public UInt16 tofPhaseDelay;  ///< \if English Tof trigger signal delay us. \else Tof触发信号延时 us \endif
-        public UInt16 rgbPhaseDelay;  ///< \if English rgb trigger signal delay us \else rgb触发信号延时 us \endif
-        public UInt16 outPhaseDelay;  ///< \if English Output signal delay us \else 输出信号延时 us \endif
-        public UInt16 outOCPolarity;  ///< \if English 0: Positive pulse, 1: Negative pulse \else 0:正向脉冲, 1: 负向脉冲 \endif
-        public UInt16 mcuHostFps;     ///< \if English Trigger frame rate in mcu master mode \else mcu主模式时的触发帧率 \endif
-        public UInt16 curDevId;       ///< \if English Current device number \else 当前设备编号 \endif
+    * \if English
+    * @brief Depth work mode
+    * \else
+    * @brief 相机深度工作模式
+    * \endif
+    *
+    */
+    public struct DepthWorkMode {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        byte[] checksum;  ///< \if English Checksum of work mode \else 相机深度模式对应哈希二进制数组 \endif
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+        char[]    name;      ///< \if English 名称 \else Name of work mode \endif
+    }
+
+    /**
+    * @brief 控制命令协议版本号
+    *
+    */
+    public struct ProtocolVersion {
+        byte major;  ///< 主版本号
+        byte minor;  ///< 次版本号
+        byte patch;  ///< 补丁版本
+    }
+
+    /**
+    * \if English
+    * Command version associate with property id
+    * \else
+    * 与属性ID关联的协议版本
+    * \endif
+    *
+    */
+    public enum CmdVersion : UInt16 {
+        OB_CMD_VERSION_V0 = 0,  ///< \if English version 1.0 \else 版本1.0 \endif
+        OB_CMD_VERSION_V1 = 1,  ///< \if English version 2.0 \else 版本2.0 \endif
+        OB_CMD_VERSION_V2 = 2,  ///< \if English version 3.0 \else 版本3.0 \endif
+        OB_CMD_VERSION_V3 = 3,  ///< \if English version 4.0 \else 版本4.0 \endif
+
+        OB_CMD_VERSION_NOVERSION = 0xfffe,
+        OB_CMD_VERSION_INVALID   = 0xffff,  ///< \if English Invalid version \else 无效版本 \endif
     }
 
     /**
@@ -788,5 +1096,58 @@ namespace Orbbec
     {
         OB_COMM_USB = 0x00, /**< USB */
         OB_COMM_NET = 0x01, /**< 网络 */
+    }
+
+    /**
+    * \if English
+    * @brief USB power status
+    * \else
+    * @brief USB电源连接状态
+    * \endif
+    */
+    public enum USBPowerState{
+        OB_USB_POWER_NO_PLUGIN = 0,  ///< \if English no plugin \else 未插入 \endif
+        OB_USB_POWER_5V_0A9    = 1,  ///< \if English 5V/0.9A \else 5V/0.9A \endif
+        OB_USB_POWER_5V_1A5    = 2,  ///< \if English 5V/1.5A \else 5V/1.5A \endif
+        OB_USB_POWER_5V_3A0    = 3,  ///< \if English 5V/3.0A \else 5V/3.0A \endif
+    }
+
+    /**
+    * \if English
+    * @brief DC power status
+    * \else
+    * @brief DC电源连接状态
+    * \endif
+    */
+    public enum DCPowerState {
+        OB_DC_POWER_NO_PLUGIN = 0,  ///< \if English no plugin \else 未插入 \endif
+        OB_DC_POWER_PLUGIN    = 1,  ///< \if English plugin \else 已插入 \endif
+    }
+
+    /**
+    * \if English
+    * @brief Rotate degree
+    * \else
+    * @brief 旋转角度
+    * \endif
+    */
+    public enum RotateDegreeType {
+        OB_ROTATE_DEGREE_0   = 0,    ///< \if English Rotate 0 \else 旋转0度 \endif
+        OB_ROTATE_DEGREE_90  = 90,   ///< \if English Rotate 90 \else 旋转90度 \endif
+        OB_ROTATE_DEGREE_180 = 180,  ///< \if English Rotate 180 \else 旋转180度 \endif
+        OB_ROTATE_DEGREE_270 = 270,  ///< \if English Rotate 270 \else 旋转270度 \endif
+    }
+
+    /**
+    * \if English
+    * @brief Power line frequency mode，for Color camera anti-flicker configuration
+    * \else
+    * @brief 电力线频率模式，用于Color相机防闪烁功能配置
+    * \endif
+    */
+    public enum PowerLineFreqMode {
+        OB_POWER_LINE_FREQ_MODE_CLOSE = 0,  ///< \if English close \else 关闭 \endif
+        OB_POWER_LINE_FREQ_MODE_50HZ  = 1,  ///< \if English 50Hz \else 50Hz \endif
+        OB_POWER_LINE_FREQ_MODE_60HZ  = 2,  ///< \if English 60Hz \else 60Hz \endif
     }
 }
