@@ -36,7 +36,7 @@ class TestClass
 
         for (int i = 0; i < profiles.ProfileCount(); i++)
         {
-            var profile = profiles.GetProfile(i);
+            var profile = profiles.GetProfile(i).As<VideoStreamProfile>();
             Console.WriteLine("Color {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
@@ -65,7 +65,7 @@ class TestClass
 
         for (int i = 0; i < profiles.ProfileCount(); i++)
         {
-            var profile = profiles.GetProfile(i);
+            var profile = profiles.GetProfile(i).As<VideoStreamProfile>();
             Console.WriteLine("Depth {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
 
@@ -94,12 +94,9 @@ class TestClass
 
         for (int i = 0; i < profiles.ProfileCount(); i++)
         {
-            var profile = profiles.GetProfile(i);
+            var profile = profiles.GetProfile(i).As<VideoStreamProfile>();
             Console.WriteLine("IR {0} x {1} @ {2} {3}", profile.GetWidth(), profile.GetHeight(), profile.GetFPS(), profile.GetFormat());
         }
-
-        dev.SetBoolProperty(PropertyId.OB_DEVICE_PROPERTY_EMITTER_BOOL, false);
-        dev.SetBoolProperty(PropertyId.OB_DEVICE_PROPERTY_EMITTER_BOOL, true);
 
         while (true)
         {

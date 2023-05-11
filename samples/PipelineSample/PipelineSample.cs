@@ -7,21 +7,8 @@ class TestClass
     Filter f = new FormatConvertFilter();
     static void Main(string[] args)
     {
-        FormatConvertFilter filter = new FormatConvertFilter();
-        filter.SetConvertFormat(ConvertFormat.FORMAT_MJPEG_TO_RGB888);
         Pipeline pipeline = new Pipeline();
-        //StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetProfile(0);
-        StreamProfile colorProfile = null;
-        StreamProfileList colorProfiles = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR);
-        for(int i = 0; i < colorProfiles.ProfileCount(); i++)
-        {
-            var profile = colorProfiles.GetProfile(i);
-            if(profile.GetWidth() == 640 && profile.GetHeight() == 480 && profile.GetFPS() == 30 && profile.GetFormat() == Format.OB_FORMAT_MJPG)
-            {
-                Console.WriteLine("color profile: {0}x{1} {2}", profile.GetWidth(), profile.GetHeight(), profile.GetFormat());
-                colorProfile = profile;
-            }
-        }
+        StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetProfile(0);
         StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetProfile(0);
         Config config = new Config();
         config.EnableStream(colorProfile);
@@ -47,16 +34,6 @@ class TestClass
                 Console.WriteLine("Color {0} x {1} {2}", colorFrame.GetWidth(), colorFrame.GetHeight(), colorFrame.GetDataSize());
                 colorFrame.CopyData(ref colorData);
                 Console.WriteLine("Color {0}-{1}", colorData[0], colorData[colorData.Length - 1]);
-
-                var frame = filter.Process(colorFrame);
-                if (frame != null)
-                {
-                    var rgbFrame = frame.As<ColorFrame>();
-                    Console.WriteLine("RGB {0} x {1} {2} {3}", rgbFrame.GetWidth(), rgbFrame.GetHeight(), rgbFrame.GetDataSize(), rgbFrame.GetFormat());
-                    rgbFrame.Dispose();
-                }
-                frame.Dispose();
-
                 colorFrame.Dispose();
             }
 

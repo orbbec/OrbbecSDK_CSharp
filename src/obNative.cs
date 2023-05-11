@@ -284,7 +284,7 @@ namespace Orbbec
 
         //const char* ob_device_info_name( ob_device_info* info, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_info_name")]
-        public static extern String ob_device_info_name(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_name(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //int ob_device_info_pid( ob_device_info* info, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_info_pid")]
@@ -296,35 +296,35 @@ namespace Orbbec
 
         //const char* ob_device_info_uid( ob_device_info* info, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_info_uid")]
-        public static extern String ob_device_info_uid(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_uid(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char* ob_device_info_serial_number( ob_device_info* info, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_info_serial_number")]
-        public static extern String ob_device_info_serial_number(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_serial_number(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char* ob_device_info_firmware_version( ob_device_info* info, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_info_firmware_version")]
-        public static extern String ob_device_info_firmware_version(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_firmware_version(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char* ob_device_info_usb_type( ob_device_info* info, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_info_usb_type")]
-        public static extern String ob_device_info_usb_type(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_usb_type(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char *ob_device_info_connection_type(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_connection_type")]
-        public static extern String ob_device_info_connection_type(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_connection_type(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char *ob_device_info_hardware_version(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_hardware_version")]
-        public static extern String ob_device_info_hardware_version(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_hardware_version(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char *ob_device_info_supported_min_sdk_version(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_supported_min_sdk_version")]
-        public static extern String ob_device_info_supported_min_sdk_version(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_supported_min_sdk_version(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //const char *ob_device_info_asicName(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_asicName")]
-        public static extern String ob_device_info_asicName(IntPtr deviceInfo, [Out] out IntPtr error);
+        public static extern IntPtr ob_device_info_asicName(IntPtr deviceInfo, [Out] out IntPtr error);
 
         //ob_device_type ob_device_info_device_type(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_device_type")]
@@ -902,7 +902,7 @@ namespace Orbbec
 
         //const char *ob_get_stage_version();
         [DllImport(obsdk, EntryPoint = "ob_get_stage_version")]
-        public static extern String ob_get_stage_version();
+        public static extern IntPtr ob_get_stage_version();
         #endregion
     }
 }
