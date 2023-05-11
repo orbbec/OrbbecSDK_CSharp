@@ -19,6 +19,26 @@ class TestClass
         Console.WriteLine(devInfo.Vid());
         Console.WriteLine(devInfo.Uid());
 
+        CameraParamList cameraParamList = dev.GetCalibrationCameraParamList();
+        for(uint i = 0; i < cameraParamList.Count(); i++)
+        {
+            CameraParam cameraParam = cameraParamList.GetCameraParam(i);
+            Console.WriteLine(cameraParam.depthIntrinsic.fx);
+            Console.WriteLine(cameraParam.depthIntrinsic.fy);
+            Console.WriteLine(cameraParam.depthIntrinsic.cx);
+            Console.WriteLine(cameraParam.depthIntrinsic.cy);
+            Console.WriteLine(cameraParam.depthIntrinsic.width);
+            Console.WriteLine(cameraParam.depthIntrinsic.height);
+            Console.WriteLine(cameraParam.depthDistortion.k1);
+            Console.WriteLine(cameraParam.depthDistortion.k2);
+            Console.WriteLine(cameraParam.depthDistortion.k3);
+            Console.WriteLine(cameraParam.depthDistortion.k4);
+            Console.WriteLine(cameraParam.depthDistortion.k5);
+            Console.WriteLine(cameraParam.depthDistortion.k6);
+            Console.WriteLine(cameraParam.depthDistortion.p1);
+            Console.WriteLine(cameraParam.depthDistortion.p2);
+        }
+
         SensorList senList = dev.GetSensorList();
         Console.WriteLine(senList.SensorCount());
 

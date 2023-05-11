@@ -548,11 +548,9 @@ namespace Orbbec
         public void ReadFlash(UInt32 offset, UInt32 dataSize, GetDataCallback callback, bool async = false)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_flash(_handle.Ptr, offset, dataSize, (state, dataChunkPtr, userData)=>{
+            obNative.ob_device_read_flash(_handle.Ptr, offset, dataSize, (state, dataChunk, userData)=>{
                 if(callback != null)
                 {
-                    DataChunk dataChunk = new DataChunk();
-                    Marshal.PtrToStructure(dataChunkPtr, dataChunk);
                     callback(state, dataChunk);
                 }
             }, async, IntPtr.Zero, ref error);
@@ -621,11 +619,9 @@ namespace Orbbec
         public void GetRawData(PropertyId propertyId, GetDataCallback callback, bool async = false)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_get_raw_data(_handle.Ptr, propertyId, (state, dataChunkPtr, userData)=>{
+            obNative.ob_device_get_raw_data(_handle.Ptr, propertyId, (state, dataChunk, userData)=>{
                 if(callback != null)
                 {
-                    DataChunk dataChunk = new DataChunk();
-                    Marshal.PtrToStructure(dataChunkPtr, dataChunk);
                     callback(state, dataChunk);
                 }
             }, async, IntPtr.Zero, ref error);

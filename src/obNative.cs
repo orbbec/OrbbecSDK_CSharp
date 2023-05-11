@@ -13,7 +13,7 @@ namespace Orbbec
         internal delegate void ob_device_changed_callback(IntPtr removedPtr, IntPtr addedPtr, IntPtr userData);
         internal delegate void ob_device_state_callback(UInt64 state, String message, IntPtr userData);
         internal delegate void ob_set_data_callback(DataTranState state, uint percent, IntPtr userData);
-        internal delegate void ob_get_data_callback(DataTranState state, IntPtr dataChunkPtr, IntPtr userData);
+        internal delegate void ob_get_data_callback(DataTranState state, DataChunk dataChunk, IntPtr userData);
         internal delegate void ob_device_upgrade_callback(UpgradeState state, String message, byte percent, IntPtr userData);
         internal delegate void ob_file_send_callback(FileTranState state, String message, byte percent, IntPtr userData);
         internal delegate void ob_filter_callback(IntPtr framePtr, IntPtr userData);
