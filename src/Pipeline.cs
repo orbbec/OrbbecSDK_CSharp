@@ -24,8 +24,8 @@ namespace Orbbec
         */
         public Pipeline()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_pipeline(out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_pipeline(ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -45,8 +45,8 @@ namespace Orbbec
         public Pipeline(Device device)
         {
             _device = device;
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_pipeline_with_device(device.GetNativeHandle().Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_pipeline_with_device(device.GetNativeHandle().Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -69,8 +69,8 @@ namespace Orbbec
         */
         public Pipeline(string fileName)
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_pipeline_with_playback_file(fileName, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_pipeline_with_playback_file(fileName, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -91,8 +91,8 @@ namespace Orbbec
         */
         public void Start(Config config)
         {
-            IntPtr error;
-            obNative.ob_pipeline_start_with_config(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_start_with_config(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -114,7 +114,7 @@ namespace Orbbec
         */
         public void Start(Config config, FramesetCallback callback)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, (framesetPtr, userDataPtr)=>{
                 Frameset frameset = new Frameset(framesetPtr);
                 if(callback != null)
@@ -125,7 +125,7 @@ namespace Orbbec
                 {
                     frameset.Dispose();
                 }
-            }, IntPtr.Zero, out error);
+            }, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -141,8 +141,8 @@ namespace Orbbec
         */
         public void Stop()
         {
-            IntPtr error;
-            obNative.ob_pipeline_stop(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_stop(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -162,8 +162,8 @@ namespace Orbbec
         */
         public Config GetConfig()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_pipeline_get_config(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_pipeline_get_config(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -186,8 +186,8 @@ namespace Orbbec
         */
         public Frameset WaitForFrames(UInt32 timeoutMs)
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_pipeline_wait_for_frameset(_handle.Ptr, timeoutMs, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_pipeline_wait_for_frameset(_handle.Ptr, timeoutMs, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -216,8 +216,8 @@ namespace Orbbec
             {
                 return _device;
             }
-            IntPtr error;
-            IntPtr handle = obNative.ob_pipeline_get_device(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_pipeline_get_device(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -238,8 +238,8 @@ namespace Orbbec
         */
         public Playback GetPlayback()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_pipeline_get_playback(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_pipeline_get_playback(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -263,8 +263,8 @@ namespace Orbbec
         */
         public StreamProfileList GetStreamProfileList(SensorType sensorType)
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_pipeline_get_stream_profile_list(_handle.Ptr, sensorType, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_pipeline_get_stream_profile_list(_handle.Ptr, sensorType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -283,8 +283,8 @@ namespace Orbbec
         */
         public void EnableFrameSync()
         {
-            IntPtr error;
-            obNative.ob_pipeline_enable_frame_sync(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_enable_frame_sync(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -300,8 +300,8 @@ namespace Orbbec
         */
         public void DisableFrameSync()
         {
-            IntPtr error;
-            obNative.ob_pipeline_disable_frame_sync(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_disable_frame_sync(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -323,9 +323,9 @@ namespace Orbbec
         */
         public CameraParam GetCameraParam()
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             CameraParam cameraParam;
-            obNative.ob_pipeline_get_camera_param(out cameraParam, _handle.Ptr, out error);
+            obNative.ob_pipeline_get_camera_param(out cameraParam, _handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -350,8 +350,8 @@ namespace Orbbec
         */
         public StreamProfileList GetD2CDepthProfileList(StreamProfile colorProfile, AlignMode alignMode)
         {
-            IntPtr error;
-            IntPtr ptr = obNative.ob_get_d2c_depth_profile_list(_handle.Ptr, colorProfile.GetNativeHandle().Ptr, alignMode, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_get_d2c_depth_profile_list(_handle.Ptr, colorProfile.GetNativeHandle().Ptr, alignMode, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -377,9 +377,9 @@ namespace Orbbec
         */
         public Rect GetD2CValidArea(UInt32 minimumDistance, UInt32 maximumDistance = 0)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             Rect rect;
-            obNative.ob_get_d2c_range_valid_area(out rect, _handle.Ptr, minimumDistance, maximumDistance, out error);
+            obNative.ob_get_d2c_range_valid_area(out rect, _handle.Ptr, minimumDistance, maximumDistance, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -400,8 +400,8 @@ namespace Orbbec
         */
         public void SwitchConfig(Config config)
         {
-            IntPtr error;
-            obNative.ob_pipeline_switch_config(_handle.Ptr, config.GetNativeHandle().Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_switch_config(_handle.Ptr, config.GetNativeHandle().Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -421,8 +421,8 @@ namespace Orbbec
         */
         public void StartRecord(String fileName)
         {
-            IntPtr error;
-            obNative.ob_pipeline_start_record(_handle.Ptr, fileName, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_start_record(_handle.Ptr, fileName, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -438,8 +438,8 @@ namespace Orbbec
         */
         public void StopRecord()
         {
-            IntPtr error;
-            obNative.ob_pipeline_stop_record(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pipeline_stop_record(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -449,7 +449,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_pipeline(handle, out error);
+            obNative.ob_delete_pipeline(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

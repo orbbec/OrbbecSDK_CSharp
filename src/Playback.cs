@@ -33,7 +33,7 @@ namespace Orbbec
         public Playback(String fileName)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_playback(fileName, out error);
+            IntPtr handle = obNative.ob_create_playback(fileName, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -58,7 +58,7 @@ namespace Orbbec
         */
         public void Start(PlaybackCallback callback, MediaType mediaType)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_playback_start(_handle.Ptr, (framePtr, userData)=>{
                 Frame frame = new Frame(framePtr);
                 if(callback != null)
@@ -69,7 +69,7 @@ namespace Orbbec
                 {
                     frame.Dispose();
                 }
-            }, IntPtr.Zero, mediaType, out error);
+            }, IntPtr.Zero, mediaType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -85,8 +85,8 @@ namespace Orbbec
         */
         public void Stop()
         {
-            IntPtr error;
-            obNative.ob_playback_stop(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_playback_stop(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -104,12 +104,12 @@ namespace Orbbec
         */
         public void SetPlaybackStateCallback(MediaStateCallback callback)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_set_playback_state_callback(_handle.Ptr, (state, userData)=>{
                 if(callback != null) {
                     callback(state);
                 }
-            }, IntPtr.Zero, out error);
+            }, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -129,8 +129,8 @@ namespace Orbbec
         */
         public DeviceInfo GetDeviceInfo()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_playback_get_device_info(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_playback_get_device_info(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -151,9 +151,9 @@ namespace Orbbec
         */
         public CameraParam GetCameraParam()
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             CameraParam cameraParam;
-            obNative.ob_playback_get_camera_param(out cameraParam, _handle.Ptr, out error);
+            obNative.ob_playback_get_camera_param(out cameraParam, _handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -164,7 +164,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_playback(handle, out error);
+            obNative.ob_delete_playback(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

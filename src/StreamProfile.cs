@@ -48,8 +48,8 @@ namespace Orbbec
         */
         public Format GetFormat()
         {
-            IntPtr error;
-            Format format = obNative.ob_stream_profile_format(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            Format format = obNative.ob_stream_profile_format(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -70,8 +70,8 @@ namespace Orbbec
         */
         public StreamType GetStreamType()
         {
-            IntPtr error;
-            StreamType streamType = obNative.ob_stream_profile_type(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            StreamType streamType = obNative.ob_stream_profile_type(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -82,7 +82,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_stream_profile(handle, out error);
+            obNative.ob_delete_stream_profile(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -114,8 +114,8 @@ namespace Orbbec
         */
         public UInt32 GetFPS()
         {
-            IntPtr error;
-            UInt32 fps = obNative.ob_video_stream_profile_fps(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            UInt32 fps = obNative.ob_video_stream_profile_fps(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -136,8 +136,8 @@ namespace Orbbec
         */
         public UInt32 GetWidth()
         {
-            IntPtr error;
-            UInt32 width = obNative.ob_video_stream_profile_width(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            UInt32 width = obNative.ob_video_stream_profile_width(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -158,8 +158,8 @@ namespace Orbbec
         */
         public UInt32 GetHeight()
         {
-            IntPtr error;
-            UInt32 height = obNative.ob_video_stream_profile_height(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            UInt32 height = obNative.ob_video_stream_profile_height(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -187,8 +187,8 @@ namespace Orbbec
         */
         public AccelFullScaleRange GetFullScaleRange()
         {
-            IntPtr error;
-            AccelFullScaleRange accelFullScaleRange = obNative.ob_accel_stream_profile_full_scale_range(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            AccelFullScaleRange accelFullScaleRange = obNative.ob_accel_stream_profile_full_scale_range(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -209,8 +209,8 @@ namespace Orbbec
         */
         public AccelSampleRate GetSampleRate()
         {
-            IntPtr error;
-            AccelSampleRate accelSampleRate = obNative.ob_accel_stream_profile_sample_rate(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            AccelSampleRate accelSampleRate = obNative.ob_accel_stream_profile_sample_rate(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -238,8 +238,8 @@ namespace Orbbec
         */
         public GyroFullScaleRange GetFullScaleRange()
         {
-            IntPtr error;
-            GyroFullScaleRange gyroFullScaleRange = obNative.ob_gyro_stream_profile_full_scale_range(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            GyroFullScaleRange gyroFullScaleRange = obNative.ob_gyro_stream_profile_full_scale_range(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -260,8 +260,8 @@ namespace Orbbec
         */
         public GyroSampleRate GetSampleRate()
         {
-            IntPtr error;
-            GyroSampleRate gyroSampleRate = obNative.ob_gyro_stream_profile_sample_rate(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            GyroSampleRate gyroSampleRate = obNative.ob_gyro_stream_profile_sample_rate(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

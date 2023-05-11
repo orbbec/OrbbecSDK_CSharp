@@ -18,7 +18,7 @@ namespace Orbbec
         public Recorder()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_recorder(out error);
+            IntPtr handle = obNative.ob_create_recorder(ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -38,7 +38,7 @@ namespace Orbbec
         public Recorder(Device device)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_recorder_with_device(device.GetNativeHandle().Ptr, out error);
+            IntPtr handle = obNative.ob_create_recorder_with_device(device.GetNativeHandle().Ptr, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -62,7 +62,7 @@ namespace Orbbec
         public void Start(String fileName, bool asycn = false)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_recorder_start(_handle.Ptr, fileName, asycn, out error);
+            obNative.ob_recorder_start(_handle.Ptr, fileName, asycn, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -79,7 +79,7 @@ namespace Orbbec
         public void Stop()
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_recorder_stop(_handle.Ptr, out error);
+            obNative.ob_recorder_stop(_handle.Ptr, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -100,7 +100,7 @@ namespace Orbbec
         public void WriteFrame(Frame frame)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_recorder_write_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, out error);
+            obNative.ob_recorder_write_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -110,7 +110,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_recorder(handle, out error);
+            obNative.ob_delete_recorder(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

@@ -22,7 +22,7 @@ namespace Orbbec
         public Context()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_context(out error);
+            IntPtr handle = obNative.ob_create_context(ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -43,7 +43,7 @@ namespace Orbbec
         public Context(String configPath)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_context_with_config(configPath, out error);
+            IntPtr handle = obNative.ob_create_context_with_config(configPath, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -65,7 +65,7 @@ namespace Orbbec
         public DeviceList QueryDeviceList()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_query_device_list(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_query_device_list(_handle.Ptr, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -83,7 +83,7 @@ namespace Orbbec
         public Device CreateNetDevice(string address, UInt16 port)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_net_device(_handle.Ptr, address, port, out error);
+            IntPtr handle = obNative.ob_create_net_device(_handle.Ptr, address, port, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -117,7 +117,7 @@ namespace Orbbec
                     removed.Dispose();
                     added.Dispose();
                 }
-            }, IntPtr.Zero, out error);
+            }, IntPtr.Zero, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -138,7 +138,7 @@ namespace Orbbec
         public void EnableMultiDeviceSync(UInt64 repeatInterval)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_enable_multi_device_sync(_handle.Ptr, repeatInterval, out error);
+            obNative.ob_enable_multi_device_sync(_handle.Ptr, repeatInterval, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -159,7 +159,7 @@ namespace Orbbec
         public void SetLoggerSeverity(LogSeverity logSeverity)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_severity(logSeverity, out error);
+            obNative.ob_set_logger_severity(logSeverity, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -182,7 +182,7 @@ namespace Orbbec
         public void SetLoggerToFile(LogSeverity logSeverity, String directory)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_to_file(logSeverity, directory, out error);
+            obNative.ob_set_logger_to_file(logSeverity, directory, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -203,7 +203,7 @@ namespace Orbbec
         public void SetLoggerToConsole(LogSeverity logSeverity)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_to_console(logSeverity, out error);
+            obNative.ob_set_logger_to_console(logSeverity, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -213,7 +213,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_context(handle, out error);
+            obNative.ob_delete_context(handle, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

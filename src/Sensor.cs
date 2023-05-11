@@ -34,7 +34,7 @@ namespace Orbbec
         public SensorType GetSensorType()
         {
             IntPtr error = IntPtr.Zero;
-            SensorType sensorType = obNative.ob_sensor_get_type(_handle.Ptr, out error);
+            SensorType sensorType = obNative.ob_sensor_get_type(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -55,8 +55,8 @@ namespace Orbbec
         */
         public StreamProfileList GetStreamProfileList()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_sensor_get_stream_profile_list(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_sensor_get_stream_profile_list(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -79,7 +79,7 @@ namespace Orbbec
         */
         public void Start(StreamProfile streamProfile, FrameCallback callback)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, (framePtr, userData)=>{
                 Frame frame = new Frame(framePtr);
                 if(callback != null)
@@ -90,7 +90,7 @@ namespace Orbbec
                 {
                     frame.Dispose();
                 }
-            }, IntPtr.Zero, out error);
+            }, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -106,8 +106,8 @@ namespace Orbbec
         */
         public void Stop()
         {
-            IntPtr error;
-            obNative.ob_sensor_stop(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_sensor_stop(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -128,7 +128,7 @@ namespace Orbbec
         public void SwitchProfile(StreamProfile streamProfile)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_sensor_switch_profile(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, out error);
+            obNative.ob_sensor_switch_profile(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -138,7 +138,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_sensor(handle, out error);
+            obNative.ob_delete_sensor(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

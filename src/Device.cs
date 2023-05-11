@@ -38,7 +38,7 @@ namespace Orbbec
         public DeviceInfo GetDeviceInfo()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_get_device_info(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_device_get_device_info(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -60,7 +60,7 @@ namespace Orbbec
         public SensorList GetSensorList()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_get_sensor_list(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_device_get_sensor_list(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -84,7 +84,7 @@ namespace Orbbec
         public Sensor GetSensor(SensorType sensorType)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_get_sensor(_handle.Ptr, sensorType, out error);
+            IntPtr handle = obNative.ob_device_get_sensor(_handle.Ptr, sensorType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -108,7 +108,7 @@ namespace Orbbec
         public void SetIntProperty(PropertyId propertyId, Int32 property)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_set_int_property(_handle.Ptr, propertyId, property, out error);
+            obNative.ob_device_set_int_property(_handle.Ptr, propertyId, property, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -131,7 +131,7 @@ namespace Orbbec
         public Int32 GetIntProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            Int32 value = obNative.ob_device_get_int_property(_handle.Ptr, propertyId, out error);
+            Int32 value = obNative.ob_device_get_int_property(_handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -155,7 +155,7 @@ namespace Orbbec
         public void SetFloatProperty(PropertyId propertyId, float property)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_set_float_property(_handle.Ptr, propertyId, property, out error);
+            obNative.ob_device_set_float_property(_handle.Ptr, propertyId, property, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -178,7 +178,7 @@ namespace Orbbec
         public float GetFloatProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            float value = obNative.ob_device_get_float_property(_handle.Ptr, propertyId, out error);
+            float value = obNative.ob_device_get_float_property(_handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -202,7 +202,7 @@ namespace Orbbec
         public void SetBoolProperty(PropertyId propertyId, bool property)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_set_bool_property(_handle.Ptr, propertyId, property, out error);
+            obNative.ob_device_set_bool_property(_handle.Ptr, propertyId, property, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -225,7 +225,7 @@ namespace Orbbec
         public bool GetBoolProperty(PropertyId propertyId)
         {
             IntPtr error = IntPtr.Zero;
-            bool value = obNative.ob_device_get_bool_property(_handle.Ptr, propertyId, out error);
+            bool value = obNative.ob_device_get_bool_property(_handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -251,7 +251,7 @@ namespace Orbbec
         public void SetStructuredData(PropertyId propertyId, IntPtr data, UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_set_structured_data(_handle.Ptr, propertyId, data, dataSize, out error);
+            obNative.ob_device_set_structured_data(_handle.Ptr, propertyId, data, dataSize, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -276,7 +276,7 @@ namespace Orbbec
         public void GetStructuredData(PropertyId propertyId, IntPtr data, ref UInt32 dataSize)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_get_structured_data(_handle.Ptr, propertyId, data, ref dataSize, out error);
+            obNative.ob_device_get_structured_data(_handle.Ptr, propertyId, data, ref dataSize, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -301,7 +301,7 @@ namespace Orbbec
         public bool IsPropertySupported(PropertyId propertyId, PermissionType permissionType)
         {
             IntPtr error = IntPtr.Zero;
-            bool isSupported = obNative.ob_device_is_property_supported(_handle.Ptr, propertyId, permissionType, out error);
+            bool isSupported = obNative.ob_device_is_property_supported(_handle.Ptr, propertyId, permissionType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -326,7 +326,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPropertyRange range;
-            obNative.ob_device_get_int_property_range(out range, _handle.Ptr, propertyId, out error);
+            obNative.ob_device_get_int_property_range(out range, _handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -351,7 +351,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             FloatPropertyRange range;
-            obNative.ob_device_get_float_property_range(out range, _handle.Ptr, propertyId, out error);
+            obNative.ob_device_get_float_property_range(out range, _handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -376,7 +376,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             BoolPropertyRange range;
-            obNative.ob_device_get_bool_property_range(out range, _handle.Ptr, propertyId, out error);
+            obNative.ob_device_get_bool_property_range(out range, _handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -402,7 +402,7 @@ namespace Orbbec
         public void WriteAHB(UInt32 reg, UInt32 mask, UInt32 value)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_write_ahb(_handle.Ptr, reg, mask, value, out error);
+            obNative.ob_device_write_ahb(_handle.Ptr, reg, mask, value, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -427,7 +427,7 @@ namespace Orbbec
         public void ReadAHB(UInt32 reg, UInt32 mask, out UInt32 value)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_ahb(_handle.Ptr, reg, mask, out value, out error);
+            obNative.ob_device_read_ahb(_handle.Ptr, reg, mask, out value, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -454,7 +454,7 @@ namespace Orbbec
         public void WriteI2C(UInt32 moduleId, UInt32 reg, UInt32 mask, UInt32 value)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_write_i2c(_handle.Ptr, moduleId, reg, mask, value, out error);
+            obNative.ob_device_write_i2c(_handle.Ptr, moduleId, reg, mask, value, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -481,7 +481,7 @@ namespace Orbbec
         public void ReadI2C(UInt32 moduleId, UInt32 reg, UInt32 mask, out UInt32 value)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_i2c(_handle.Ptr, moduleId, reg, mask, out value, out error);
+            obNative.ob_device_read_i2c(_handle.Ptr, moduleId, reg, mask, out value, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -518,7 +518,7 @@ namespace Orbbec
                     callback(state, percent);
                 }
                 callback(state, percent);
-            }, async, IntPtr.Zero, out error);
+            }, async, IntPtr.Zero, ref error);
             gcHandle.Free();
             if(error != IntPtr.Zero)
             {
@@ -555,7 +555,7 @@ namespace Orbbec
                     Marshal.PtrToStructure(dataChunkPtr, dataChunk);
                     callback(state, dataChunk);
                 }
-            }, async, IntPtr.Zero, out error);
+            }, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -591,7 +591,7 @@ namespace Orbbec
                 {
                     callback(state, percent);
                 }
-            }, async, IntPtr.Zero, out error);
+            }, async, IntPtr.Zero, ref error);
             gcHandle.Free();
             if(error != IntPtr.Zero)
             {
@@ -628,7 +628,7 @@ namespace Orbbec
                     Marshal.PtrToStructure(dataChunkPtr, dataChunk);
                     callback(state, dataChunk);
                 }
-            }, async, IntPtr.Zero, out error);
+            }, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -648,8 +648,8 @@ namespace Orbbec
         */
         public ProtocolVersion GetProtocolVersion()
         {
-            IntPtr error;
-            ProtocolVersion version = obNative.ob_device_get_protocol_version(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            ProtocolVersion version = obNative.ob_device_get_protocol_version(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -672,8 +672,8 @@ namespace Orbbec
         */
         public CmdVersion GetCmdVersion(PropertyId propertyId)
         {
-            IntPtr error;
-            CmdVersion version = obNative.ob_device_get_cmd_version(_handle.Ptr, propertyId, out error);
+            IntPtr error = IntPtr.Zero;
+            CmdVersion version = obNative.ob_device_get_cmd_version(_handle.Ptr, propertyId, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -694,8 +694,8 @@ namespace Orbbec
         */
         public UInt32 GetSupportedPropertyCount()
         {
-            IntPtr error;
-            UInt32 count = obNative.ob_device_get_supported_property_count(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            UInt32 count = obNative.ob_device_get_supported_property_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -718,9 +718,9 @@ namespace Orbbec
         */
         public PropertyItem GetSupportedProperty(UInt32 index)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             PropertyItem propertyItem;
-            obNative.ob_device_get_supported_property(out propertyItem, _handle.Ptr, index, out error);
+            obNative.ob_device_get_supported_property(out propertyItem, _handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -739,8 +739,8 @@ namespace Orbbec
         */
         public UInt64 SyncDeviceTime()
         {
-            IntPtr error;
-            UInt64 time = obNative.ob_device_sync_device_time(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            UInt64 time = obNative.ob_device_sync_device_time(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -765,13 +765,13 @@ namespace Orbbec
         */
         public void DeviceUpgrade(String filePath, DeviceUpgradeCallback callback, bool async = true)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_device_upgrade(_handle.Ptr, filePath, (state, message, percent, userData)=>{
                 if(callback != null)
                 {
                     callback(state, message, percent);
                 }
-            }, async, IntPtr.Zero, out error);
+            }, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -797,13 +797,13 @@ namespace Orbbec
         */
         public void SendFile(String filePath, String dstPath, SendFileCallback callback, bool async = true)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_device_send_file_to_destination(_handle.Ptr, filePath, dstPath, (state, message, percent, userData)=>{
                 if(callback != null) 
                 {
                     callback(state, message, percent);
                 }
-            }, async, IntPtr.Zero, out error);
+            }, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -822,7 +822,7 @@ namespace Orbbec
         public UInt64 GetDeviceState()
         {
             IntPtr error = IntPtr.Zero;
-            UInt64 state = obNative.ob_device_get_device_state(_handle.Ptr, out error);
+            UInt64 state = obNative.ob_device_get_device_state(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -843,13 +843,13 @@ namespace Orbbec
         */
         public void SetDeviceStateChangedCallback(DeviceStateChangedCallback callback)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_device_state_changed(_handle.Ptr, (state, message, userData)=>{
                 if(callback != null)
                 {
                     callback(state, message);
                 }
-            }, IntPtr.Zero, out error);
+            }, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -870,7 +870,7 @@ namespace Orbbec
         public bool ActivateAuthorization(String authCode)
         {
             IntPtr error = IntPtr.Zero;
-            bool authorization = obNative.ob_device_activate_authorization(_handle.Ptr, authCode, out error);
+            bool authorization = obNative.ob_device_activate_authorization(_handle.Ptr, authCode, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -890,7 +890,7 @@ namespace Orbbec
         public void WriteAuthorizationCode(String authCode)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_write_authorization_code(_handle.Ptr, authCode, out error);
+            obNative.ob_device_write_authorization_code(_handle.Ptr, authCode, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -914,7 +914,7 @@ namespace Orbbec
         public CameraParamList GetCalibrationCameraParamList()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_get_calibration_camera_param_list(_handle.Ptr, out error);
+            IntPtr handle = obNative.ob_device_get_calibration_camera_param_list(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -937,7 +937,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             DepthWorkMode workMode;
-            obNative.ob_device_get_current_depth_work_mode(out workMode, _handle.Ptr, out error);
+            obNative.ob_device_get_current_depth_work_mode(out workMode, _handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -962,7 +962,7 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             GCHandle gcHandle = GCHandle.Alloc(workMode, GCHandleType.Pinned);
             IntPtr ptr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_switch_depth_work_mode(_handle.Ptr, ptr, out error);
+            obNative.ob_device_switch_depth_work_mode(_handle.Ptr, ptr, ref error);
             gcHandle.Free();
             if(error != IntPtr.Zero)
             {
@@ -985,7 +985,7 @@ namespace Orbbec
         public void SwitchDepthWorkMode(String modeName)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_switch_depth_work_mode_by_name(_handle.Ptr, modeName, out error);
+            obNative.ob_device_switch_depth_work_mode_by_name(_handle.Ptr, modeName, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1005,7 +1005,7 @@ namespace Orbbec
         public DepthWorkModeList GetDepthWorkModeList()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_get_depth_work_mode_list(_handle.Ptr, out error);
+            IntPtr ptr = obNative.ob_device_get_depth_work_mode_list(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1026,8 +1026,8 @@ namespace Orbbec
         */
         public void Reboot()
         {
-            IntPtr error;
-            obNative.ob_device_reboot(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_reboot(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1051,9 +1051,9 @@ namespace Orbbec
         */
         public DeviceSyncConfig GetSyncConfig()
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             DeviceSyncConfig config;
-            obNative.ob_device_get_sync_config(_handle.Ptr, out config, out error);
+            obNative.ob_device_get_sync_config(_handle.Ptr, out config, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1082,8 +1082,8 @@ namespace Orbbec
         */
         public void SetSyncConfig(DeviceSyncConfig deviceSyncConfig)
         {
-            IntPtr error;
-            obNative.ob_device_set_sync_config(_handle.Ptr, deviceSyncConfig, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_set_sync_config(_handle.Ptr, deviceSyncConfig, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1093,7 +1093,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_device(handle, out error);
+            obNative.ob_delete_device(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

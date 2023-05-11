@@ -30,7 +30,7 @@ namespace Orbbec
         public void Reset()
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_filter_reset(_handle.Ptr, out error);
+            obNative.ob_filter_reset(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -53,7 +53,7 @@ namespace Orbbec
         public Frame Process(Frame frame)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_filter_process(_handle.Ptr, frame.GetNativeHandle().Ptr, out error);
+            IntPtr handle = obNative.ob_filter_process(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
             if(handle == IntPtr.Zero)
             {
                 return null;
@@ -74,7 +74,7 @@ namespace Orbbec
         */
         public void SetCallback(FilterCallback callback)
         {
-            IntPtr error;
+            IntPtr error = IntPtr.Zero;
             obNative.ob_filter_set_callback(_handle.Ptr, (framePtr, userData)=>{
                 Frame frame = new Frame(framePtr);
                 if(callback != null)
@@ -85,7 +85,7 @@ namespace Orbbec
                 {
                     frame.Dispose();
                 }
-            }, IntPtr.Zero, out error);
+            }, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -105,8 +105,8 @@ namespace Orbbec
         */
         public void PushFrame(Frame frame)
         {
-            IntPtr error;
-            obNative.ob_filter_push_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_filter_push_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -116,7 +116,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_filter(handle, out error);
+            obNative.ob_delete_filter(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -133,8 +133,8 @@ namespace Orbbec
     {
         public PointCloudFilter()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_pointcloud_filter(out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_pointcloud_filter(ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -155,8 +155,8 @@ namespace Orbbec
         */
         public void SetCameraParam(CameraParam cameraParam)
         {
-            IntPtr error;
-            obNative.ob_pointcloud_filter_set_camera_param(_handle.Ptr, cameraParam, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pointcloud_filter_set_camera_param(_handle.Ptr, cameraParam, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -176,8 +176,8 @@ namespace Orbbec
         */
         public void SetPointFormat(Format format)
         {
-            IntPtr error;
-            obNative.ob_pointcloud_filter_set_point_format(_handle.Ptr, format, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pointcloud_filter_set_point_format(_handle.Ptr, format, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -198,8 +198,8 @@ namespace Orbbec
         */
         public void SetAlignState(bool state)
         {
-            IntPtr error;
-            obNative.ob_pointcloud_filter_set_frame_align_state(_handle.Ptr, state, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pointcloud_filter_set_frame_align_state(_handle.Ptr, state, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -225,8 +225,8 @@ namespace Orbbec
         */
         public void SetPositionDataScaled(float scale)
         {
-            IntPtr error;
-            obNative.ob_pointcloud_filter_set_position_data_scale(_handle.Ptr, scale, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pointcloud_filter_set_position_data_scale(_handle.Ptr, scale, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -246,8 +246,8 @@ namespace Orbbec
         */
         public void SetColorDataNormalization(bool state)
         {
-            IntPtr error;
-            obNative.ob_pointcloud_filter_set_color_data_normalization(_handle.Ptr, state, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pointcloud_filter_set_color_data_normalization(_handle.Ptr, state, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -267,8 +267,8 @@ namespace Orbbec
         */
         public void SetCoordinateSystem(CoordinateSystemType type)
         {
-            IntPtr error;
-            obNative.ob_pointcloud_filter_set_coordinate_system(_handle.Ptr, type, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_pointcloud_filter_set_coordinate_system(_handle.Ptr, type, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -280,8 +280,8 @@ namespace Orbbec
     {
         public FormatConvertFilter()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_format_convert_filter(out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_format_convert_filter(ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -302,8 +302,8 @@ namespace Orbbec
         */
         public void SetConvertFormat(ConvertFormat format)
         {
-            IntPtr error;
-            obNative.ob_format_convert_filter_set_format(_handle.Ptr, format, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_format_convert_filter_set_format(_handle.Ptr, format, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -315,8 +315,8 @@ namespace Orbbec
     {
         public CompressionFilter()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_compression_filter(out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_compression_filter(ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -339,8 +339,8 @@ namespace Orbbec
         */
         public void SetCompressionParams(CompressionMode mode, IntPtr param)
         {
-            IntPtr error;
-            obNative.ob_compression_filter_set_compression_params(_handle.Ptr, mode, param, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_compression_filter_set_compression_params(_handle.Ptr, mode, param, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -352,8 +352,8 @@ namespace Orbbec
     {
         public DecompressionFilter()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_decompression_filter(out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_decompression_filter(ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

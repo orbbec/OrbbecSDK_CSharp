@@ -26,7 +26,7 @@ namespace Orbbec
         public UInt32 DeviceCount()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_device_list_count(_handle.Ptr, out error);
+            UInt32 count = obNative.ob_device_list_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -50,7 +50,7 @@ namespace Orbbec
         public String Name(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_list_get_device_name(_handle.Ptr, index, out error);
+            IntPtr ptr = obNative.ob_device_list_get_device_name(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -74,7 +74,7 @@ namespace Orbbec
         public int Pid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            int pid = obNative.ob_device_list_get_device_pid(_handle.Ptr, index, out error);
+            int pid = obNative.ob_device_list_get_device_pid(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -98,7 +98,7 @@ namespace Orbbec
         public int Vid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            int vid = obNative.ob_device_list_get_device_vid(_handle.Ptr, index, out error);
+            int vid = obNative.ob_device_list_get_device_vid(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -122,7 +122,7 @@ namespace Orbbec
         public String Uid(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_list_get_device_uid(_handle.Ptr, index, out error);
+            IntPtr ptr = obNative.ob_device_list_get_device_uid(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -146,7 +146,7 @@ namespace Orbbec
         public String SerialNumber(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_list_get_device_serial_number(_handle.Ptr, index, out error);
+            IntPtr handle = obNative.ob_device_list_get_device_serial_number(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -170,7 +170,7 @@ namespace Orbbec
         public Device GetDevice(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_list_get_device(_handle.Ptr, index, out error);
+            IntPtr handle = obNative.ob_device_list_get_device(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -194,7 +194,7 @@ namespace Orbbec
         public Device GetDeviceBySN(String serialNumber)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_list_get_device_by_serial_number(_handle.Ptr, serialNumber, out error);
+            IntPtr handle = obNative.ob_device_list_get_device_by_serial_number(_handle.Ptr, serialNumber, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -218,7 +218,7 @@ namespace Orbbec
         public Device GetDeviceByUid(String uid)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_list_get_device_by_uid(_handle.Ptr, uid, out error);
+            IntPtr handle = obNative.ob_device_list_get_device_by_uid(_handle.Ptr, uid, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -229,7 +229,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_device_list(handle, out error);
+            obNative.ob_delete_device_list(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

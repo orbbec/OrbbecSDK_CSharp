@@ -10,8 +10,8 @@ namespace Orbbec
 
         public Config()
         {
-            IntPtr error;
-            IntPtr handle = obNative.ob_create_config(out error);
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_config(ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -42,8 +42,8 @@ namespace Orbbec
         */
         public void EnableStream(StreamProfile streamProfile)
         {
-            IntPtr error;
-            obNative.ob_config_enable_stream(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_enable_stream(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -59,8 +59,8 @@ namespace Orbbec
         */
         public void EnableAllStream()
         {
-            IntPtr error;
-            obNative.ob_config_enable_all_stream(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_enable_all_stream(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -80,8 +80,8 @@ namespace Orbbec
         */
         public void DisableStream(StreamType streamType)
         {
-            IntPtr error;
-            obNative.ob_config_disable_stream(_handle.Ptr, streamType, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_disable_stream(_handle.Ptr, streamType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -97,8 +97,8 @@ namespace Orbbec
         */
         public void DisableAllStream()
         {
-            IntPtr error;
-            obNative.ob_config_disable_all_stream(_handle.Ptr, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_disable_all_stream(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -118,8 +118,8 @@ namespace Orbbec
         */
         public void SetAlignMode(AlignMode mode)
         {
-            IntPtr error;
-            obNative.ob_config_set_align_mode(_handle.Ptr, mode, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_set_align_mode(_handle.Ptr, mode, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -139,8 +139,8 @@ namespace Orbbec
         */
         void SetDepthScaleRequire(bool enable)
         {
-            IntPtr error;
-            obNative.ob_config_set_depth_scale_require(_handle.Ptr, enable, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_set_depth_scale_require(_handle.Ptr, enable, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -164,8 +164,8 @@ namespace Orbbec
         */
         void SetD2CTargetResolution(UInt32 d2cTargetWidth, UInt32 d2cTargetHeight)
         {
-            IntPtr error;
-            obNative.ob_config_set_d2c_target_resolution(_handle.Ptr, d2cTargetWidth, d2cTargetHeight, out error);
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_set_d2c_target_resolution(_handle.Ptr, d2cTargetWidth, d2cTargetHeight, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -175,7 +175,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_config(handle, out error);
+            obNative.ob_delete_config(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

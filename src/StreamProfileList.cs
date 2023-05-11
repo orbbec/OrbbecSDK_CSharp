@@ -34,7 +34,7 @@ namespace Orbbec
         public VideoStreamProfile GetVideoStreamProfile(int width, int height, Format format, int fps)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_stream_profile_list_get_video_stream_profile(_handle.Ptr, width, height, format, fps, out error);
+            IntPtr handle = obNative.ob_stream_profile_list_get_video_stream_profile(_handle.Ptr, width, height, format, fps, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -58,7 +58,7 @@ namespace Orbbec
         public StreamProfile GetProfile(int index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_stream_profile_list_get_profile(_handle.Ptr, index, out error);
+            IntPtr handle = obNative.ob_stream_profile_list_get_profile(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -80,7 +80,7 @@ namespace Orbbec
         public UInt32 ProfileCount()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_stream_profile_list_count(_handle.Ptr, out error);
+            UInt32 count = obNative.ob_stream_profile_list_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -91,7 +91,7 @@ namespace Orbbec
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_stream_profile_list(handle, out error);
+            obNative.ob_delete_stream_profile_list(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
