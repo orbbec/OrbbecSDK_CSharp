@@ -59,7 +59,7 @@ namespace Orbbec
         * @param async 是否异步录制
         * \endif
         */
-        public void Start(String fileName, bool asycn)
+        public void Start(String fileName, bool asycn = false)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_recorder_start(_handle.Ptr, fileName, asycn, out error);

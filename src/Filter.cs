@@ -4,24 +4,20 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
-    internal delegate void FilterCallbackInternal(IntPtr framePtr, IntPtr userDataPtr);
     public delegate void FilterCallback(Frame frame);
 
     public class Filter : IDisposable
     {
         protected NativeHandle _handle;
-        private FilterCallback _callback;
-        private FilterCallbackInternal _internalCallback;
 
         internal Filter()
         {
-            _internalCallback = new FilterCallbackInternal(OnFrame);
+
         }
 
         internal Filter(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
-            _internalCallback = new FilterCallbackInternal(OnFrame);
         }
 
         /**
@@ -78,9 +74,18 @@ namespace Orbbec
         */
         public void SetCallback(FilterCallback callback)
         {
-            _callback = callback;
             IntPtr error;
-            obNative.ob_filter_set_callback(_handle.Ptr, _internalCallback, IntPtr.Zero, out error);
+            obNative.ob_filter_set_callback(_handle.Ptr, (framePtr, userData)=>{
+                Frame frame = new Frame(framePtr);
+                if(callback != null)
+                {
+                    callback(frame);
+                }
+                else
+                {
+                    frame.Dispose();
+                }
+            }, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -105,19 +110,6 @@ namespace Orbbec
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
-            }
-        }
-
-        private void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
-        {
-            Frame frame = new Frame(framePtr);
-            if(_callback != null)
-            {
-                _callback(frame);
-            }
-            else
-            {
-                frame.Dispose();
             }
         }
 
@@ -213,6 +205,75 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
         }
+
+        /**
+        * \if English
+        * @brief  Set the point cloud coordinate data zoom factor
+        *
+        * @attention Calling this function to set the scale will change the point coordinate scaling factor of the output point cloud frame: posScale = posScale /
+        * scale.The point coordinate scaling factor for the output point cloud frame can be obtained via @ref PointsFrame::getPositionValueScale function
+        *
+        * @param scale Zoom factor
+        * \else
+        * @brief  设置点云坐标数据缩放比例
+        *
+        * @attention 调用该函数设置缩放比例会改变输出点云帧的点坐标缩放系数：posScale = posScale / scale;
+        *  输出点云帧的点坐标缩放系数可通过 @ref PointsFrame::getPositionValueScale 函数获取
+        *
+        * @param scale 缩放比例
+        * \endif
+        */
+        public void SetPositionDataScaled(float scale)
+        {
+            IntPtr error;
+            obNative.ob_pointcloud_filter_set_position_data_scale(_handle.Ptr, scale, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief  Set point cloud color data normalization
+        *
+        * @param state Whether normalization is required
+        * \else
+        * @brief  设置点云颜色数据归一化
+        *
+        * @param state 是否需要归一化
+        * \endif
+        */
+        public void SetColorDataNormalization(bool state)
+        {
+            IntPtr error;
+            obNative.ob_pointcloud_filter_set_color_data_normalization(_handle.Ptr, state, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief  Set point cloud coordinate system
+        *
+        * @param type coordinate system type
+        * \else
+        * @brief  设置点云坐标系
+        *
+        * @param type 坐标系类型
+        * \endif
+        */
+        public void SetCoordinateSystem(CoordinateSystemType type)
+        {
+            IntPtr error;
+            obNative.ob_pointcloud_filter_set_coordinate_system(_handle.Ptr, type, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
     }
 
     public class FormatConvertFilter : Filter
@@ -247,6 +308,57 @@ namespace Orbbec
             {
                 throw new NativeException(new Error(error));
             }
+        }
+    }
+
+    public class CompressionFilter : Filter
+    {
+        public CompressionFilter()
+        {
+            IntPtr error;
+            IntPtr handle = obNative.ob_create_compression_filter(out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+        }
+
+        /**
+        * \if English
+        * @brief Set compression params
+        *
+        * @param mode Compression mode OB_COMPRESSION_LOSSLESS or OB_COMPRESSION_LOSSY
+        * @param params Compression params, when mode is OB_COMPRESSION_LOSSLESS, params is NULL
+        * \else
+        * @brief 设置压缩参数
+        *
+        * @param mode 压缩模式 OB_COMPRESSION_LOSSLESS or OB_COMPRESSION_LOSSY
+        * @param params 压缩参数, 当mode为OB_COMPRESSION_LOSSLESS时，params为NULL
+        * \endif
+        */
+        public void SetCompressionParams(CompressionMode mode, IntPtr param)
+        {
+            IntPtr error;
+            obNative.ob_compression_filter_set_compression_params(_handle.Ptr, mode, param, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+    }
+
+    public class DecompressionFilter : Filter
+    {
+        public DecompressionFilter()
+        {
+            IntPtr error;
+            IntPtr handle = obNative.ob_create_decompression_filter(out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
         }
     }
 }

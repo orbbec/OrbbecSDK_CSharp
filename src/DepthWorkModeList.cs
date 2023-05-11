@@ -2,30 +2,30 @@ using System;
 
 namespace Orbbec
 {    
-    public class CameraParamList : IDisposable
+    public class DepthWorkModeList : IDisposable
     {
         private NativeHandle _handle;
 
-        internal CameraParamList(IntPtr handle)
+        internal DepthWorkModeList(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
         }
 
         /**
         * \if English
-        * @brief Number of camera parameter groups
+        * @brief Get the count of OBDepthWorkMode
         *
-        * @return UInt32  returns the number of camera parameter groups
+        * @return Count of OBDepthWorkMode
         * \else
-        * @brief 相机参数组数
+        * @brief 获取相机深度模式的数量
         *
-        * @return UInt32  返回相机参数组数
+        * @return 列表中的相机深度模式数量
         * \endif
         */
-        public UInt32 Count()
+        UInt32 Count()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_camera_param_list_count(_handle.Ptr, out error);
+            UInt32 count = obNative.ob_depth_work_mode_list_count(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -35,27 +35,28 @@ namespace Orbbec
 
         /**
         * \if English
-        * @brief Get camera parameters
+        * @brief Get DepthWorkMode at index in DepthWorkModeList
         *
-        * @param index parameter index
-        * @return CameraParam returns the corresponding group parameters
+        * @param[in] index Target DepthWorkMode's index
+        *
+        * @return DepthWorkMode at index
         * \else
-        * @brief 获取相机参数
+        * @brief 根据下标获取相机深度模式
         *
-        * @param index 参数索引
-        * @return CameraParam 返回对应组参数
+        * @param index 对应模式列表的下标
+        * @return 相机深度模式
         * \endif
         */
-        public CameraParam GetCameraParam(UInt32 index)
+        DepthWorkMode GetDepthWorkMode(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            CameraParam cameraParam;
-            obNative.ob_camera_param_list_get_param(out cameraParam, _handle.Ptr, index, out error);
+            DepthWorkMode workMode;
+            obNative.ob_depth_work_mode_list_get_item(out workMode, _handle.Ptr, index, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return cameraParam;
+            return workMode;
         }
 
         internal void Delete(IntPtr handle)

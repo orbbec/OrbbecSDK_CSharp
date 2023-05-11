@@ -4,19 +4,15 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
-    internal delegate void FrameCallbackInternal(IntPtr framePtr, IntPtr userDataPtr);
     public delegate void FrameCallback(Frame frame);
 
     public class Sensor : IDisposable
     {
         private NativeHandle _handle;
-        private FrameCallback _callback;
-        private FrameCallbackInternal _internalCallback;
 
         internal Sensor(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
-            _internalCallback = new FrameCallbackInternal(OnFrame);
         }
 
         internal NativeHandle GetNativeHandle()
@@ -83,25 +79,21 @@ namespace Orbbec
         */
         public void Start(StreamProfile streamProfile, FrameCallback callback)
         {
-            _callback = callback;
             IntPtr error;
-            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, _internalCallback, IntPtr.Zero, out error);
+            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, (framePtr, userData)=>{
+                Frame frame = new Frame(framePtr);
+                if(callback != null)
+                {
+                    callback(frame);
+                }
+                else
+                {
+                    frame.Dispose();
+                }
+            }, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
-            }
-        }
-
-        private void OnFrame(IntPtr framePtr, IntPtr userDataPtr)
-        {
-            Frame frame = new Frame(framePtr);
-            if(_callback != null)
-            {
-                _callback(frame);
-            }
-            else
-            {
-                frame.Dispose();
             }
         }
 
@@ -116,6 +108,27 @@ namespace Orbbec
         {
             IntPtr error;
             obNative.ob_sensor_stop(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Dynamically switch resolutions
+        *
+        * @param streamProfile Resolution to switch
+        * \else
+        * @brief 动态切换分辨率
+        *
+        * @param streamProfile 需要切换的分辨率
+        * \endif
+        */
+        public void SwitchProfile(StreamProfile streamProfile)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_sensor_switch_profile(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

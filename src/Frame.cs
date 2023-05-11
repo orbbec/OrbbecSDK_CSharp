@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
+    public delegate void FrameDestroyCallback(byte[] buffer);
+
     public class Frame : IDisposable
     {
         protected NativeHandle _handle;
@@ -135,6 +137,28 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             UInt64 timestamp = obNative.ob_frame_time_stamp(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return timestamp;
+        }
+
+        /**
+        * \if English
+        * @brief Get the hardware timestamp of the frame us
+        *
+        * @return uint64_t returns the time stamp of the frame hardware, unit us
+        * \else
+        * @brief 获取帧的硬件时间戳
+        *
+        * @return uint64_t 返回帧硬件的时间戳
+        * \endif
+        */
+        public UInt64 GetTimeStampUs()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt64 timestamp = obNative.ob_frame_time_stamp_us(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -311,6 +335,25 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             return obNative.ob_video_frame_metadata_size(_handle.Ptr, out error);
         }
+
+        /**
+        * \if English
+        * @brief Get the effective number of pixels (such as Y16 format frame, but only the lower 10 bits are valid bits, and the upper 6 bits are filled with 0)
+        * @attention Only valid for Y8/Y10/Y11/Y12/Y14/Y16 format
+        *
+        * @return uint8_t returns the effective number of pixels in the pixel, or 0 if it is an unsupported format
+        * \else
+        * @brief 获取像素有效位数（如Y16格式帧，每个像素占16bit，但实际只有低10位是有效位，高6位填充0）
+        * @attention 仅对Y8/Y10/Y11/Y12/Y14/Y16格式有效
+        *
+        * @return uint8_t 返回像素有效位数，如果是不支持的格式，返回0
+        * \endif
+        */
+        byte PixelAvailableBitSize()
+        {
+            IntPtr error = IntPtr.Zero;
+            return obNative.ob_video_frame_pixel_available_bit_size(_handle.Ptr, out error);
+        }
     }
 
     public class ColorFrame : VideoFrame
@@ -359,6 +402,28 @@ namespace Orbbec
     {
         internal PointsFrame(IntPtr handle) : base(handle)
         {
+        }
+
+        /**
+        * \if English
+        * @brief Get the point position value scale of the points frame. the point position value of points frame is multiplied by the scale to give a position
+        * value in millimeter. such as scale=0.1, The x-coordinate value of a point is x = 10000, which means that the actual x-coordinate value = x*scale =
+        * 10000*0.1 = 1000mm.
+        *
+        * @param[in] frame Frame object
+        * @param[out] error Log error messages
+        * @return float position value scale
+        * \else
+        * @brief 获取点云帧的点坐标值缩放系数，点坐标值乘以缩放系数后，可以得到单位为毫米的坐标值； 如scale=0.1, 某个点的x坐标值为x=10000，
+        *     则表示实际x坐标value = x*scale = 10000*0.1=1000mm。
+        *
+        * @return float 缩放系数
+        * \endif
+        */
+        float GetPositionValueScale()
+        {
+            IntPtr error = IntPtr.Zero;
+            return obNative.ob_points_frame_get_position_value_scale(_handle.Ptr, out error);
         }
     }
 
@@ -535,18 +600,24 @@ namespace Orbbec
         * \if English
         * @brief Get frame by sensor type
         *
-        * @param sensorType  Type of sensor
-        * @return Frame returns the corresponding type of frame
+        * @param frameType  Type of sensor
+        * @return std::shared_ptr<Frame> returns the corresponding type of frame
         * \else
         * @brief 通过传感器类型获取帧
         *
-        * @param sensorType 传感器的类型
-        * @return Frame 返回相应类型的帧
+        * @param frameType 传感器的类型
+        * @return std::shared_ptr<Frame> 返回相应类型的帧
         * \endif
         */
-        // public Frame GetFrame(SensorType sensorType)
-        // {
-        //     throw new NotImplementedException();
-        // }
+        public Frame GetFrame(FrameType frameType)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_frameset_get_frame(_handle.Ptr, frameType, out error);
+            if (handle == IntPtr.Zero)
+            {
+                return null;
+            }
+            return new Frame(handle);
+        }
     }
 }

@@ -12,6 +12,8 @@ add_library(${PROJECT_NAME} SHARED
     src/Device.cs
     src/DeviceInfo.cs
     src/DeviceList.cs
+    src/CameraParamList.cs
+    src/DepthWorkModeList.cs
     src/Error.cs
     src/Filter.cs
     src/Frame.cs

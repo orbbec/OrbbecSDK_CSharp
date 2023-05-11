@@ -26,12 +26,12 @@ namespace Orbbec
         public String Name()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_name(_handle.Ptr, out error);
+            String name = obNative.ob_device_info_name(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return Marshal.PtrToStringAnsi(ptr);
+            return name;
         }
 
         /**
@@ -92,12 +92,12 @@ namespace Orbbec
         public String Uid()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_uid(_handle.Ptr, out error);
+            String uid = obNative.ob_device_info_uid(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return Marshal.PtrToStringAnsi(ptr);
+            return uid;
         }
 
         /**
@@ -114,12 +114,12 @@ namespace Orbbec
         public String SerialNumber()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_serial_number(_handle.Ptr, out error);
+            String serialNumber = obNative.ob_device_info_serial_number(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return Marshal.PtrToStringAnsi(ptr);
+            return serialNumber;
         }
 
         /**
@@ -136,12 +136,12 @@ namespace Orbbec
         public String FirmwareVersion()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_firmware_version(_handle.Ptr, out error);
+            String firmwareVersion = obNative.ob_device_info_firmware_version(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return Marshal.PtrToStringAnsi(ptr);
+            return firmwareVersion;
         }
 
         /**
@@ -158,12 +158,122 @@ namespace Orbbec
         public String UsbType()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_usb_type(_handle.Ptr, out error);
+            String usbType = obNative.ob_device_info_usb_type(_handle.Ptr, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return Marshal.PtrToStringAnsi(ptr);
+            return usbType;
+        }
+
+        /**
+        * \if English
+        * @brief Get device connection type
+        *
+        * @return String returns connection type
+        * \else
+        * @brief 获取设备连接类型
+        *
+        * @return String 返回连接类型
+        * \endif
+        */
+        public String ConnectionType()
+        {
+            IntPtr error = IntPtr.Zero;
+            String connectionType = obNative.ob_device_info_connection_type(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return connectionType;
+        }
+
+        /**
+        * \if English
+        * @brief Get the version number of the hardware
+        *
+        * @return String returns the version number of the hardware
+        * \else
+        * @brief 获取硬件的版本号
+        *
+        * @return String 返回硬件的版本号
+        * \endif
+        */
+        public String HardwareVersion()
+        {
+            IntPtr error = IntPtr.Zero;
+            String hardwareVersion = obNative.ob_device_info_hardware_version(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return hardwareVersion;
+        }
+
+        /**
+        * \if English
+        * @brief Get the minimum version number of the SDK supported by the device
+        *
+        * @return String returns the minimum SDK version number supported by the device
+        * \else
+        * @brief 获取设备支持的SDK最小版本号
+        *
+        * @return String 返回设备支持的SDK最小版本号
+        * \endif
+        */
+        public String SupportedMinSdkVersion()
+        {
+            IntPtr error = IntPtr.Zero;
+            String minSdkVersion = obNative.ob_device_info_supported_min_sdk_version(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return minSdkVersion;
+        }
+
+        /**
+        * \if English
+        * @brief Get chip type name
+        *
+        * @return String returns the chip type name
+        * \else
+        * @brief 获取芯片类型名称
+        *
+        * @return String 返回芯片类型名称
+        * \endif
+        */
+        public String AsicName()
+        {
+            IntPtr error = IntPtr.Zero;
+            String asicName = obNative.ob_device_info_asicName(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return asicName;
+        }
+
+        /**
+        * \if English
+        * @brief Get device type
+        *
+        * @return DeviceType returns the device type
+        * \else
+        * @brief 获取设备类型
+        *
+        * @return DeviceType 返回设备类型
+        * \endif
+        */
+        public DeviceType DeviceType()
+        {
+            IntPtr error = IntPtr.Zero;
+            DeviceType deviceType = obNative.ob_device_info_device_type(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return deviceType;
         }
 
         internal void Delete(IntPtr handle)

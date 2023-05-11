@@ -1150,4 +1150,70 @@ namespace Orbbec
         OB_POWER_LINE_FREQ_MODE_50HZ  = 1,  ///< \if English 50Hz \else 50Hz \endif
         OB_POWER_LINE_FREQ_MODE_60HZ  = 2,  ///< \if English 60Hz \else 60Hz \endif
     }
+
+    /**
+    * \if English
+    * @brief Frame aggregate output mode
+    * \else
+    * @brief 帧汇聚输出模式
+    * \endif
+    */
+    public enum FrameAggregateOutputMode {
+        /**
+        * \if English
+        * @brief Only FrameSet that contains all types of data frames will be output
+        * \else
+        * @brief 只有包含所有类型数据帧的FrameSet才会被输出
+        * \endif
+        */
+        OB_FRAME_AGGREGATE_OUTPUT_FULL_FRAME_REQUIRE = 0,
+
+        /**
+        * \if English
+        *
+        * @brief Frame aggregate output mode
+        * @brief Suitable for Color using H264, H265 and other inter-frame encoding format open stream
+        *
+        * @attention In this mode, the user may return null when getting a non-Color type data frame from the acquired FrameSet
+        *
+        * \else
+        *
+        * @brief 必须包含Color类似数据帧的FrameSet才会被输出
+        * @brief 适用于Color使用H264、H265等帧间编码格式开流的情况
+        *
+        * @attention 该模式下，用户从获取到的FrameSet上获取非Color类型数据帧可能会返回空
+        *
+        * \endif
+        */
+        OB_FRAME_AGGREGATE_OUTPUT_COLOR_FRAME_REQUIRE,
+
+        /**
+        * \if English
+        *
+        * @brief FrameSet for any case will be output
+        *
+        * @attention In this mode, the user may return null when getting the specified type of data frame from the acquired FrameSet
+        *
+        * \else
+        *
+        * @brief 任何情况的FrameSet都会被输出
+        *
+        * @attention 该模式下，用户从获取到的FrameSet上获取指定类型数据帧可能会返回空
+        *
+        * \endif
+        */
+        OB_FRAME_AGGREGATE_OUTPUT_ANY_SITUATION,
+    } 
+
+    /**
+    * \if English
+    * @brief Point cloud coordinate system type
+    * \else
+    * @brief 点云坐标系类型(左手坐标系,右手坐标系)
+    * \endif
+    */
+    public enum CoordinateSystemType {
+        OB_LEFT_HAND_COORDINATE_SYSTEM  = 0,
+        OB_RIGHT_HAND_COORDINATE_SYSTEM = 1,
+    } 
 }

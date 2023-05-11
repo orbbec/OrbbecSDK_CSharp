@@ -4,13 +4,10 @@ using System.Runtime.InteropServices;
 namespace Orbbec
 {
     public delegate void DeviceChangedCallback(DeviceList removed, DeviceList added);
-    internal delegate void DeviceChangedCallbackInternal(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr);
 
     public class Context : IDisposable
     {
         private NativeHandle _handle;
-        private DeviceChangedCallback _callback;
-        private DeviceChangedCallbackInternal _internalCallback;
 
         /**
         * \if English
@@ -31,7 +28,6 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
-            _internalCallback = new DeviceChangedCallbackInternal(OnDeviceChanged);
         }
 
         /**
@@ -108,9 +104,20 @@ namespace Orbbec
         */
         public void SetDeviceChangedCallback(DeviceChangedCallback callback)
         {
-            _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_device_changed_callback(_handle.Ptr, _internalCallback, IntPtr.Zero, out error);
+            obNative.ob_set_device_changed_callback(_handle.Ptr, (removedPtr, addedPtr, userData)=>{
+                DeviceList removed = new DeviceList(removedPtr);
+                DeviceList added = new DeviceList(addedPtr);
+                if (callback != null)
+                {
+                    callback(removed, added);
+                }
+                else
+                {
+                    removed.Dispose();
+                    added.Dispose();
+                }
+            }, IntPtr.Zero, out error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -149,10 +156,10 @@ namespace Orbbec
         * @param severity 日志输出等级
         * \endif
         */
-        public void SetLoggerServerity(LogSeverity logSeverity)
+        public void SetLoggerSeverity(LogSeverity logSeverity)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_serverity(logSeverity, out error);
+            obNative.ob_set_logger_severity(logSeverity, out error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -172,10 +179,10 @@ namespace Orbbec
         * @param directory 日志文件输出路径，如果路径为空，则继续使用已有设置(已有配置也为空则不输出日志到文件)
         * \endif
         */
-        public void SetLoggerToFile(LogSeverity logSeverity, String fileName)
+        public void SetLoggerToFile(LogSeverity logSeverity, String directory)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_to_file(logSeverity, fileName, out error);
+            obNative.ob_set_logger_to_file(logSeverity, directory, out error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -216,21 +223,6 @@ namespace Orbbec
         public void Dispose()
         {
             _handle.Dispose();
-        }
-
-        private void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userDataPtr)
-        {
-            DeviceList removed = new DeviceList(removedPtr);
-            DeviceList added = new DeviceList(addedPtr);
-            if (_callback != null)
-            {
-                _callback(removed, added);
-            }
-            else
-            {
-                removed.Dispose();
-                added.Dispose();
-            }
         }
     }
 }

@@ -126,6 +126,52 @@ namespace Orbbec
             }
         }
 
+        /**
+        * \if English
+        * @brief Whether the depth needs to be scaled after setting D2C
+        *
+        * @param enable Whether scaling is required
+        * \else
+        * @brief 设置D2C后是否需要缩放深度
+        *
+        * @param enable 是否需要缩放
+        * \endif
+        */
+        void SetDepthScaleRequire(bool enable)
+        {
+            IntPtr error;
+            obNative.ob_config_set_depth_scale_require(_handle.Ptr, enable, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Set the D2C target resolution, which is applicable to cases where the color stream is not enabled using the OrbbecSDK and the depth needs to be
+        * D2C Note: When you use OrbbecSDK to enable the color stream, you also use this interface to set the D2C target resolution. The configuration of the
+        * enabled Color stream is preferred for D2C.
+        * @param d2cTargetWidth  The D2C target has a wide resolution
+        * @param d2cTargetHeight The D2C target has a high resolutio
+        * \else
+        * @brief 设置D2C目标分辨率，适用于未使用OrbbecSDK开启Color流，且需要对深度进行D2C的情况
+        * 注意:当使用OrbbecSDK开启Color流时，同时使用了此接口设置了D2C目标分辨率时。优先使用开启的Color流的配置进行D2C。
+        *
+        * @param d2cTargetWidth  D2C目标分辨率宽
+        * @param d2cTargetHeight D2C目标分辨率高
+        * \endif
+        */
+        void SetD2CTargetResolution(UInt32 d2cTargetWidth, UInt32 d2cTargetHeight)
+        {
+            IntPtr error;
+            obNative.ob_config_set_d2c_target_resolution(_handle.Ptr, d2cTargetWidth, d2cTargetHeight, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;

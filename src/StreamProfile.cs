@@ -185,7 +185,7 @@ namespace Orbbec
         * @return AccelFullScaleRange  返回量程范围值
         * \endif
         */
-        public AccelFullScaleRange GetAccelFullScaleRange()
+        public AccelFullScaleRange GetFullScaleRange()
         {
             IntPtr error;
             AccelFullScaleRange accelFullScaleRange = obNative.ob_accel_stream_profile_full_scale_range(_handle.Ptr, out error);
@@ -207,7 +207,7 @@ namespace Orbbec
         * @return AccelSampleRate  返回采样频率
         * \endif
         */
-        public AccelSampleRate GetAccelSampleRate()
+        public AccelSampleRate GetSampleRate()
         {
             IntPtr error;
             AccelSampleRate accelSampleRate = obNative.ob_accel_stream_profile_sample_rate(_handle.Ptr, out error);
@@ -236,7 +236,7 @@ namespace Orbbec
         * @return GyroFullScaleRange  返回量程范围值
         * \endif
         */
-        public GyroFullScaleRange GetGyroFullScaleRange()
+        public GyroFullScaleRange GetFullScaleRange()
         {
             IntPtr error;
             GyroFullScaleRange gyroFullScaleRange = obNative.ob_gyro_stream_profile_full_scale_range(_handle.Ptr, out error);
@@ -258,7 +258,7 @@ namespace Orbbec
         * @return GyroSampleRate  返回采样频率
         * \endif
         */
-        public GyroSampleRate GetGyroSampleRate()
+        public GyroSampleRate GetSampleRate()
         {
             IntPtr error;
             GyroSampleRate gyroSampleRate = obNative.ob_gyro_stream_profile_sample_rate(_handle.Ptr, out error);

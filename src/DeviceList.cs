@@ -191,7 +191,7 @@ namespace Orbbec
         * @return Device 返回设备对象
         * \endif
         */
-        public Device GetDeviceBySerialNumber(String serialNumber)
+        public Device GetDeviceBySN(String serialNumber)
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_device_list_get_device_by_serial_number(_handle.Ptr, serialNumber, out error);

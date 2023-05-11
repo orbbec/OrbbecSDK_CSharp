@@ -4,15 +4,12 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
-    internal delegate void FramesetCallbackInternal(IntPtr framesetPtr, IntPtr userDataPtr);
     public delegate void FramesetCallback(Frameset frameset);
 
     public class Pipeline : IDisposable
     {
         private NativeHandle _handle;
         private Device _device;
-        private FramesetCallback _callback;
-        private FramesetCallbackInternal _internalCallback;
 
         /**
         * \if English
@@ -34,7 +31,6 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
-            _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
 
         /**
@@ -56,7 +52,6 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
-            _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
 
         /**
@@ -81,21 +76,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
-            _internalCallback = new FramesetCallbackInternal(OnFrameset);
         }
-
-        /**
-        * @brief 启动pipeline
-        */
-        // public void Start()
-        // {
-        //     IntPtr error;
-        //     obNative.ob_pipeline_start(_handle.Ptr, out error);
-        //     if(error != IntPtr.Zero)
-        //     {
-        //         throw new NativeException(new Error(error));
-        //     }
-        // }
 
         /**
         * \if English
@@ -133,9 +114,18 @@ namespace Orbbec
         */
         public void Start(Config config, FramesetCallback callback)
         {
-            _callback = callback;
             IntPtr error;
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _internalCallback, IntPtr.Zero, out error);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, (framesetPtr, userDataPtr)=>{
+                Frameset frameset = new Frameset(framesetPtr);
+                if(callback != null)
+                {
+                    callback(frameset);
+                }
+                else
+                {
+                    frameset.Dispose();
+                }
+            }, IntPtr.Zero, out error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -236,9 +226,40 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Get playback object
+        *
+        * @return std::shared_ptr<Playback> returns the playback object
+        * \else
+        * @brief 获取回放对象
+        *
+        * @return std::shared_ptr<Playback> 返回回放对象
+        * \endif
+        */
+        public Playback GetPlayback()
+        {
+            IntPtr error;
+            IntPtr handle = obNative.ob_pipeline_get_playback(_handle.Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Playback(handle);
+        }
+
+        /**
+        * \if English
+        * @brief Get the stream profile of specified sensor
+        *
+        * @param sensorType Type of sensor
+
+        * @return std::shared_ptr<StreamProfileList> returns the stream profile list
+        * \else
         * @brief 获取指定传感器的流配置
+        *
         * @param sensorType 传感器的类型
-        * @return StreamProfileList 返回流配置列表
+        * @return std::shared_ptr<StreamProfileList> 返回流配置列表
+        * \endif
         */
         public StreamProfileList GetStreamProfileList(SensorType sensorType)
         {
@@ -253,7 +274,12 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Turn on frame synchronization
+        * \else
         * @brief 打开帧同步功能
+        * \endif
+        *
         */
         public void EnableFrameSync()
         {
@@ -266,7 +292,11 @@ namespace Orbbec
         }
 
         /**
+        * \if English
+        * @brief Turn off frame synchronization
+        * \else
         * @brief 关闭帧同步功能
+        * \endif
         */
         public void DisableFrameSync()
         {
@@ -278,16 +308,19 @@ namespace Orbbec
             }
         }
 
-        public void SwitchConfig(Config config)
-        {
-            IntPtr error;
-            obNative.ob_pipeline_switch_config(_handle.Ptr, config.GetNativeHandle().Ptr, out error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
+        /**
+        * \if English
+        * @brief Get camera parameters
+        * @attention If D2C is enabled, it will return the camera parameters after D2C, if not, it will return to the default parameters
+        *
+        * @return  OBCameraParam returns camera parameters
+        * \else
+        * @brief 获取相机参数
+        * @attention 如果开启了D2C将返回D2C后的相机参数，如果没有将返回默认参数
+        *
+        * @return  OBCameraParam返回相机参数
+        * \endif
+        */
         public CameraParam GetCameraParam()
         {
             IntPtr error;
@@ -300,6 +333,92 @@ namespace Orbbec
             return cameraParam;
         }
 
+        /**
+        * \if English
+        * @brief Return a list of D2C-enabled depth sensor resolutions corresponding to the input color sensor resolution
+        * @param colorProfile Input color sensor resolution
+        * @param alignMode Input align mode
+        *
+        * @return StreamProfileList returns a list of depth sensor resolutions
+        * \else
+        * @brief 返回与输入的彩色传感器分辨率对应的支持D2C的深度传感器分辨率列表
+        * @param colorProfile 输入的彩色传感器分辨率
+        * @param alignMode 输入的对齐模式
+        *
+        * @return StreamProfileList 返回深度传感器分辨率列表
+        * \endif
+        */
+        public StreamProfileList GetD2CDepthProfileList(StreamProfile colorProfile, AlignMode alignMode)
+        {
+            IntPtr error;
+            IntPtr ptr = obNative.ob_get_d2c_depth_profile_list(_handle.Ptr, colorProfile.GetNativeHandle().Ptr, alignMode, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new StreamProfileList(ptr);
+        }
+
+        /**
+        * \if English
+        * @brief Get valid area between minimum distance and maximum distance after D2C
+        *
+        * @param minimumDistance minimum working distance
+        * @param maximumDistance maximum working distance
+        * @return Rect returns the area information valid after D2C at the working distance
+        * \else
+        * @brief 获取D2C后给定工作范围的有效区域
+        * 如果需要获取指定距离D2C后的ROI区域，将minimum_distance与maximum_distance设置成一样或者将maximum_distance设置成0
+        *
+        * @param minimumDistance 最小工作距离
+        * @param maximumDistance 最大工作距离
+        * @return Rect 返回在工作距离下D2C后有效的区域信息
+        * \endif
+        */
+        public Rect GetD2CValidArea(UInt32 minimumDistance, UInt32 maximumDistance = 0)
+        {
+            IntPtr error;
+            Rect rect;
+            obNative.ob_get_d2c_range_valid_area(out rect, _handle.Ptr, minimumDistance, maximumDistance, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return rect;
+        }
+
+        /**
+        * \if English
+        * @brief Dynamically switch the corresponding config configuration
+        *
+        * @param config Updated config configuration
+        * \else
+        * @brief 动态切换对应的config配置
+        *
+        * @param config 更新后的config配置
+        * \endif
+        */
+        public void SwitchConfig(Config config)
+        {
+            IntPtr error;
+            obNative.ob_pipeline_switch_config(_handle.Ptr, config.GetNativeHandle().Ptr, out error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief start recording
+        *
+        * @param filename Record file name
+        * \else
+        * @brief 开始录制
+        *
+        * @param filename 录制文件名
+        * \endif
+        */
         public void StartRecord(String fileName)
         {
             IntPtr error;
@@ -310,6 +429,13 @@ namespace Orbbec
             }
         }
 
+        /**
+        * \if English
+        * @brief Stop recording
+        * \else
+        * @brief 停止录制
+        * \endif
+        */
         public void StopRecord()
         {
             IntPtr error;
@@ -333,19 +459,6 @@ namespace Orbbec
         public void Dispose()
         {
             _handle.Dispose();
-        }
-
-        private void OnFrameset(IntPtr framesetPtr, IntPtr userDataPtr)
-        {
-            Frameset frameset = new Frameset(framesetPtr);
-            if(_callback != null)
-            {
-                _callback(frameset);
-            }
-            else
-            {
-                frameset.Dispose();
-            }
         }
     }
 }
