@@ -137,7 +137,7 @@ namespace Orbbec
         * @param enable 是否需要缩放
         * \endif
         */
-        void SetDepthScaleRequire(bool enable)
+        public void SetDepthScaleRequire(bool enable)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_config_set_depth_scale_require(_handle.Ptr, enable, ref error);
@@ -162,7 +162,7 @@ namespace Orbbec
         * @param d2cTargetHeight D2C目标分辨率高
         * \endif
         */
-        void SetD2CTargetResolution(UInt32 d2cTargetWidth, UInt32 d2cTargetHeight)
+        public void SetD2CTargetResolution(UInt32 d2cTargetWidth, UInt32 d2cTargetHeight)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_config_set_d2c_target_resolution(_handle.Ptr, d2cTargetWidth, d2cTargetHeight, ref error);

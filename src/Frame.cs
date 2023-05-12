@@ -420,7 +420,7 @@ namespace Orbbec
         * @return float 缩放系数
         * \endif
         */
-        float GetPositionValueScale()
+        public float GetPositionValueScale()
         {
             IntPtr error = IntPtr.Zero;
             return obNative.ob_points_frame_get_position_value_scale(_handle.Ptr, ref error);

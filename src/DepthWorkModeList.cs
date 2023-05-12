@@ -22,7 +22,7 @@ namespace Orbbec
         * @return 列表中的相机深度模式数量
         * \endif
         */
-        UInt32 Count()
+        public UInt32 Count()
         {
             IntPtr error = IntPtr.Zero;
             UInt32 count = obNative.ob_depth_work_mode_list_count(_handle.Ptr, ref error);
@@ -47,7 +47,7 @@ namespace Orbbec
         * @return 相机深度模式
         * \endif
         */
-        DepthWorkMode GetDepthWorkMode(UInt32 index)
+        public DepthWorkMode GetDepthWorkMode(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
             DepthWorkMode workMode;
