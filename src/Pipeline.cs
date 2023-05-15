@@ -10,6 +10,21 @@ namespace Orbbec
     {
         private NativeHandle _handle;
         private Device _device;
+        private FramesetCallback _callback;
+        private NativeFramesetCallback _nativeCallback;
+
+        private void OnFrameset(IntPtr framesetPtr, IntPtr userData)
+        {
+            Frameset frameset = new Frameset(framesetPtr);
+            if(_callback != null)
+            {
+                _callback(frameset);
+            }
+            else
+            {
+                frameset.Dispose();
+            }
+        }
 
         /**
         * \if English
@@ -31,6 +46,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            _nativeCallback = new NativeFramesetCallback(OnFrameset);
         }
 
         /**
@@ -52,6 +68,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            _nativeCallback = new NativeFramesetCallback(OnFrameset);
         }
 
         /**
@@ -76,6 +93,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            _nativeCallback = new NativeFramesetCallback(OnFrameset);
         }
 
         /**
@@ -114,18 +132,9 @@ namespace Orbbec
         */
         public void Start(Config config, FramesetCallback callback)
         {
+            _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config.GetNativeHandle().Ptr, (framesetPtr, userDataPtr)=>{
-                Frameset frameset = new Frameset(framesetPtr);
-                if(callback != null)
-                {
-                    callback(frameset);
-                }
-                else
-                {
-                    frameset.Dispose();
-                }
-            }, IntPtr.Zero, ref error);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _nativeCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

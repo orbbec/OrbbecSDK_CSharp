@@ -9,10 +9,26 @@ namespace Orbbec
     public class Sensor : IDisposable
     {
         private NativeHandle _handle;
+        private FrameCallback _callback;
+        private NativeFrameCallback _nativeCallback;
+
+        private void OnFrame(IntPtr framePtr, IntPtr userData)
+        {
+            Frame frame = new Frame(framePtr);
+            if(_callback != null)
+            {
+                _callback(frame);
+            }
+            else
+            {
+                frame.Dispose();
+            }
+        }
 
         internal Sensor(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
+            _nativeCallback = new NativeFrameCallback(OnFrame);
         }
 
         internal NativeHandle GetNativeHandle()
@@ -79,18 +95,9 @@ namespace Orbbec
         */
         public void Start(StreamProfile streamProfile, FrameCallback callback)
         {
+            _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, (framePtr, userData)=>{
-                Frame frame = new Frame(framePtr);
-                if(callback != null)
-                {
-                    callback(frame);
-                }
-                else
-                {
-                    frame.Dispose();
-                }
-            }, IntPtr.Zero, ref error);
+            obNative.ob_sensor_start(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, _nativeCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

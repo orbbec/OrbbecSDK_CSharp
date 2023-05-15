@@ -10,10 +10,37 @@ namespace Orbbec
     public class Playback : IDisposable
     {
         private NativeHandle _handle;
+        private PlaybackCallback _playbackCallback;
+        private NativePlaybackCallback _nativePlaybackCallback;
+        private MediaStateCallback _mediaStateCallback;
+        private NativeMediaStateCallback _nativeMediaStateCallback;
+
+        private void OnPlayback(IntPtr framePtr, IntPtr userData)
+        {
+            Frame frame = new Frame(framePtr);
+            if(_playbackCallback != null)
+            {
+                _playbackCallback(frame);
+            }
+            else
+            {
+                frame.Dispose();
+            }
+        }
+
+        private void OnMediaState(MediaState state, IntPtr userData)
+        {
+            if(_nativePlaybackCallback != null)
+            {
+                _mediaStateCallback(state);
+            }
+        }
 
         internal Playback(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
+            _nativePlaybackCallback = new NativePlaybackCallback(OnPlayback);
+            _nativeMediaStateCallback = new NativeMediaStateCallback(OnMediaState);
         }
 
         internal NativeHandle GetNativeHandle()
@@ -58,18 +85,9 @@ namespace Orbbec
         */
         public void Start(PlaybackCallback callback, MediaType mediaType)
         {
+            _playbackCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_playback_start(_handle.Ptr, (framePtr, userData)=>{
-                Frame frame = new Frame(framePtr);
-                if(callback != null)
-                {
-                    callback(frame);
-                }
-                else
-                {
-                    frame.Dispose();
-                }
-            }, IntPtr.Zero, mediaType, ref error);
+            obNative.ob_playback_start(_handle.Ptr, _nativePlaybackCallback, IntPtr.Zero, mediaType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -104,12 +122,9 @@ namespace Orbbec
         */
         public void SetPlaybackStateCallback(MediaStateCallback callback)
         {
+            _mediaStateCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_playback_state_callback(_handle.Ptr, (state, userData)=>{
-                if(callback != null) {
-                    callback(state);
-                }
-            }, IntPtr.Zero, ref error);
+            obNative.ob_set_playback_state_callback(_handle.Ptr, _nativeMediaStateCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

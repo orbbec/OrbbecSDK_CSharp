@@ -3,6 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
+    internal delegate void NativeDeviceChangedCallback(IntPtr removedPtr, IntPtr addedPtr, IntPtr userData);
+    internal delegate void NativeDeviceStateCallback(UInt64 state, String message, IntPtr userData);
+    internal delegate void NativeSetDataCallback(DataTranState state, uint percent, IntPtr userData);
+    internal delegate void NativeGetDataCallback(DataTranState state, DataChunk dataChunk, IntPtr userData);
+    internal delegate void NativeDeviceUpgradeCallback(UpgradeState state, String message, byte percent, IntPtr userData);
+    internal delegate void NativeSendFileCallback(FileTranState state, String message, byte percent, IntPtr userData);
+    internal delegate void NativeFilterCallback(IntPtr framePtr, IntPtr userData);
+    internal delegate void NativeFramesetCallback(IntPtr framesetPtr, IntPtr userData);
+    internal delegate void NativeFrameDestroyCallback(IntPtr bufferPtr, IntPtr userData);
+    internal delegate void NativePlaybackCallback(IntPtr framePtr, IntPtr userData);
+    internal delegate void NativeMediaStateCallback(MediaState state, IntPtr userData);
+    internal delegate void NativeFrameCallback(IntPtr framePtr, IntPtr userData);
+
     internal class obNative
     {
 #if ORBBEC_DEBUG
@@ -10,18 +23,6 @@ namespace Orbbec
 #else
         public const string obsdk = "OrbbecSDK";
 #endif
-        internal delegate void ob_device_changed_callback(IntPtr removedPtr, IntPtr addedPtr, IntPtr userData);
-        internal delegate void ob_device_state_callback(UInt64 state, String message, IntPtr userData);
-        internal delegate void ob_set_data_callback(DataTranState state, uint percent, IntPtr userData);
-        internal delegate void ob_get_data_callback(DataTranState state, DataChunk dataChunk, IntPtr userData);
-        internal delegate void ob_device_upgrade_callback(UpgradeState state, String message, byte percent, IntPtr userData);
-        internal delegate void ob_file_send_callback(FileTranState state, String message, byte percent, IntPtr userData);
-        internal delegate void ob_filter_callback(IntPtr framePtr, IntPtr userData);
-        internal delegate void ob_frame_set_callback(IntPtr framesetPtr, IntPtr userData);
-        internal delegate void ob_frame_destroy_callback(IntPtr buffer, IntPtr userData);
-        internal delegate void ob_playback_callback(IntPtr framePtr, IntPtr userData);
-        internal delegate void ob_media_state_callback(MediaState state, IntPtr userData);
-        internal delegate void ob_frame_callback(IntPtr framePtr, IntPtr userData);
 
         #region Context
         //ob_context *ob_create_context(ob_error **error);
@@ -46,7 +47,7 @@ namespace Orbbec
 
         //void ob_set_device_changed_callback(ob_context *context, ob_device_changed_callback callback, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_set_device_changed_callback")]
-        public static extern void ob_set_device_changed_callback(IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)] ob_device_changed_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern void ob_set_device_changed_callback(IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceChangedCallback callback, IntPtr userData, ref IntPtr error);
 
         //void ob_enable_multi_device_sync(ob_context *context, uint64_t repeatInterval, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_enable_multi_device_sync")]
@@ -160,11 +161,11 @@ namespace Orbbec
 
         //void ob_device_set_raw_data(ob_device *device, ob_property_id property_id, void *data, uint32_t data_size, ob_set_data_callback cb, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_set_raw_data")]
-        public static extern void ob_device_set_raw_data(IntPtr device, PropertyId propertyId, IntPtr data, UInt32 dataSize, [MarshalAs(UnmanagedType.FunctionPtr)] ob_set_data_callback callback, bool async, IntPtr userData, ref IntPtr error);
+        public static extern void ob_device_set_raw_data(IntPtr device, PropertyId propertyId, IntPtr data, UInt32 dataSize, [MarshalAs(UnmanagedType.FunctionPtr)] NativeSetDataCallback callback, bool async, IntPtr userData, ref IntPtr error);
 
         //void ob_device_get_raw_data(ob_device *device, ob_property_id property_id, ob_get_data_callback cb, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_get_raw_data")]
-        public static extern void ob_device_get_raw_data(IntPtr device, PropertyId propertyId, [MarshalAs(UnmanagedType.FunctionPtr)] ob_get_data_callback callback, bool async, IntPtr userData, ref IntPtr error);
+        public static extern void ob_device_get_raw_data(IntPtr device, PropertyId propertyId, [MarshalAs(UnmanagedType.FunctionPtr)] NativeGetDataCallback callback, bool async, IntPtr userData, ref IntPtr error);
 
         //ob_protocol_version ob_device_get_protocol_version(ob_device *device, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_get_protocol_version")]
@@ -216,11 +217,11 @@ namespace Orbbec
 
         //void ob_device_write_flash(ob_device *device, uint32_t offset, const void *data, uint32_t data_size, ob_set_data_callback cb, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_write_flash")]
-        public static extern void ob_device_write_flash(IntPtr device, UInt32 offset, IntPtr data, UInt32 dataSize, ob_set_data_callback callback, bool asycn, IntPtr userData, ref IntPtr error);
+        public static extern void ob_device_write_flash(IntPtr device, UInt32 offset, IntPtr data, UInt32 dataSize, NativeSetDataCallback callback, bool asycn, IntPtr userData, ref IntPtr error);
 
         //void ob_device_read_flash(ob_device *device, uint32_t offset, uint32_t data_size, ob_get_data_callback cb, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_read_flash")]
-        public static extern void ob_device_read_flash(IntPtr device, UInt32 offset, UInt32 dataSize, ob_get_data_callback callback, bool async, IntPtr userData, ref IntPtr error);
+        public static extern void ob_device_read_flash(IntPtr device, UInt32 offset, UInt32 dataSize, NativeGetDataCallback callback, bool async, IntPtr userData, ref IntPtr error);
         
         //uint64_t ob_device_sync_device_time(ob_device *device, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_sync_device_time")]
@@ -228,7 +229,7 @@ namespace Orbbec
         
         //void ob_device_upgrade(ob_device *device, const char *path, ob_device_upgrade_callback callback, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_upgrade")]
-        public static extern void ob_device_upgrade(IntPtr device, String path, [MarshalAs(UnmanagedType.FunctionPtr)] ob_device_upgrade_callback callback, bool async, IntPtr userData, ref IntPtr error);
+        public static extern void ob_device_upgrade(IntPtr device, String path, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceUpgradeCallback callback, bool async, IntPtr userData, ref IntPtr error);
 
         //ob_device_state ob_device_get_device_state( ob_device* device, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_get_device_state")]
@@ -236,11 +237,11 @@ namespace Orbbec
 
         //void ob_device_state_changed( ob_device* device, ob_device_state_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_state_changed")]
-        public static extern void ob_device_state_changed(IntPtr device, [MarshalAs(UnmanagedType.FunctionPtr)] ob_device_state_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern void ob_device_state_changed(IntPtr device, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceStateCallback callback, IntPtr userData, ref IntPtr error);
 
         //void ob_device_send_file_to_destination(ob_device *device, const char *file_path, const char *dst_path, ob_file_send_callback callback, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_send_file_to_destination")]
-        public static extern void ob_device_send_file_to_destination(IntPtr device, String filePath, String dstPath, ob_file_send_callback callback, bool async, IntPtr user_data, ref IntPtr error);
+        public static extern void ob_device_send_file_to_destination(IntPtr device, String filePath, String dstPath, NativeSendFileCallback callback, bool async, IntPtr user_data, ref IntPtr error);
 
         //bool ob_device_activate_authorization( ob_device* device, const char* auth_code, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_activate_authorization")]
@@ -440,7 +441,7 @@ namespace Orbbec
 
         //void ob_filter_set_callback( ob_filter* filter, ob_filter_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_set_callback")]
-        public static extern void ob_filter_set_callback(IntPtr filter, [MarshalAs(UnmanagedType.FunctionPtr)] ob_filter_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern void ob_filter_set_callback(IntPtr filter, [MarshalAs(UnmanagedType.FunctionPtr)] NativeFilterCallback callback, IntPtr userData, ref IntPtr error);
 
         //void ob_filter_push_frame( ob_filter* filter, ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_push_frame")]
@@ -570,7 +571,7 @@ namespace Orbbec
 
         //ob_frame *ob_create_frame_from_buffer(ob_format frame_format, uint32_t frame_width, uint32_t frame_height, uint8_t *buffer, uint32_t buffer_size, ob_frame_destroy_callback *buffer_destroy_cb, void *buffer_destroy_context, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_frame_from_buffer")]
-        public static extern IntPtr ob_create_frame_from_buffer(Format format, UInt32 width, UInt32 height, IntPtr buffer, UInt32 bufferSize, ob_frame_destroy_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern IntPtr ob_create_frame_from_buffer(Format format, UInt32 width, UInt32 height, IntPtr buffer, UInt32 bufferSize, NativeFrameDestroyCallback callback, IntPtr userData, ref IntPtr error);
         
         //ob_frame *ob_create_frameset(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_frameset")]
@@ -620,7 +621,7 @@ namespace Orbbec
 
         //void ob_pipeline_start_with_callback( ob_pipeline* pipeline, ob_config* config, ob_frame_set_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_pipeline_start_with_callback")]
-        public static extern void ob_pipeline_start_with_callback(IntPtr pipeline, IntPtr config, [MarshalAs(UnmanagedType.FunctionPtr)] ob_frame_set_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern void ob_pipeline_start_with_callback(IntPtr pipeline, IntPtr config, [MarshalAs(UnmanagedType.FunctionPtr)] NativeFramesetCallback callback, IntPtr userData, ref IntPtr error);
 
         //void ob_pipeline_stop( ob_pipeline* pipeline, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_pipeline_stop")]
@@ -760,7 +761,7 @@ namespace Orbbec
 
         //void ob_playback_start(ob_playback *playback, ob_playback_callback callback, void *user_data, ob_media_type type, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_playback_start")]
-        public static extern void ob_playback_start(IntPtr playback, [MarshalAs(UnmanagedType.FunctionPtr)] ob_playback_callback callback, IntPtr userData, MediaType mediaType, ref IntPtr error);
+        public static extern void ob_playback_start(IntPtr playback, [MarshalAs(UnmanagedType.FunctionPtr)] NativePlaybackCallback callback, IntPtr userData, MediaType mediaType, ref IntPtr error);
 
         //void ob_playback_stop(ob_playback *playback, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_playback_stop")]
@@ -768,7 +769,7 @@ namespace Orbbec
 
         //void ob_set_playback_state_callback(ob_playback *playback, ob_media_state_callback callback, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_set_playback_state_callback")]
-        public static extern void ob_set_playback_state_callback(IntPtr playback, ob_media_state_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern void ob_set_playback_state_callback(IntPtr playback, NativeMediaStateCallback callback, IntPtr userData, ref IntPtr error);
         
         //ob_device_info *ob_playback_get_device_info(ob_playback *playback, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_playback_get_device_info")]
@@ -790,7 +791,7 @@ namespace Orbbec
 
         //void ob_sensor_start( ob_sensor* sensor, ob_stream_profile* profile, ob_frame_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_sensor_start")]
-        public static extern void ob_sensor_start(IntPtr sensor, IntPtr profile, [MarshalAs(UnmanagedType.FunctionPtr)] ob_frame_callback callback, IntPtr userData, ref IntPtr error);
+        public static extern void ob_sensor_start(IntPtr sensor, IntPtr profile, [MarshalAs(UnmanagedType.FunctionPtr)] NativeFrameCallback callback, IntPtr userData, ref IntPtr error);
         
         //void ob_sensor_stop( ob_sensor* sensor, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_sensor_stop")]

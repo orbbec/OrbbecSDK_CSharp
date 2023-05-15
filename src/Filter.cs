@@ -9,15 +9,31 @@ namespace Orbbec
     public class Filter : IDisposable
     {
         protected NativeHandle _handle;
+        private FilterCallback _callback;
+        private NativeFilterCallback _nativeCallback;
+
+        private void OnFilter(IntPtr framePtr, IntPtr userData)
+        {
+            Frame frame = new Frame(framePtr);
+            if(_callback != null)
+            {
+                _callback(frame);
+            }
+            else
+            {
+                frame.Dispose();
+            }
+        }
 
         internal Filter()
         {
-
+            _nativeCallback = new NativeFilterCallback(OnFilter);
         }
 
         internal Filter(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
+            _nativeCallback = new NativeFilterCallback(OnFilter);
         }
 
         /**
@@ -74,18 +90,9 @@ namespace Orbbec
         */
         public void SetCallback(FilterCallback callback)
         {
+            _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_filter_set_callback(_handle.Ptr, (framePtr, userData)=>{
-                Frame frame = new Frame(framePtr);
-                if(callback != null)
-                {
-                    callback(frame);
-                }
-                else
-                {
-                    frame.Dispose();
-                }
-            }, IntPtr.Zero, ref error);
+            obNative.ob_filter_set_callback(_handle.Ptr, _nativeCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

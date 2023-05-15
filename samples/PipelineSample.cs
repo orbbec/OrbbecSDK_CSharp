@@ -14,6 +14,9 @@ class TestClass
         config.EnableStream(colorProfile);
         config.EnableStream(depthProfile);
 
+        config.SetAlignMode(AlignMode.ALIGN_D2C_HW_MODE);
+        pipeline.EnableFrameSync();
+
         byte[] colorData = null;
         byte[] depthData = null;
 

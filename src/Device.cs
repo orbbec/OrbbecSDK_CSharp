@@ -8,15 +8,69 @@ namespace Orbbec
     public delegate void GetDataCallback(DataTranState state, DataChunk dataChunk);
     public delegate void DeviceUpgradeCallback(UpgradeState state, String message, byte percent);
     public delegate void SendFileCallback(FileTranState state, String message, byte percent);
-    public delegate void DeviceStateChangedCallback(UInt64 state, String message);
 
     public class Device : IDisposable
     {
         private NativeHandle _handle;
+        private DeviceStateCallback _deviceStateCallback;
+        private NativeDeviceStateCallback _nativeDeviceStateCallback;
+        private SetDataCallback _setDataCallback;
+        private NativeSetDataCallback _nativeSetDataCallback;
+        private GetDataCallback _getDataCallback;
+        private NativeGetDataCallback _nativeGetDataCallback;
+        private DeviceUpgradeCallback _deviceUpgradeCallback;
+        private NativeDeviceUpgradeCallback _nativeDeviceUpgradeCallback;
+        private SendFileCallback _sendFileCallback;
+        private NativeSendFileCallback _nativeSendFileCallback;
+
+        private void OnDeviceState(UInt64 state, String message, IntPtr userData)
+        {
+            if(_deviceStateCallback != null)
+            {
+                _deviceStateCallback(state, message);
+            }
+        }
+
+        private void OnSetData(DataTranState state, uint percent, IntPtr userData)
+        {
+            if(_setDataCallback != null)
+            {
+                _setDataCallback(state, percent);
+            }
+        }
+
+        private void OnGetData(DataTranState state, DataChunk dataChunk, IntPtr userData)
+        {
+            if(_getDataCallback != null)
+            {
+                _getDataCallback(state, dataChunk);
+            }
+        }
+
+        private void OnDeviceUpgrade(UpgradeState state, String message, byte percent, IntPtr userData)
+        {
+            if(_deviceUpgradeCallback != null)
+            {
+                _deviceUpgradeCallback(state, message, percent);
+            }
+        }
+
+        private void OnFileSend(FileTranState state, String message, byte percent, IntPtr userData)
+        {
+            if(_sendFileCallback != null)
+            {
+                _sendFileCallback(state, message, percent);
+            }
+        }
 
         internal Device(IntPtr handle)
         {
             _handle = new NativeHandle(handle, Delete);
+            _nativeDeviceStateCallback = new NativeDeviceStateCallback(OnDeviceState);
+            _nativeSetDataCallback = new NativeSetDataCallback(OnSetData);
+            _nativeGetDataCallback = new NativeGetDataCallback(OnGetData);
+            _nativeDeviceUpgradeCallback = new NativeDeviceUpgradeCallback(OnDeviceUpgrade);
+            _nativeSendFileCallback = new NativeSendFileCallback(OnFileSend);
         }
 
         internal NativeHandle GetNativeHandle()
@@ -509,16 +563,11 @@ namespace Orbbec
         */
         public void WriteFlash(UInt32 offset, byte[] data, UInt32 dataSize, SetDataCallback callback, bool async = false)
         {
+            _setDataCallback = callback;
             IntPtr error = IntPtr.Zero;
             GCHandle gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
             IntPtr intPtr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_write_flash(_handle.Ptr, offset, intPtr, dataSize, (state, percent, userData)=>{
-                if(callback != null)
-                {
-                    callback(state, percent);
-                }
-                callback(state, percent);
-            }, async, IntPtr.Zero, ref error);
+            obNative.ob_device_write_flash(_handle.Ptr, offset, intPtr, dataSize, _nativeSetDataCallback, async, IntPtr.Zero, ref error);
             gcHandle.Free();
             if(error != IntPtr.Zero)
             {
@@ -547,13 +596,9 @@ namespace Orbbec
         */
         public void ReadFlash(UInt32 offset, UInt32 dataSize, GetDataCallback callback, bool async = false)
         {
+            _getDataCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_flash(_handle.Ptr, offset, dataSize, (state, dataChunk, userData)=>{
-                if(callback != null)
-                {
-                    callback(state, dataChunk);
-                }
-            }, async, IntPtr.Zero, ref error);
+            obNative.ob_device_read_flash(_handle.Ptr, offset, dataSize, _nativeGetDataCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -581,15 +626,11 @@ namespace Orbbec
         */
         public void SetRawData(PropertyId propertyId, byte[] data, UInt32 dataSize, SetDataCallback callback, bool async = false)
         {
+            _setDataCallback = callback;
             IntPtr error = IntPtr.Zero;
             GCHandle gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
             IntPtr intPtr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_set_raw_data(_handle.Ptr, propertyId, intPtr, dataSize, (state, percent, userData)=>{
-                if(callback != null)
-                {
-                    callback(state, percent);
-                }
-            }, async, IntPtr.Zero, ref error);
+            obNative.ob_device_set_raw_data(_handle.Ptr, propertyId, intPtr, dataSize, _nativeSetDataCallback, async, IntPtr.Zero, ref error);
             gcHandle.Free();
             if(error != IntPtr.Zero)
             {
@@ -618,13 +659,9 @@ namespace Orbbec
         */
         public void GetRawData(PropertyId propertyId, GetDataCallback callback, bool async = false)
         {
+            _getDataCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_get_raw_data(_handle.Ptr, propertyId, (state, dataChunk, userData)=>{
-                if(callback != null)
-                {
-                    callback(state, dataChunk);
-                }
-            }, async, IntPtr.Zero, ref error);
+            obNative.ob_device_get_raw_data(_handle.Ptr, propertyId, _nativeGetDataCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -761,13 +798,9 @@ namespace Orbbec
         */
         public void DeviceUpgrade(String filePath, DeviceUpgradeCallback callback, bool async = true)
         {
+            _deviceUpgradeCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_upgrade(_handle.Ptr, filePath, (state, message, percent, userData)=>{
-                if(callback != null)
-                {
-                    callback(state, message, percent);
-                }
-            }, async, IntPtr.Zero, ref error);
+            obNative.ob_device_upgrade(_handle.Ptr, filePath, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -793,13 +826,9 @@ namespace Orbbec
         */
         public void SendFile(String filePath, String dstPath, SendFileCallback callback, bool async = true)
         {
+            _sendFileCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_send_file_to_destination(_handle.Ptr, filePath, dstPath, (state, message, percent, userData)=>{
-                if(callback != null) 
-                {
-                    callback(state, message, percent);
-                }
-            }, async, IntPtr.Zero, ref error);
+            obNative.ob_device_send_file_to_destination(_handle.Ptr, filePath, dstPath, _nativeSendFileCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -837,15 +866,11 @@ namespace Orbbec
         * @param callback 设备状态改变（如，由于温度过高自动降低帧率或关流等）时触发的回调函数
         * \endif
         */
-        public void SetDeviceStateChangedCallback(DeviceStateChangedCallback callback)
+        public void SetDeviceStateChangedCallback(DeviceStateCallback callback)
         {
+            _deviceStateCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_state_changed(_handle.Ptr, (state, message, userData)=>{
-                if(callback != null)
-                {
-                    callback(state, message);
-                }
-            }, IntPtr.Zero, ref error);
+            obNative.ob_device_state_changed(_handle.Ptr, _nativeDeviceStateCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
