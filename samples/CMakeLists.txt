@@ -11,3 +11,5 @@ add_dependencies(PipelineSample ob_csharp)
 add_executable(PipelineSample_Wait PipelineSample_Wait.cs)
 add_dependencies(PipelineSample_Wait ob_csharp)
 
+add_executable(NetDevicePipeline NetDevicePipeline.cs)
+add_dependencies(NetDevicePipeline ob_csharp)

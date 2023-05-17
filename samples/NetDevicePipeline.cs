@@ -2,21 +2,24 @@ using System;
 using System.Threading;
 using Orbbec;
 
+//10.10.71.55
 class TestClass
 {
     static void Main(string[] args)
     {
-        Pipeline pipeline = new Pipeline();
+        Context ctx = new Context();
+        Device dev = ctx.CreateNetDevice("192.168.1.10", 8090);
+        Pipeline pipeline = new Pipeline(dev);
         StreamProfileList colorProfileList = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR);
-        StreamProfile colorProfile = colorProfileList.GetVideoStreamProfile(640, 0, Format.OB_FORMAT_RGB888, 30);
+        StreamProfile colorProfile = colorProfileList.GetVideoStreamProfile(1920, 0, Format.OB_FORMAT_MJPG, 15);
         StreamProfileList depthProfileList = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH);
-        StreamProfile depthProfile = depthProfileList.GetVideoStreamProfile(640, 0, Format.OB_FORMAT_UNKNOWN, 30);
+        StreamProfile depthProfile = depthProfileList.GetVideoStreamProfile(1024, 0, Format.OB_FORMAT_Y16, 15);
         Config config = new Config();
         config.EnableStream(colorProfile);
         config.EnableStream(depthProfile);
 
         config.SetAlignMode(AlignMode.ALIGN_D2C_HW_MODE);
-        pipeline.EnableFrameSync();
+        // pipeline.EnableFrameSync();
 
         byte[] colorData = null;
         byte[] depthData = null;
