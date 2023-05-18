@@ -42,6 +42,7 @@ class TestClass
                 colorFrame.CopyData(ref colorData);
                 Console.WriteLine("Color {0}-{1}", colorData[0], colorData[colorData.Length - 1]);
                 colorFrame.Dispose();
+                System.IO.File.WriteAllBytes("color.mjpg", colorData);
             }
 
 
@@ -56,6 +57,7 @@ class TestClass
                 depthFrame.CopyData(ref depthData);
                 Console.WriteLine("Depth {0}-{1}", depthData[0], depthData[depthData.Length - 1]);
                 depthFrame.Dispose();
+                System.IO.File.WriteAllBytes("depth.raw", depthData);
             }
             
             frameset.Dispose();

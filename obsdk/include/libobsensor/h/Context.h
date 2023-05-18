@@ -128,8 +128,8 @@ void ob_set_device_changed_callback(ob_context *context, ob_device_changed_callb
  * @brief Activate the multi-device synchronization function to synchronize the clock of the created device(the device needs to support this function)
  *
  * @param[in]  context Context
- * @param[in]  repeatInterval synchronization time interval (unit: ms; if repeatInterval=0, itmeans that it will only be synchronized once and will not be
- * executedregularly)
+ * @param[in]  repeatInterval synchronization time interval (unit: ms; if repeatInterval=0, it means that it will only be synchronized once and will not be
+ * executed regularly)
  * @param[out] error Log error messages
  * \else
  * @brief 启动多设备同步功能，同步已创建设备的时钟(需要使用的设备支持该功能)
@@ -140,6 +140,22 @@ void ob_set_device_changed_callback(ob_context *context, ob_device_changed_callb
  * \endif
  */
 void ob_enable_multi_device_sync(ob_context *context, uint64_t repeatInterval, ob_error **error);
+
+/**
+ * \if English
+ * @brief free idle memory from internal frame memory pool
+ *
+ * @param[in]  context Context
+
+ * @param[out] error Log error messages
+ * \else
+ * @brief 从内部数据帧内存池中释放空闲内存
+ *
+ * @param[in]  context 上下文环境
+ * @param[out] error 记录错误信息
+ * \endif
+ */
+void ob_free_idle_memory(ob_context *context, ob_error **error);
 
 /**
  * \if English
@@ -176,8 +192,6 @@ void ob_set_logger_to_file(ob_log_severity severity, const char *directory, ob_e
 
 /**
  * \if English
- /**
- * \if English
  * @brief Set the output log to the console
  *
  * @param[in] log Log level
@@ -190,6 +204,42 @@ void ob_set_logger_to_file(ob_log_severity severity, const char *directory, ob_e
  * \endif
  */
 void ob_set_logger_to_console(ob_log_severity severity, ob_error **error);
+
+/**
+ * \if English
+ * @brief Load License
+ *
+ * @param[in] filePath license file path
+ * @param[in] key decrypt key,"OB_DEFAULT_DECRYPT_KEY" can be used to represent the default key
+ * @param[out] error Log error messages
+ * \else
+ * @brief 加载license文件
+ *
+ * @param[in] filePath license文件路径
+ * @param[in] key 解密的key,可使用"OB_DEFAULT_DECRYPT_KEY"表示默认key
+ * @param[out] error 记录错误信息
+ * \endif
+ */
+void ob_load_license(const char *filePath, const char *key, ob_error **error);
+
+/**
+ * \if English
+ * @brief Load license from data
+ *
+ * @param[in] data license data
+ * @param[in] dataLen license data len
+ * @param[in] key decrypt key,"OB_DEFAULT_DECRYPT_KEY" can be used to represent the default key
+ * @param[out] error Log error messages
+ * \else
+ * @brief 加载license数据
+ *
+ * @param[in] data license数据
+ * @param[in] dataLen license数据长度
+ * @param[in] key 解密的key,可使用"OB_DEFAULT_DECRYPT_KEY"表示默认key
+ * @param[out] error 记录错误信息
+ * \endif
+ */
+void ob_load_license_from_data(const char *data, uint32_t dataLen, const char *key, ob_error **error);
 
 #ifdef __cplusplus
 }

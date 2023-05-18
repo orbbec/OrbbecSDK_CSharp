@@ -89,13 +89,23 @@ public:
      * @brief Activate the multi-device synchronization function to synchronize the clock of the created device(the device needs support this function)
      *
      * @param repeatInterval  synchronization time interval (unit: ms; if repeatInterval=0, it means that it will only be synchronized once and will not be
-     * executed regularly) \else
+     * executed regularly)
+     * \else
      * @brief 启动多设备同步功能，同步已创建设备的时钟(需要使用的设备支持该功能)
      *
      * @param repeatInterval 定时同步时间间隔（单位ms；如果repeatInterval=0，表示只同步一次，不再定时执行）
      * \endif
      */
     void enableMultiDeviceSync(uint64_t repeatInterval);
+
+    /**
+     * \if English
+     * @brief free idle memory from internal frame memory pool
+     *\else
+     * @brief 从内部数据帧内存池中释放空闲内存
+     * \endif
+     */
+    void freeIdleMemory();
 
     /**
      * \if English
@@ -137,5 +147,37 @@ public:
      * \endif
      */
     static void setLoggerToConsole(OBLogSeverity severity);
+
+    /**
+     * \if English
+     * @brief Load license file
+     *
+     * @param filePath license file path
+     * @param key decrypt key
+     * \else
+     * @brief 加载license文件
+     *
+     * @param filePath license文件路径
+     * @param key 解密的key
+     * \endif
+     */
+    static void loadLicense(const char *filePath, const char *key = OB_DEFAULT_DECRYPT_KEY);
+
+    /**
+     * \if English
+     * @brief load license from data
+     *
+     * @param data license data
+     * @param dataLen license data len
+     * @param key decrypt key
+     * \else
+     * @brief 加载license数据
+     *
+     * @param data license数据
+     * @param dataLen license数据长度
+     * @param key 解密的key
+     * \endif
+     */
+    static void loadLicenseFromData(const char *data, uint32_t dataLen, const char *key = OB_DEFAULT_DECRYPT_KEY);
 };
 }  // namespace ob

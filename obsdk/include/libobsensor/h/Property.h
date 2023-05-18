@@ -113,6 +113,8 @@ typedef enum {
                 OB_PROP_LASER_ENERGY_LEVEL_INT（99）指令用于设置能级,该指令用于查询设置后硬件实际能级 \endif*/
     OB_PROP_USB_POWER_STATE_INT = 121, /**< \if English USB's power state, enum type: OBUSBPowerState \else USB供电状态，状态值枚举: OBUSBPowerState \endif */
     OB_PROP_DC_POWER_STATE_INT = 122, /**< \if English DC's power state, enum type: OBDCPowerState \else DC供电状态,状态值枚举: OBDCPowerState \endif */
+    OB_PROP_SYNC_SIGNAL_TRIGGLE_OUT_BOOL = 130, /**< \if English Multi-DeviceSync synchronized signal triggle out is enable state. true: enable, false: disable
+                                                   \else 多机同步触发信号外发使能，true：打开，false：关闭 \endif */
 
     OB_STRUCT_BASELINE_CALIBRATION_PARAM     = 1002, /**< \if English Baseline calibration parameters \else  基线标定参数 \endif */
     OB_STRUCT_DEVICE_TEMPERATURE             = 1003, /**< \if English Device temperature information \else  设备温度信息 \endif */

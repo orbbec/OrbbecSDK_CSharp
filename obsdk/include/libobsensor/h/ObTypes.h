@@ -459,6 +459,21 @@ typedef struct {
 } OBCameraParam_V0, ob_camera_param_v0;
 
 /**
+ * @brief 深度margin滤波参数
+ *
+ */
+typedef struct MarginFilterConfig_S {
+    int      margin_x_th;  ///< \if English Horizontal threshold settings \else 水平方向阈值设置 \endif
+    int      margin_y_th;  ///< \if English Vertical threshold settings \else 垂直方向阈值设置 \endif
+    int      limit_x_th;   ///< \if English The maximum horizontal threshold \else 水平方向阈值最大值 \endif
+    int      limit_y_th;   ///< \if English The maximum Vertical threshold \else 垂直方向阈值最大值 \endif
+    uint32_t width;        ///< \if English image width \else 图像宽度 \endif
+    uint32_t height;       ///< \if English image height \else 图像高度 \endif
+    bool     enable_direction;  ///< \if English Set true to horizontal and vertical, set false to horizontal only \else 设置true为水平和垂直，设置false为仅水平
+                            ///< \endif
+} ob_margin_filter_config, OBMarginFilterConfig;
+
+/**
  * \if English
  * @brief alignment mode
  * \else
@@ -1473,6 +1488,15 @@ typedef void(ob_frame_destroy_callback)(void *buffer, void *context);
  */
 #define is_ir_frame(frame_type) (frame_type == OB_FRAME_IR || frame_type == OB_FRAME_IR_LEFT || frame_type == OB_FRAME_IR_RIGHT)
 #define isIRFrame is_ir_frame
+
+/**
+ * \if English
+ * @brief The default Decrypt Key
+ * \else
+ * @brief 默认解密key
+ * \endif
+ */
+#define OB_DEFAULT_DECRYPT_KEY (nullptr)
 
 #ifdef __cplusplus
 }
