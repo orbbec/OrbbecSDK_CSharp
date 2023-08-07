@@ -164,7 +164,7 @@ namespace Orbbec
         * @param severity 日志输出等级
         * \endif
         */
-        public void SetLoggerSeverity(LogSeverity logSeverity)
+        public static void SetLoggerSeverity(LogSeverity logSeverity)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_severity(logSeverity, ref error);
@@ -187,7 +187,7 @@ namespace Orbbec
         * @param directory 日志文件输出路径，如果路径为空，则继续使用已有设置(已有配置也为空则不输出日志到文件)
         * \endif
         */
-        public void SetLoggerToFile(LogSeverity logSeverity, String directory)
+        public static void SetLoggerToFile(LogSeverity logSeverity, String directory)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_to_file(logSeverity, directory, ref error);
@@ -208,7 +208,7 @@ namespace Orbbec
         * @param severity 输出到终端的日志等级
         * \endif
         */
-        public void SetLoggerToConsole(LogSeverity logSeverity)
+        public static void SetLoggerToConsole(LogSeverity logSeverity)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_to_console(logSeverity, ref error);
