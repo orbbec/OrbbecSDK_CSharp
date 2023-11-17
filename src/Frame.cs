@@ -26,6 +26,8 @@ namespace Orbbec
                     _handle.Retain();
                     return new VideoFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_IR:
+                case FrameType.OB_FRAME_IR_LEFT:
+                case FrameType.OB_FRAME_IR_RIGHT:
                     _handle.Retain();
                     return new IRFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_COLOR:
@@ -45,7 +47,7 @@ namespace Orbbec
                     return new PointsFrame(_handle.Ptr) as T;
                 case FrameType.OB_FRAME_GYRO:
                     _handle.Retain();
-                    return new GyroFrame(_handle.Ptr) as T;    
+                    return new GyroFrame(_handle.Ptr) as T;
             }
             return null;
         }
