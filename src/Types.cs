@@ -4,6 +4,16 @@ using System.Runtime.InteropServices;
 namespace Orbbec
 {
     /**
+    * @brief send data or receive data return status type
+    */
+    public enum HPStatusCode {
+        HP_STATUS_OK                      = 0,      /**< success*/
+        HP_STATUS_NO_DEVICE_FOUND         = 1,      /**< No device found*/
+        HP_STATUS_CONTROL_TRANSFER_FAILED = 2,      /**< Transfer failed*/
+        HP_STATUS_UNKNOWN_ERROR           = 0xffff, /**< Unknown error*/
+    }
+
+    /**
     * \if English
     * @brief the permission type of api or property
     * \else
@@ -12,10 +22,11 @@ namespace Orbbec
     */
     public enum PermissionType
     {
-        OB_PERMISSION_DENY = 0, /**< \if English no permission \else 无访问权限 \endif */
-        OB_PERMISSION_READ = 1, /**< \if English can read \else 可读 \endif */
-        OB_PERMISSION_WRITE = 2, /**< \if English can write \else 可写 \endif */
-        OB_PERMISSION_READ_WRITE = 3, /**< \if English can read and write \else 可读写 \endif */
+        OB_PERMISSION_DENY       = 0,   /**< no permission */
+        OB_PERMISSION_READ       = 1,   /**< can read */
+        OB_PERMISSION_WRITE      = 2,   /**< can write */
+        OB_PERMISSION_READ_WRITE = 3,   /**< can read and write */
+        OB_PERMISSION_ANY        = 255, /**< any situation above */
     }
 
     /**
@@ -27,8 +38,8 @@ namespace Orbbec
      */
     public enum Status
     {
-        OB_STATUS_OK = 0, /**< \if English status ok \else 状态正常 \endif */
-        OB_STATUS_ERROR = 1, /**< \if English status error \else 状态异常 \endif */
+        OB_STATUS_OK    = 0, /**< status ok */
+        OB_STATUS_ERROR = 1, /**< status error */
     }
 
     /**
@@ -40,12 +51,12 @@ namespace Orbbec
      */
     public enum LogSeverity
     {
-        OB_LOG_SEVERITY_DEBUG, /**< \if English debug \else 调试 \endif */
-        OB_LOG_SEVERITY_INFO,  /**< \if English information \else 信息 \endif */
-        OB_LOG_SEVERITY_WARN,  /**< \if English warning \else 警告 \endif */
-        OB_LOG_SEVERITY_ERROR, /**< \if English error \else 错误 \endif */
-        OB_LOG_SEVERITY_FATAL, /**< \if English fatal error \else 致命错误 \endif */
-        OB_LOG_SEVERITY_NONE   /**< \if English none (close LOG) \else 无(关闭LOG) \endif */
+        OB_LOG_SEVERITY_DEBUG, /**< debug */
+        OB_LOG_SEVERITY_INFO,  /**< information */
+        OB_LOG_SEVERITY_WARN,  /**< warning */
+        OB_LOG_SEVERITY_ERROR, /**< error */
+        OB_LOG_SEVERITY_FATAL, /**< fatal error */
+        OB_LOG_SEVERITY_OFF    /**< off (close LOG) */
     }
 
     /**
@@ -59,19 +70,16 @@ namespace Orbbec
     */
     public enum ExceptionType
     {
-        OB_EXCEPTION_TYPE_UNKNOWN, /**< \if English Unknown error, an error not clearly defined by the SDK \else 未知错误，SDK未明确定义的错误 \endif */
-        OB_EXCEPTION_TYPE_CAMERA_DISCONNECTED, /**< \if English SDK device disconnection exception \else SDK的设备断开的异常 \endif */
-        OB_EXCEPTION_TYPE_PLATFORM, /**< \if English An error in the SDK adaptation platform layer means an error in the implementation of a specific system
-                                   platform \else 在SDK适配平台层错误，代表是具体一个系统平台实现上错误 \endif */
-        OB_EXCEPTION_TYPE_INVALID_VALUE, /**< \if English Invalid parameter type exception, need to check input parameter \else 无效的参数类型异常，需要检查输入参数
-                                        \endif */
-        OB_EXCEPTION_TYPE_WRONG_API_CALL_SEQUENCE, /**< \if English Exception caused by API version mismatch\else API版本不匹配带来的异常 \endif */
-        OB_EXCEPTION_TYPE_NOT_IMPLEMENTED, /**< \if English SDK and firmware have not yet implemented functions \else SDK及固件还未实现功能 \endif */
-        OB_EXCEPTION_TYPE_IO,              /**< \if English SDK access IO exception error \else SDK访问IO异常错误 \endif */
-        OB_EXCEPTION_TYPE_MEMORY,          /**< \if English SDK access and use memory errors, which means that the frame fails to allocate memory \else
-                                          SDK的访问和使用内存错误，代表桢分配内存失败\endif */
-        OB_EXCEPTION_TYPE_UNSUPPORTED_OPERATION, /**< \if English Unsupported operation type error by SDK or RGBD device \else SDK或RGBD设备不支持的操作类型错误
-                                                \endif */
+        OB_EXCEPTION_TYPE_UNKNOWN,                 /**< Unknown error, an error not clearly defined by the SDK */
+        OB_EXCEPTION_TYPE_CAMERA_DISCONNECTED,     /**< SDK device disconnection exception */
+        OB_EXCEPTION_TYPE_PLATFORM,                /**< An error in the SDK adaptation platform layer means an error in the implementation of a specific system
+                                                    platform */
+        OB_EXCEPTION_TYPE_INVALID_VALUE,           /**< Invalid parameter type exception, need to check input parameter */
+        OB_EXCEPTION_TYPE_WRONG_API_CALL_SEQUENCE, /**< Exception caused by API version mismatch */
+        OB_EXCEPTION_TYPE_NOT_IMPLEMENTED,         /**< SDK and firmware have not yet implemented functions */
+        OB_EXCEPTION_TYPE_IO,                      /**< SDK access IO exception error */
+        OB_EXCEPTION_TYPE_MEMORY,                  /**< SDK access and use memory errors, which means that the frame fails to allocate memory */
+        OB_EXCEPTION_TYPE_UNSUPPORTED_OPERATION,   /**< Unsupported operation type error by SDK or RGBD device */
     }
 
     /**
@@ -83,12 +91,15 @@ namespace Orbbec
      */
     public enum SensorType
     {
-        OB_SENSOR_UNKNOWN = 0, /**< \if English Unknown type sensor \else 未知类型传感器 \endif */
-        OB_SENSOR_IR = 1, /**< \if English IR \else 红外 \endif */
-        OB_SENSOR_COLOR = 2, /**< \if English Color \else 彩色 \endif */
-        OB_SENSOR_DEPTH = 3, /**< \if English Depth \else 深度 \endif */
-        OB_SENSOR_ACCEL = 4, /**< \if English Accel \else 加速度计 \endif */
-        OB_SENSOR_GYRO = 5, /**< \if English Gyro \else 陀螺仪 \endif */
+        OB_SENSOR_UNKNOWN   = 0, /**< Unknown type sensor */
+        OB_SENSOR_IR        = 1, /**< IR */
+        OB_SENSOR_COLOR     = 2, /**< Color */
+        OB_SENSOR_DEPTH     = 3, /**< Depth */
+        OB_SENSOR_ACCEL     = 4, /**< Accel */
+        OB_SENSOR_GYRO      = 5, /**< Gyro */
+        OB_SENSOR_IR_LEFT   = 6, /**< left IR */
+        OB_SENSOR_IR_RIGHT  = 7, /**< Right IR */
+        OB_SENSOR_RAW_PHASE = 8, /**< Raw Phase */
     }
 
     /**
@@ -100,16 +111,16 @@ namespace Orbbec
     */
     public enum StreamType
     {
-        OB_STREAM_UNKNOWN = -1, /**< \if English Unknown type stream \else 未知类型数据流 \endif */
-        OB_STREAM_VIDEO = 0, /**< \if English Video stream (infrared, color, depth streams are all video streams) \else 视频流(红外、彩色、深度流) \endif */
-        OB_STREAM_IR = 1, /**< \if English IR stream \else 红外流 \endif */
-        OB_STREAM_COLOR = 2, /**< \if English color stream \else 彩色流 \endif */
-        OB_STREAM_DEPTH = 3, /**< \if English depth stream \else 深度流 \endif */
-        OB_STREAM_ACCEL = 4, /**< \if English Accelerometer data stream \else 加速度计数据流 \endif */
-        OB_STREAM_GYRO = 5, /**< \if English Gyroscope data stream \else 陀螺仪数据流 \endif */
-        OB_STREAM_IR_LEFT  = 6, /**< \if English Left IR stream \else 左路红外流 \endif */
-        OB_STREAM_IR_RIGHT = 7, /**< \if English Right IR stream \else 右路红外流 \endif */
-
+        OB_STREAM_UNKNOWN   = -1, /**< Unknown type stream */
+        OB_STREAM_VIDEO     = 0,  /**< Video stream (infrared, color, depth streams are all video streams) */
+        OB_STREAM_IR        = 1,  /**< IR stream */
+        OB_STREAM_COLOR     = 2,  /**< color stream */
+        OB_STREAM_DEPTH     = 3,  /**< depth stream */
+        OB_STREAM_ACCEL     = 4,  /**< Accelerometer data stream */
+        OB_STREAM_GYRO      = 5,  /**< Gyroscope data stream */
+        OB_STREAM_IR_LEFT   = 6,  /**< Left IR stream */
+        OB_STREAM_IR_RIGHT  = 7,  /**< Right IR stream */
+        OB_STREAM_RAW_PHASE = 8,  /**< RawPhase Stream */
     }
 
     /**
@@ -121,18 +132,18 @@ namespace Orbbec
      */
     public enum FrameType
     {
-        OB_FRAME_UNKNOWN = -1, /**< \if English Unknown type frame \else 未知类型数据帧 \endif */
-        OB_FRAME_VIDEO = 0,  /**< \if English Describes the Frame type enumeration value \else 视频帧(红外、彩色、深度帧都属于视频帧) \endif */
-        OB_FRAME_IR = 1,  /**< \if English IR frame \else 红外帧 \endif */
-        OB_FRAME_COLOR = 2,  /**< \if English color stream \else 彩色帧 \endif */
-        OB_FRAME_DEPTH = 3,  /**< \if English depth stream \else 深度帧 \endif */
-        OB_FRAME_ACCEL = 4,  /**< \if English Accelerometer data frame \else 加速度计数据帧 \endif */
-        OB_FRAME_SET = 5, /**< \if English Frame collection (internally contains a variety of data frames) \else 帧集合(内部包含多种数据帧) \endif */
-        OB_FRAME_POINTS = 6, /**< \if English point cloud frame \else 点云帧 \endif */
-        OB_FRAME_GYRO = 7, /**< \if English Gyroscope data frame \else 陀螺仪数据帧 \endif */
-        OB_FRAME_IR_LEFT  = 8, /**< \if English Left IR frame \else 左路红外帧 \endif */
-        OB_FRAME_IR_RIGHT = 9, /**< \if English Right IR frame \else 右路红外帧 \endif */
-
+        OB_FRAME_UNKNOWN   = -1, /**< Unknown frame type */
+        OB_FRAME_VIDEO     = 0,  /**< Video frame */
+        OB_FRAME_IR        = 1,  /**< IR frame */
+        OB_FRAME_COLOR     = 2,  /**< Color frame */
+        OB_FRAME_DEPTH     = 3,  /**< Depth frame */
+        OB_FRAME_ACCEL     = 4,  /**< Accelerometer data frame */
+        OB_FRAME_SET       = 5,  /**< Frame collection (internally contains a variety of data frames) */
+        OB_FRAME_POINTS    = 6,  /**< Point cloud frame */
+        OB_FRAME_GYRO      = 7,  /**< Gyroscope data frame */
+        OB_FRAME_IR_LEFT   = 8,  /**< Left IR frame */
+        OB_FRAME_IR_RIGHT  = 9,  /**< Right IR frame */
+        OB_FRAME_RAW_PHASE = 10, /**< Rawphase frame*/
     }
 
     /**
@@ -144,37 +155,34 @@ namespace Orbbec
     */
     public enum Format
     {
-        OB_FORMAT_YUYV = 0,  /**< \if English YUYV format \else YUYV格式 \endif */
-        OB_FORMAT_YUY2 = 1,  /**< \if English YUY2 format (the actual format is the same as YUYV) \else YUY2格式(实际格式与YUYV相同) \endif */
-        OB_FORMAT_UYVY = 2,  /**< \if English UYVY format \else UYVY格式 \endif */
-        OB_FORMAT_NV12 = 3,  /**< \if English NV12 format \else NV12格式 \endif */
-        OB_FORMAT_NV21 = 4,  /**< \if English NV21 format \else NV21格式 \endif */
-        OB_FORMAT_MJPG = 5,  /**< \if English MJPG encoding format \else MJPG编码格式 \endif */
-        OB_FORMAT_H264 = 6,  /**< \if English H.264 encoding format \else H.264编码格式 \endif */
-        OB_FORMAT_H265 = 7,  /**< \if English H.265 encoding format \else H.265编码格式 \endif */
-        OB_FORMAT_Y16 = 8,  /**< \if English Y16 format, single channel 16bit depth \else Y16格式，单通道16bit深度 \endif */
-        OB_FORMAT_Y8 = 9,  /**< \if English Y8 format, single channel 8bit depth \else Y8格式，单通道8bit深度 \endif */
-        OB_FORMAT_Y10 = 10, /**< \if English Y10 format, single channel 10bit depth (SDK will unpack into Y16 by default) \else
-                            Y10格式，单通道10bit深度(SDK默认会解包成Y16) \endif */
-        OB_FORMAT_Y11 = 11,  /**< \if English Y11 format, single channel 11bit depth (SDK will unpack into Y16 by default)\else
-                            Y11格式，单通道11bit深度(SDK默认会解包成Y16) \endif */
-        OB_FORMAT_Y12 = 12,  /**< \if English Y12 format, single channel 12bit depth (SDK will unpack into Y16 by default) \else
-                            Y12格式，单通道12bit深度(SDK默认会解包成Y16) \endif */
-        OB_FORMAT_GRAY = 13, /**< \if English GRAY (the actual format is the same as YUYV) \else GRAY灰度(实际格式与YUYV相同) \endif */
-        OB_FORMAT_HEVC = 14, /**< \if English HEVC encoding format (the actual format is the same as H265) \else HEVC编码格式(实际格式与H265相同) \endif */
-        OB_FORMAT_I420 = 15, /**< \if English I420 format \else I420格式  \endif */
-        OB_FORMAT_ACCEL = 16, /**< \if English Acceleration data format \else 加速度数据格式  \endif */
-        OB_FORMAT_GYRO = 17, /**< \if English Gyroscope Data Format \else 陀螺仪数据格式  \endif */
-        OB_FORMAT_POINT = 19, /**< \if English xyz 3D coordinate point format \else 纯x-y-z三维坐标点格式  \endif */
-        OB_FORMAT_RGB_POINT = 20, /**< \if English xyz 3D coordinate point format with RGB information \else 带RGB信息的x-y-z三维坐标点格式 \endif */
-        OB_FORMAT_RLE = 21, /**< \if English RLE pressure test format (SDK will be unpacked into Y16 by default) \else RLE压测格式(SDK默认会解包成Y16) \endif */
-        OB_FORMAT_RGB888 = 22,    /**< \if English RGB888 format \else RGB888格式  \endif */
-        OB_FORMAT_BGR = 23,    /**< \if English BGR format (actual BRG888) \else BGR格式(实际BRG888) \endif */
-        OB_FORMAT_Y14 = 24,    /**< \if English Y14 format, single channel 14bit depth (SDK will unpack into Y16 by default) \else
-                                 Y14格式，单通道14bit深度(SDK默认会解包成Y16) \endif */
-        OB_FORMAT_BGRA = 25,   /**< BGRA */
-        OB_FORMAT_COMPRESSED = 26,   /**< 压缩格式 */
-        OB_FORMAT_UNKNOWN = 0xff, /**< \if English unknown format \else 未知格式 \endif */
+        OB_FORMAT_YUYV       = 0,    /**< YUYV format */
+        OB_FORMAT_YUY2       = 1,    /**< YUY2 format (the actual format is the same as YUYV) */
+        OB_FORMAT_UYVY       = 2,    /**< UYVY format */
+        OB_FORMAT_NV12       = 3,    /**< NV12 format */
+        OB_FORMAT_NV21       = 4,    /**< NV21 format */
+        OB_FORMAT_MJPG       = 5,    /**< MJPEG encoding format */
+        OB_FORMAT_H264       = 6,    /**< H.264 encoding format */
+        OB_FORMAT_H265       = 7,    /**< H.265 encoding format */
+        OB_FORMAT_Y16        = 8,    /**< Y16 format, single channel 16-bit depth */
+        OB_FORMAT_Y8         = 9,    /**< Y8 format, single channel 8-bit depth */
+        OB_FORMAT_Y10        = 10,   /**< Y10 format, single channel 10-bit depth (SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y11        = 11,   /**< Y11 format, single channel 11-bit depth (SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y12        = 12,   /**< Y12 format, single channel 12-bit depth (SDK will unpack into Y16 by default) */
+        OB_FORMAT_GRAY       = 13,   /**< GRAY (the actual format is the same as YUYV) */
+        OB_FORMAT_HEVC       = 14,   /**< HEVC encoding format (the actual format is the same as H265) */
+        OB_FORMAT_I420       = 15,   /**< I420 format */
+        OB_FORMAT_ACCEL      = 16,   /**< Acceleration data format */
+        OB_FORMAT_GYRO       = 17,   /**< Gyroscope data format */
+        OB_FORMAT_POINT      = 19,   /**< XYZ 3D coordinate point format */
+        OB_FORMAT_RGB_POINT  = 20,   /**< XYZ 3D coordinate point format with RGB information */
+        OB_FORMAT_RLE        = 21,   /**< RLE pressure test format (SDK will be unpacked into Y16 by default) */
+        OB_FORMAT_RGB        = 22,   /**< RGB format (actual RGB888)  */
+        OB_FORMAT_BGR        = 23,   /**< BGR format (actual BGR888) */
+        OB_FORMAT_Y14        = 24,   /**< Y14 format, single channel 14-bit depth (SDK will unpack into Y16 by default) */
+        OB_FORMAT_BGRA       = 25,   /**< BGRA format */
+        OB_FORMAT_COMPRESSED = 26,   /**< Compression format */
+        OB_FORMAT_RVL        = 27,   /**< RVL pressure test format (SDK will be unpacked into Y16 by default) */
+        OB_FORMAT_UNKNOWN    = 0xff, /**< unknown format */
     }
 
     /**
@@ -186,19 +194,20 @@ namespace Orbbec
     */
     public enum UpgradeState
     {
-        STAT_FILE_TRANSFER = 4,  /**< \if English file transfer \else 文件传输中 \endif */
-        STAT_DONE = 3,  /**< \if English update completed \else 升级完成 \endif */
-        STAT_IN_PROGRESS = 2,  /**< \if English upgrade in process \else 升级中 \endif */
-        STAT_START = 1,  /**< \if English start the upgrade \else 开始升级 \endif */
-        STAT_VERIFY_IMAGE = 0,  /**< \if English Image file verification \else 镜像文件校验中 \endif */
-        ERR_VERIFY = -1, /**< \if English Verification failed \else 校验失败 \endif */
-        ERR_PROGRAM = -2, /**< \if English Program execution failed \else 程序执行失败 \endif */
-        ERR_ERASE = -3, /**< \if English Flash parameter failed \else Flash参数失败 \endif */
-        ERR_FLASH_TYPE = -4, /**< \if English Flash type error \else Flash类型错误 \endif */
-        ERR_IMAGE_SIZE = -5, /**< \if English Image file size error \else 镜像文件大小错误 \endif */
-        ERR_OTHER = -6, /**< \if English other errors \else 其他错误 \endif */
-        ERR_DDR = -7, /**< \if English DDR access error \else DDR访问错误 \endif */
-        ERR_TIMEOUT = -8  /**< \if English timeout error \else 超时错误 \endif */
+        STAT_VERIFY_SUCCESS = 5,  /**< Image file verifify success */
+        STAT_FILE_TRANSFER  = 4,  /**< file transfer */
+        STAT_DONE           = 3,  /**< update completed */
+        STAT_IN_PROGRESS    = 2,  /**< upgrade in process */
+        STAT_START          = 1,  /**< start the upgrade */
+        STAT_VERIFY_IMAGE   = 0,  /**< Image file verification */
+        ERR_VERIFY          = -1, /**< Verification failed */
+        ERR_PROGRAM         = -2, /**< Program execution failed */
+        ERR_ERASE           = -3, /**< Flash parameter failed */
+        ERR_FLASH_TYPE      = -4, /**< Flash type error */
+        ERR_IMAGE_SIZE      = -5, /**< Image file size error */
+        ERR_OTHER           = -6, /**< other errors */
+        ERR_DDR             = -7, /**< DDR access error */
+        ERR_TIMEOUT         = -8  /**< timeout error */
     }
 
     /**
@@ -210,16 +219,15 @@ namespace Orbbec
     */
     public enum FileTranState
     {
-        FILE_TRAN_STAT_TRANSFER = 2,  /**< \if English file transfer \else 文件传输中 \endif */
-        FILE_TRAN_STAT_DONE = 1,  /**< \if English file transfer succeeded\else 文件传输成功 \endif */
-        FILE_TRAN_STAT_PREPAR = 0,  /**< \if English preparing \else 准备中 \endif */
-        FILE_TRAN_ERR_DDR = -1, /**< \if English DDR access failed \else DDR访问失败 \endif */
-        FILE_TRAN_ERR_NOT_ENOUGH_SPACE = -2, /**< \if English Insufficient target space error \else 目标空间不足错误 \endif */
-        FILE_TRAN_ERR_PATH_NOT_WRITABLE = -3, /**< \if English Destination path is not writable \else 目标路径不可写 \endif */
-        FILE_TRAN_ERR_MD5_ERROR = -4, /**< \if English MD5 checksum error \else MD5校验错误 \endif */
-        FILE_TRAN_ERR_WRITE_FLASH_ERROR = -5, /**< \if English write flash error \else 写Flash错误 \endif */
-        FILE_TRAN_ERR_TIMEOUT = -6  /**< \if English timeout error \else 超时错误 \endif */
-
+        FILE_TRAN_STAT_TRANSFER         = 2,  /**< File transfer */
+        FILE_TRAN_STAT_DONE             = 1,  /**< File transfer succeeded */
+        FILE_TRAN_STAT_PREPAR           = 0,  /**< Preparing */
+        FILE_TRAN_ERR_DDR               = -1, /**< DDR access failed */
+        FILE_TRAN_ERR_NOT_ENOUGH_SPACE  = -2, /**< Insufficient target space error */
+        FILE_TRAN_ERR_PATH_NOT_WRITABLE = -3, /**< Destination path is not writable */
+        FILE_TRAN_ERR_MD5_ERROR         = -4, /**< MD5 checksum error */
+        FILE_TRAN_ERR_WRITE_FLASH_ERROR = -5, /**< Write flash error */
+        FILE_TRAN_ERR_TIMEOUT           = -6  /**< Timeout error */
     }
 
     /**
@@ -231,15 +239,16 @@ namespace Orbbec
     */
     public enum DataTranState
     {
-        DATA_TRAN_STAT_STOPPED = 3,  /**< \if English data transfer stoped \else 数据传输终止 \endif */
-        DATA_TRAN_STAT_DONE = 2,  /**< \if English data transfer completed \else 数据传输完成 \endif */
-        DATA_TRAN_STAT_VERIFYING = 1,  /**< \if English data verifying \else 数据校验中 \endif */
-        DATA_TRAN_STAT_TRANSFERRING = 0,  /**< \if English data transferring \else 数据传输中 \endif */
-        DATA_TRAN_ERR_BUSY = -1, /**< \if English Transmission is busy \else 传输忙 \endif */
-        DATA_TRAN_ERR_UNSUPPORTED = -2, /**< \if English not support \else 不支持 \endif */
-        DATA_TRAN_ERR_TRAN_FAILED = -3, /**< \if English transfer failed \else 传输失败 \endif */
-        DATA_TRAN_ERR_VERIFY_FAILED = -4, /**< \if English Test failed \else 检验失败 \endif */
-        DATA_TRAN_ERR_OTHER = -5  /**< \if English other errors \else 其他错误\endif */
+        DATA_TRAN_STAT_VERIFY_DONE  = 4,  /**< data verify done */
+        DATA_TRAN_STAT_STOPPED      = 3,  /**< data transfer stoped */
+        DATA_TRAN_STAT_DONE         = 2,  /**< data transfer completed */
+        DATA_TRAN_STAT_VERIFYING    = 1,  /**< data verifying */
+        DATA_TRAN_STAT_TRANSFERRING = 0,  /**< data transferring */
+        DATA_TRAN_ERR_BUSY          = -1, /**< Transmission is busy */
+        DATA_TRAN_ERR_UNSUPPORTED   = -2, /**< Not supported */
+        DATA_TRAN_ERR_TRAN_FAILED   = -3, /**< Transfer failed */
+        DATA_TRAN_ERR_VERIFY_FAILED = -4, /**< Test failed */
+        DATA_TRAN_ERR_OTHER         = -5  /**< Other errors */
     }
 
     /**
@@ -249,7 +258,6 @@ namespace Orbbec
     * @brief 数据块结构体，用于数据分块传输
     * \endif
     */
-    [StructLayout(LayoutKind.Sequential)]
     public struct DataChunk
     {
         IntPtr data;    ///< \if English current block data pointer \else 当前块数据指针 \endif
@@ -265,8 +273,6 @@ namespace Orbbec
     * @brief 整形范围的结构体
     * \endif
     */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct IntPropertyRange
     {
         public Int32 cur;   ///< \if English current value \else 当前值 \endif
@@ -283,8 +289,6 @@ namespace Orbbec
     * @brief 浮点型范围的结构体
     * \endif
     */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct FloatPropertyRange
     {
         public float cur;   ///< \if English current value \else 当前值 \endif
@@ -301,8 +305,6 @@ namespace Orbbec
      * @brief 布尔型范围的结构体
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct BoolPropertyRange
     {
         [MarshalAs(UnmanagedType.I1)]
@@ -324,8 +326,6 @@ namespace Orbbec
      * @brief 相机内参
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct CameraIntrinsic
     {
         public float fx;      ///< \if English focal length in x direction \else x方向焦距 \endif
@@ -343,8 +343,6 @@ namespace Orbbec
      * @brief 畸变参数
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct CameraDistortion
     {
         public float k1;    ///< \if English Radial distortion factor 1 \else 径向畸变系数1 \endif
@@ -364,8 +362,6 @@ namespace Orbbec
      * @brief 旋转/变换矩阵
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct D2CTransform
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
@@ -381,8 +377,6 @@ namespace Orbbec
      * @brief 相机参数
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct CameraParam
     {
         public CameraIntrinsic depthIntrinsic;   ///< \if English Depth camera internal parameters \else 深度相机内参 \endif    
@@ -394,34 +388,30 @@ namespace Orbbec
     }
 
     /**
-    * @brief 深度对齐校验参数
-    *
+    * @brief Camera parameters
     */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
-    public struct DERectifyMaskParams
+    public struct OBCameraParam_V0
     {
-        public CameraIntrinsic  leftIntrin;  // target ：单目结构光以及双目左 L
-        public CameraDistortion leftDisto;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public float[]              leftRot;
-        public CameraIntrinsic  rightIntrin;  // ref
-        public CameraDistortion rightDisto;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public float[]              rightRot;
-        public CameraIntrinsic leftVirtualIntrin;  // output intrinsics from rectification (and rotation)
-        public CameraIntrinsic rightVirtualIntrin;
+        CameraIntrinsic  depthIntrinsic;   ///< Depth camera internal parameters
+        CameraIntrinsic  rgbIntrinsic;     ///< Color camera internal parameters
+        CameraDistortion depthDistortion;  ///< Depth camera distortion parameters
+
+        CameraDistortion rgbDistortion;  ///< Distortion parameters for color camera
+        D2CTransform     transform;      ///< Rotation/transformation matrix
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
-    public struct MaskFilterConfig
+    /**
+    * @brief Configuration for depth margin filter
+    */
+    public struct OBMarginFilterConfig
     {
-        public float scale;
-        public int   margin_th_u;     // 对应在 src 图像的边缘宽度
-        public int   margin_th_v;     // 对应在 src 图像的边缘宽度
-        public int   mask_margin_th;  // 在 mask 图像的边缘宽度
-        public bool  enable_undisto;
+        int      margin_x_th;       ///< Horizontal threshold settings
+        int      margin_y_th;       ///< Vertical threshold settings
+        int      limit_x_th;        ///< Maximum horizontal threshold
+        int      limit_y_th;        ///< Maximum vertical threshold
+        UInt32 width;             ///< Image width
+        UInt32 height;            ///< Image height
+        bool     enable_direction;  ///< Set to true for horizontal and vertical, false for horizontal only
     }
 
     /**
@@ -445,8 +435,6 @@ namespace Orbbec
      * @brief 矩形
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct Rect
     {
         public UInt32 x;       ///< \if English origin coordinate x \else 原点坐标x \endif
@@ -464,27 +452,23 @@ namespace Orbbec
      */
     public enum ConvertFormat
     {
-        FORMAT_YUYV_TO_RGB888 = 0, /**< \if English YUYV to RGB888 \else YUYV转换为RGB888 \endif */
-        FORMAT_I420_TO_RGB888,     /**< \if English I420 to RGB888 \else I420转换为RGB888 \endif */
-        FORMAT_NV21_TO_RGB888,     /**< \if English NV21 to RGB888 \else NV21转换为RGB888 \endif */
-        FORMAT_NV12_TO_RGB888,     /**< \if English NV12 to RGB888 \else NV12转换为RGB888 \endif */
-        FORMAT_MJPEG_TO_I420,      /**< \if English MJPG to I420 \else MJPG转换为I420\endif */
-        FORMAT_RGB888_TO_BGR,      /**< \if English RGB888 to BGR \else RGB888转换为BGR \endif */
-        FORMAT_MJPEG_TO_NV21,      /**< \if English MJPG to NV21 \else MJPG转换为NV21 \endif */
-        FORMAT_MJPEG_TO_RGB888,    /**< \if English MJPG to RGB888 \else MJPG转换为RGB888 \endif */
-        FORMAT_MJPEG_TO_BGR888,    /**< \if English MJPG to BGR888 \else MJPG转换为BGR888 \endif */
-        FORMAT_MJPEG_TO_BGRA,      /**< \if English MJPG to BGRA \else MJPG转换为BGRA \endif */
-        FORMAT_UYVY_TO_RGB888,     /**< \if English UYVY to RGB888 \else MJPG转换为RGB888 \endif */
-        FORMAT_BGR_TO_RGB,         /**< \if English BGR to RGB \else BGR 转换为 RGB \endif */
+        FORMAT_YUYV_TO_RGB888 = 0, /**< YUYV to RGB888 */
+        FORMAT_I420_TO_RGB888,     /**< I420 to RGB888 */
+        FORMAT_NV21_TO_RGB888,     /**< NV21 to RGB888 */
+        FORMAT_NV12_TO_RGB888,     /**< NV12 to RGB888 */
+        FORMAT_MJPG_TO_I420,       /**< MJPG to I420 */
+        FORMAT_RGB888_TO_BGR,      /**< RGB888 to BGR */
+        FORMAT_MJPG_TO_NV21,       /**< MJPG to NV21 */
+        FORMAT_MJPG_TO_RGB888,     /**< MJPG to RGB888 */
+        FORMAT_MJPG_TO_BGR888,     /**< MJPG to BGR888 */
+        FORMAT_MJPG_TO_BGRA,       /**< MJPG to BGRA */
+        FORMAT_UYVY_TO_RGB888,     /**< UYVY to RGB888 */
+        FORMAT_BGR_TO_RGB,         /**< BGR to RGB */
     }
 
     /**
-     * \if English
-     * @brief Enumeration of IMU sample rate values ​​(gyroscope)
-     * \else
-     * @brief IMU采样率值的枚举(陀螺仪)
-     * \endif
-     */
+    * @brief Enumeration of gyroscope sample rate values
+    */
     public enum GyroSampleRate
     {
         OB_SAMPLE_RATE_1_5625_HZ = 1, /**< 1.5625Hz */
@@ -505,12 +489,8 @@ namespace Orbbec
     }
 
     /**
-     * \if English
-     * @brief Enumeration of IMU sample rate values ​​(accelerometer)
-     * \else
-     * @brief IMU采样率值的枚举(加速度计)
-     * \endif
-     */
+    * @brief Enumeration of accelerometer sample rate values
+    */
     public enum AccelSampleRate
     {
         OB_SAMPLE_RATE_1_5625_HZ = 1, /**< 1.5625Hz */
@@ -539,15 +519,14 @@ namespace Orbbec
      */
     public enum GyroFullScaleRange
     {
-        OB_GYRO_FS_16dps = 1, /**< \if English 16 degrees per second \else 16度每秒 \endif */
-        OB_GYRO_FS_31dps,     /**< \if English 31 degrees per second \else 31度每秒 \endif */
-        OB_GYRO_FS_62dps,     /**< \if English 62 degrees per second \else 62度每秒 \endif */
-        OB_GYRO_FS_125dps,    /**< \if English 125 degrees per second \else 125度每秒 \endif */
-        OB_GYRO_FS_245dps,    /**< \if English 245 degrees per second \else 245度每秒 \endif */
-        OB_GYRO_FS_250dps,    /**< \if English 250 degrees per second \else 250度每秒 \endif */
-        OB_GYRO_FS_500dps,    /**< \if English 500 degrees per second \else 500度每秒 \endif */
-        OB_GYRO_FS_1000dps,   /**< \if English 1000 degrees per second \else 1000度每秒 \endif */
-        OB_GYRO_FS_2000dps,   /**< \if English 2000 degrees per second \else 2000度每秒 \endif */
+        OB_GYRO_FS_16dps = 1, /**< 16 degrees per second */
+        OB_GYRO_FS_31dps,     /**< 31 degrees per second */
+        OB_GYRO_FS_62dps,     /**< 62 degrees per second */
+        OB_GYRO_FS_125dps,    /**< 125 degrees per second */
+        OB_GYRO_FS_250dps,    /**< 250 degrees per second */
+        OB_GYRO_FS_500dps,    /**< 500 degrees per second */
+        OB_GYRO_FS_1000dps,   /**< 1000 degrees per second */
+        OB_GYRO_FS_2000dps,   /**< 2000 degrees per second */
     }
 
     /**
@@ -559,42 +538,30 @@ namespace Orbbec
      */
     public enum AccelFullScaleRange
     {
-        OB_ACCEL_FS_2g = 1, /**< \if English 1x the acceleration of gravity \else 1倍重力加速度 \endif */
-        OB_ACCEL_FS_4g,     /**< \if English 4x the acceleration of gravity \else 4倍重力加速度 \endif */
-        OB_ACCEL_FS_8g,     /**< \if English 8x the acceleration of gravity \else 8倍重力加速度 \endif */
-        OB_ACCEL_FS_16g,    /**< \if English 16x the acceleration of gravity \else 16倍重力加速度\endif */
+        OB_ACCEL_FS_2g = 1, /**< 1x the acceleration of gravity */
+        OB_ACCEL_FS_4g,     /**< 4x the acceleration of gravity */
+        OB_ACCEL_FS_8g,     /**< 8x the acceleration of gravity */
+        OB_ACCEL_FS_16g,    /**< 16x the acceleration of gravity */
     }
 
     /**
-     * \if English
      * @brief Data structures for accelerometers
-     *\else
-     * @brief 加速度计的数据结构体
-     * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct AccelValue
     {
-        public float x; ///< \if English x-direction component \else x方向分量 \endif
-        public float y; ///< \if English y-direction component \else y方向分量 \endif
-        public float z; ///< \if English z-direction component \else z方向分量 \endif
+        float x;  ///< X-direction component
+        float y;  ///< Y-direction component
+        float z;  ///< Z-direction component
     }
 
     /**
-     * \if English
-     * @brief Data structures for gyroscopes
-     *\else
-     * @brief 陀螺仪的数据结构体
-     * \endif
+     * @brief Data structures for gyroscope
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct GyroValue
     {
-        public float x; ///< \if English x-direction component \else x方向分量 \endif
-        public float y; ///< \if English y-direction component \else y方向分量 \endif
-        public float z; ///< \if English z-direction component \else z方向分量 \endif
+        float x;  ///< X-direction component
+        float y;  ///< Y-direction component
+        float z;  ///< Z-direction component
     }
 
     /**
@@ -604,21 +571,19 @@ namespace Orbbec
      * @brief 获取设备的温度参数（单位：摄氏度）
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct DeviceTemperature
     {
-        public float cpuTemp;        ///< \if English CPU temperature \else cpu温度 \endif
-        public float irTemp;         ///< \if English IR temperature \else IR温度 \endif
-        public float ldmTemp;        ///< \if English laser temperature \else 激光温度 \endif
-        public float mainBoardTemp;  ///< \if English motherboard temperature \else 主板温度 \endif
-        public float tecTemp;        ///< \if English TEC temperature \else TEC温度 \endif
-        public float imuTemp;        ///< \if English IMU temperature \else IMU温度 \endif
-        public float rgbTemp;        ///< \if English RGB temperature \else RGB温度 \endif
-        public float irLeftTemp;      ///< if English Left IR temperature \else 左IR温度 \endif
-        public float irRightTemp;     ///< if English Right IR temperature \else 右IR温度 \endif
-        public float chipTopTemp;     ///<  if English MX6600 top temperature \else MX6600 top 温度 \endif
-        public float chipBottomTemp;  ///<  if English MX6600 bottom temperature\else MX6600 bottom 温度 \endif
+        float cpuTemp;         ///< CPU temperature
+        float irTemp;          ///< IR temperature
+        float ldmTemp;         ///< Laser temperature
+        float mainBoardTemp;   ///< Motherboard temperature
+        float tecTemp;         ///< TEC temperature
+        float imuTemp;         ///< IMU temperature
+        float rgbTemp;         ///< RGB temperature
+        float irLeftTemp;      ///< Left IR temperature
+        float irRightTemp;     ///< Right IR temperature
+        float chipTopTemp;     ///< MX6600 top temperature
+        float chipBottomTemp;  ///< MX6600 bottom temperature
     }
 
     /**
@@ -630,9 +595,9 @@ namespace Orbbec
      */
     public enum DepthCroppingMode
     {
-        DEPTH_CROPPING_MODE_AUTO = 0, /**< \if English automatic mode \else 自动模式 \endif */
-        DEPTH_CROPPING_MODE_CLOSE = 1, /**< \if English close crop \else 关闭裁切 \endif */
-        DEPTH_CROPPING_MODE_OPEN = 2, /**< \if English open crop \else 打开裁切 \endif */
+        DEPTH_CROPPING_MODE_AUTO  = 0, /**< Automatic mode */
+        DEPTH_CROPPING_MODE_CLOSE = 1, /**< Close crop */
+        DEPTH_CROPPING_MODE_OPEN  = 2, /**< Open crop */
     }
 
     /**
@@ -644,9 +609,9 @@ namespace Orbbec
      */
     public enum DeviceType
     {
-        OB_STRUCTURED_LIGHT_MONOCULAR_CAMERA = 0, /**< \if English Monocular structured light camera \else 单目结构光相机  \endif */
-        OB_STRUCTURED_LIGHT_BINOCULAR_CAMERA,     /**< \if English Binocular structured light camera \else 双目结构光相机  \endif */
-        OB_TOF_CAMERA,                            /**< \if English TOF camera \else TOF相机  \endif */
+        OB_STRUCTURED_LIGHT_MONOCULAR_CAMERA = 0, /**< Monocular structured light camera */
+        OB_STRUCTURED_LIGHT_BINOCULAR_CAMERA = 1, /**< Binocular structured light camera */
+        OB_TOF_CAMERA                        = 2, /**< Time-of-flight camera */
     }
 
     /**
@@ -658,19 +623,19 @@ namespace Orbbec
      */
     public enum MediaType
     {
-        OB_MEDIA_COLOR_STREAM = 1,   /**< \if English color stream \else 彩色流\endif */
-        OB_MEDIA_DEPTH_STREAM = 2,   /**< \if English depth stream \else 深度流 \endif */
-        OB_MEDIA_IR_STREAM = 4,   /**< \if English IR stream \else 红外流 \endif */
-        OB_MEDIA_GYRO_STREAM = 8,   /**< \if English gyro stream \else 陀螺仪数据流 \endif */
-        OB_MEDIA_ACCEL_STREAM = 16,  /**< \if English accel stream \else 加速度计数据流 \endif */
-        OB_MEDIA_CAMERA_PARAM = 32,  /**< \if English camera parameter \else 相机参数 \endif */
-        OB_MEDIA_DEVICE_INFO = 64,  /**< \if English device information \else 设备信息  \endif */
-        OB_MEDIA_STREAM_INFO = 128, /**< \if English stream information \else 流信息 \endif */
-        OB_MEDIA_IR_LEFT_STREAM  = 256, /**< \if English Left IR stream \else 左 IR 流 \endif */
-        OB_MEDIA_IR_RIGHT_STREAM = 512, /**< \if English Right Left IR stream \else 右 IR 流 \endif */
+        OB_MEDIA_COLOR_STREAM    = 1,   /**< Color stream */
+        OB_MEDIA_DEPTH_STREAM    = 2,   /**< Depth stream */
+        OB_MEDIA_IR_STREAM       = 4,   /**< Infrared stream */
+        OB_MEDIA_GYRO_STREAM     = 8,   /**< Gyroscope stream */
+        OB_MEDIA_ACCEL_STREAM    = 16,  /**< Accelerometer stream */
+        OB_MEDIA_CAMERA_PARAM    = 32,  /**< Camera parameter */
+        OB_MEDIA_DEVICE_INFO     = 64,  /**< Device information */
+        OB_MEDIA_STREAM_INFO     = 128, /**< Stream information */
+        OB_MEDIA_IR_LEFT_STREAM  = 256, /**< Left infrared stream */
+        OB_MEDIA_IR_RIGHT_STREAM = 512, /**< Right infrared stream */
 
         OB_MEDIA_ALL = OB_MEDIA_COLOR_STREAM | OB_MEDIA_DEPTH_STREAM | OB_MEDIA_IR_STREAM | OB_MEDIA_GYRO_STREAM | OB_MEDIA_ACCEL_STREAM | OB_MEDIA_CAMERA_PARAM
-                       | OB_MEDIA_DEVICE_INFO | OB_MEDIA_STREAM_INFO, /**< \if English All media data types \else 所有媒体数据类型 \endif */
+                    | OB_MEDIA_DEVICE_INFO | OB_MEDIA_STREAM_INFO | OB_MEDIA_IR_LEFT_STREAM | OB_MEDIA_IR_RIGHT_STREAM, /**< All media data types */
     }
 
     /**
@@ -682,10 +647,10 @@ namespace Orbbec
      */
     public enum MediaState
     {
-        OB_MEDIA_BEGIN = 0, /**< \if English begin \else 开始 \endif */
-        OB_MEDIA_PAUSE,     /**< \if English pause \else 暂停 \endif */
-        OB_MEDIA_RESUME,    /**< \if English resume \else 继续 \endif */
-        OB_MEDIA_END,       /**< \if English end \else 终止  \endif */
+        OB_MEDIA_BEGIN = 0, /**< Begin */
+        OB_MEDIA_PAUSE,     /**< Pause */
+        OB_MEDIA_RESUME,    /**< Resume */
+        OB_MEDIA_END,       /**< End */
     }
 
     /**
@@ -700,10 +665,14 @@ namespace Orbbec
      */
     public enum DepthPrecisionLevel
     {
-        OB_PRECISION_1MM,  /**< 1mm */
-        OB_PRECISION_0MM8, /**< 0.8mm */
-        OB_PRECISION_0MM4, /**< 0.4mm */
-        OB_PRECISION_0MM1, /**< 0.1mm */
+        OB_PRECISION_1MM,   /**< 1mm */
+        OB_PRECISION_0MM8,  /**< 0.8mm */
+        OB_PRECISION_0MM4,  /**< 0.4mm */
+        OB_PRECISION_0MM1,  /**< 0.1mm */
+        OB_PRECISION_0MM2,  /**< 0.2mm */
+        OB_PRECISION_0MM5,  /**< 0.5mm */
+        OB_PRECISION_0MM05, /**< 0.05mm */
+        OB_PRECISION_UNKNOWN,
         OB_PRECISION_COUNT,
     }
 
@@ -716,10 +685,10 @@ namespace Orbbec
     */
     public enum TofFilterRange
     {
-        OB_TOF_FILTER_RANGE_CLOSE = 0,   /**< \if English close range \else 近距离范围 \endif */
-        OB_TOF_FILTER_RANGE_MIDDLE = 1,   /**< \if English middle range \else 中距离范围  \endif */
-        OB_TOF_FILTER_RANGE_LONG = 2,   /**< \if English long range \else 远距离范围 \endif */
-        OB_TOF_FILTER_RANGE_DEBUG = 100, /**< \if English debug range \else Debug模式  \endif */
+        OB_TOF_FILTER_RANGE_CLOSE  = 0,   /**< Close range */
+        OB_TOF_FILTER_RANGE_MIDDLE = 1,   /**< Middle range */
+        OB_TOF_FILTER_RANGE_LONG   = 2,   /**< Long range */
+        OB_TOF_FILTER_RANGE_DEBUG  = 100, /**< Debug range */
     }
 
     /**
@@ -729,13 +698,11 @@ namespace Orbbec
      * @brief SDK中3D点结构体
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct Point
     {
-        public float x;  ///< \if English x coordinate \else X坐标 \endif     
-        public float y;  ///< \if English y coordinate \else Y坐标 \endif     
-        public float z;  ///< \if English z coordinate \else Z坐标 \endif     
+        public float x;  ///< X coordinate
+        public float y;  ///< Y coordinate
+        public float z;  ///< Z coordinate   
     }
 
     /**
@@ -745,28 +712,29 @@ namespace Orbbec
      * @brief 带有颜色信息的3D点结构体
      * \endif
      */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
     public struct ColorPoint
     {
-        public float x;  ///< \if English x coordinate \else X坐标 \endif    
-        public float y;  ///< \if English y coordinate \else Y坐标 \endif   
-        public float z;  ///< \if English z coordinate \else Z坐标 \endif    
-        public float r;  ///< \if English red channel component \else 红色通道分量 \endif    
-        public float g;  ///< \if English green channel component \else 绿色通道分量 \endif    
-        public float b;  ///< \if English blue channel component\else 蓝色通道分量 \endif    
+        public float x;  ///< X coordinate
+        public float y;  ///< Y coordinate
+        public float z;  ///< Z coordinate
+        public float r;  ///< Red channel component
+        public float g;  ///< Green channel component
+        public float b;  ///< Blue channel component
     }
 
     public enum CompressionMode
     {
-        OB_COMPRESSION_LOSSLESS = 0,
-        OB_COMPRESSION_LOSSY    = 1,
+        OB_COMPRESSION_LOSSLESS = 0, /**< Lossless compression mode */
+        OB_COMPRESSION_LOSSY    = 1, /**< Lossy compression mode */
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
+    
+    
     public struct CompressionParams
     {
+        /**
+        * Lossy compression threshold, range [0~255], recommended value is 9, the higher the threshold, the higher the compression ratio.
+        */
         public int threshold;
     }
 
@@ -777,12 +745,12 @@ namespace Orbbec
     * @brief TOF 曝光阈值
     *\endif
     */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
+    
+    
     public struct TofExposureThresholdControl
     {
-        Int32 upper;  ///< \if English Upper threshold, unit: ms \else 阈值上限， 单位：ms \endif
-        Int32 lower;  ///< \if English Lower threshold, unit: ms \else 阈值下限， 单位：ms \endif
+        public Int32 upper;  ///< \if English Upper threshold, unit: ms \else 阈值上限， 单位：ms \endif
+        public Int32 lower;  ///< \if English Lower threshold, unit: ms \else 阈值下限， 单位：ms \endif
     }
 
     /**
@@ -795,132 +763,69 @@ namespace Orbbec
     public enum SyncMode
     {
         /**
-        * \if English
-        * @brief Close Synchronize mode
+        * @brief Close synchronize mode
         * @brief Single device, neither process input trigger signal nor output trigger signal
         * @brief Each Sensor in a single device automatically triggers
-        * \else
-        * @brief 同步关闭
-        * @brief 单机，不接收外部触发信号，不输出触发信号
-        * @brief 单机内各 Sensor 自触发
-        * \endif
-        *
         */
         OB_SYNC_MODE_CLOSE = 0x00,
 
         /**
-        * \if English
-        * @brief Standalone sychronize mode
+        * @brief Standalone synchronize mode
         * @brief Single device, neither process input trigger signal nor output trigger signal
         * @brief Inside single device, RGB as Major sensor: RGB -> IR/Depth/TOF
-        * \else
-        * @brief 单机模式
-        * @brief 单机，不接收外部触发信号，不输出触发信号
-        * @brief 单机内 RGB 做主： RGB -> IR/Depth/TOF
-        * \endif
         */
         OB_SYNC_MODE_STANDALONE = 0x01,
 
         /**
-        * \if English
         * @brief Primary synchronize mode
         * @brief Primary device. Ignore process input trigger signal, only output trigger signal to secondary devices.
         * @brief Inside single device, RGB as Major sensor: RGB -> IR/Depth/TOF
-        * \else
-        * @brief 主机模式
-        * @brief 主机，不接收外部触发信号，向外输出触发信号
-        * @brief 单机内 RGB 做主：RGB -> IR/Depth/TOF
-        *
-        * @attention 部分设备型号不支持该模式： Gemini 2 设备设置该模式会自动变更为 OB_SYNC_MODE_PRIMARY_MCU_TRIGGER 模式
-        *
         */
         OB_SYNC_MODE_PRIMARY = 0x02,
 
         /**
-        * \if English
         * @brief Secondary synchronize mode
         * @brief Secondary device. Both process input trigger signal and output trigger signal to other devices.
         * @brief Different sensors in a single devices receive trigger signals respectively：ext trigger -> RGB && ext trigger -> IR/Depth/TOF
         *
         * @attention With the current Gemini 2 device set to this mode, each Sensor receives the first external trigger signal
         *     after the stream is turned on and starts timing self-triggering at the set frame rate until the stream is turned off
-        * \else
-        * @brief 从机模式
-        * @brief 从机，接收外部触发信号，同时向外中继输出触发信号
-        * @brief 单机内不同 Sensor 各自接收触发信号：ext trigger -> RGB && ext trigger -> IR/Depth/TOF
-        *
-        * @attention 当前 Gemini 2 设备设置为该模式后，各Sensor在开流后，接收到第一次外部触发信号即开始按照设置的帧率进行定时自触发，直到流关闭
-        * \endif
-        *
         */
         OB_SYNC_MODE_SECONDARY = 0x03,
 
         /**
-        * \if English
         * @brief MCU Primary synchronize mode
         * @brief Primary device. Ignore process input trigger signal, only output trigger signal to secondary devices.
         * @brief Inside device, MCU is the primary signal source:  MCU -> RGB && MCU -> IR/Depth/TOF
-        * \else
-        * @brief MCU 主模式
-        * @brief 主机，不接收外部触发信号，向外输出触发信号
-        * @brief 单机内 MCU 做主： MCU -> RGB && MCU -> IR/Depth/TOF
-        * \endif
         */
         OB_SYNC_MODE_PRIMARY_MCU_TRIGGER = 0x04,
 
         /**
-        * \if English
         * @brief IR Primary synchronize mode
         * @brief Primary device. Ignore process input trigger signal, only output trigger signal to secondary devices.
         * @brief Inside device, IR is the primary signal source: IR/Depth/TOF -> RGB
-        *
-        * \else
-        * @brief IR 主模式
-        * @brief 主机，不接收外部触发信号，向外输出触发信号
-        * @brief 单机内 IR 做主：IR/Depth/TOF -> RGB
-        * \endif
         */
         OB_SYNC_MODE_PRIMARY_IR_TRIGGER = 0x05,
 
         /**
-        * \if English
         * @brief Software trigger synchronize mode
         * @brief Host, triggered by software control (receive the upper computer command trigger), at the same time to the trunk output trigger signal
         * @brief Different sensors in a single machine receive trigger signals respectively: soft trigger -> RGB && soft trigger -> IR/Depth/TOF
         *
         * @attention Support product: Gemini2
-        * \else
-        * @brief 软触发模式
-        * @brief 主机，由软件控制触发（接收上位机命令触发），同时向外中继输出触发信号
-        * @brief 单机内不同 Sensor 各自接收触发信号：soft trigger -> RGB && soft trigger -> IR/Depth/TOF
-        *
-        * @attention 当前仅 Gemini2 支持该模式
-        * \endif
         */
         OB_SYNC_MODE_PRIMARY_SOFT_TRIGGER = 0x06,
 
         /**
-        * \if English
         * @brief Software trigger synchronize mode as secondary device
         * @brief The slave receives the external trigger signal (the external trigger signal comes from the soft trigger host) and outputs the trigger signal to
         * the external relay.
         * @brief Different sensors in a single machine receive trigger signals respectively：ext trigger -> RGB && ext  trigger -> IR/Depth/TOF
-        * \else
-        * @brief 软触发从机模式
-        * @brief 从机，接收外部触发信号（外部触发信号来自软触发的主机），同时向外中继输出触发信号。
-        * @brief 单机内不同 Sensor 各自接收触发信号：ext trigger -> RGB && ext  trigger -> IR/Depth/TOF
-        *
-        * @attention 当前仅 Gemini2 支持该模式
-        * \endif
         */
         OB_SYNC_MODE_SECONDARY_SOFT_TRIGGER = 0x07,
 
         /**
-        * \if English
         * @brief Unknown type
-        * \else
-        * @brief 未知类型
-        * \endif
         */
         OB_SYNC_MODE_UNKNOWN = 0xff,
     }
@@ -934,8 +839,8 @@ namespace Orbbec
     * @brief 单机内不同 Sensor 的同步 及 多机间同步 配置
     * \endif
     */
-    [StructLayout(LayoutKind.Sequential)]
-    [Serializable()]
+    
+    
     public struct DeviceSyncConfig
     {
         /**
@@ -1074,6 +979,36 @@ namespace Orbbec
     }
 
     /**
+    * @brief Internal API for future publication
+    */
+    public struct DataBundle {
+        /**
+        * @brief CmdVersion of propertyId
+        */
+        CmdVersion cmdVersion;
+
+        /**
+        * @brief Data containing itemCount of elements
+        */
+        IntPtr data;
+
+        /**
+        * @brief Data size in bytes
+        */
+        UInt32 dataSize;
+
+        /**
+        * @brief Size of data item
+        */
+        UInt32 itemTypeSize;
+
+        /**
+        * @brief Count of data item
+        */
+        UInt32 itemCount;
+    }
+
+    /**
      * @brief 网络设备的IP地址配置（ipv4）
      *
      */
@@ -1094,8 +1029,8 @@ namespace Orbbec
      */
     public enum CommunicationType
     {
-        OB_COMM_USB = 0x00, /**< USB */
-        OB_COMM_NET = 0x01, /**< 网络 */
+        OB_COMM_USB = 0x00,  ///< USB
+        OB_COMM_NET = 0x01,  ///< Ethernet
     }
 
     /**
@@ -1106,10 +1041,10 @@ namespace Orbbec
     * \endif
     */
     public enum USBPowerState{
-        OB_USB_POWER_NO_PLUGIN = 0,  ///< \if English no plugin \else 未插入 \endif
-        OB_USB_POWER_5V_0A9    = 1,  ///< \if English 5V/0.9A \else 5V/0.9A \endif
-        OB_USB_POWER_5V_1A5    = 2,  ///< \if English 5V/1.5A \else 5V/1.5A \endif
-        OB_USB_POWER_5V_3A0    = 3,  ///< \if English 5V/3.0A \else 5V/3.0A \endif
+        OB_USB_POWER_NO_PLUGIN = 0,  ///< No plugin
+        OB_USB_POWER_5V_0A9    = 1,  ///< 5V/0.9A
+        OB_USB_POWER_5V_1A5    = 2,  ///< 5V/1.5A
+        OB_USB_POWER_5V_3A0    = 3,  ///< 5V/3.0A
     }
 
     /**
@@ -1120,8 +1055,8 @@ namespace Orbbec
     * \endif
     */
     public enum DCPowerState {
-        OB_DC_POWER_NO_PLUGIN = 0,  ///< \if English no plugin \else 未插入 \endif
-        OB_DC_POWER_PLUGIN    = 1,  ///< \if English plugin \else 已插入 \endif
+        OB_DC_POWER_NO_PLUGIN = 0,  ///< No plugin
+        OB_DC_POWER_PLUGIN    = 1,  ///< Plugin
     }
 
     /**
@@ -1132,10 +1067,10 @@ namespace Orbbec
     * \endif
     */
     public enum RotateDegreeType {
-        OB_ROTATE_DEGREE_0   = 0,    ///< \if English Rotate 0 \else 旋转0度 \endif
-        OB_ROTATE_DEGREE_90  = 90,   ///< \if English Rotate 90 \else 旋转90度 \endif
-        OB_ROTATE_DEGREE_180 = 180,  ///< \if English Rotate 180 \else 旋转180度 \endif
-        OB_ROTATE_DEGREE_270 = 270,  ///< \if English Rotate 270 \else 旋转270度 \endif
+        OB_ROTATE_DEGREE_0   = 0,    ///< Rotate 0
+        OB_ROTATE_DEGREE_90  = 90,   ///< Rotate 90
+        OB_ROTATE_DEGREE_180 = 180,  ///< Rotate 180
+        OB_ROTATE_DEGREE_270 = 270,  ///< Rotate 270
     }
 
     /**
@@ -1146,9 +1081,9 @@ namespace Orbbec
     * \endif
     */
     public enum PowerLineFreqMode {
-        OB_POWER_LINE_FREQ_MODE_CLOSE = 0,  ///< \if English close \else 关闭 \endif
-        OB_POWER_LINE_FREQ_MODE_50HZ  = 1,  ///< \if English 50Hz \else 50Hz \endif
-        OB_POWER_LINE_FREQ_MODE_60HZ  = 2,  ///< \if English 60Hz \else 60Hz \endif
+        OB_POWER_LINE_FREQ_MODE_CLOSE = 0,  ///< Close
+        OB_POWER_LINE_FREQ_MODE_50HZ  = 1,  ///< 50Hz
+        OB_POWER_LINE_FREQ_MODE_60HZ  = 2,  ///< 60Hz
     }
 
     /**
@@ -1160,47 +1095,22 @@ namespace Orbbec
     */
     public enum FrameAggregateOutputMode {
         /**
-        * \if English
         * @brief Only FrameSet that contains all types of data frames will be output
-        * \else
-        * @brief 只有包含所有类型数据帧的FrameSet才会被输出
-        * \endif
         */
         OB_FRAME_AGGREGATE_OUTPUT_FULL_FRAME_REQUIRE = 0,
 
         /**
-        * \if English
-        *
-        * @brief Frame aggregate output mode
+        * @brief Color Frame Require output mode
         * @brief Suitable for Color using H264, H265 and other inter-frame encoding format open stream
         *
         * @attention In this mode, the user may return null when getting a non-Color type data frame from the acquired FrameSet
-        *
-        * \else
-        *
-        * @brief 必须包含Color类似数据帧的FrameSet才会被输出
-        * @brief 适用于Color使用H264、H265等帧间编码格式开流的情况
-        *
-        * @attention 该模式下，用户从获取到的FrameSet上获取非Color类型数据帧可能会返回空
-        *
-        * \endif
         */
         OB_FRAME_AGGREGATE_OUTPUT_COLOR_FRAME_REQUIRE,
 
         /**
-        * \if English
-        *
         * @brief FrameSet for any case will be output
         *
         * @attention In this mode, the user may return null when getting the specified type of data frame from the acquired FrameSet
-        *
-        * \else
-        *
-        * @brief 任何情况的FrameSet都会被输出
-        *
-        * @attention 该模式下，用户从获取到的FrameSet上获取指定类型数据帧可能会返回空
-        *
-        * \endif
         */
         OB_FRAME_AGGREGATE_OUTPUT_ANY_SITUATION,
     } 
@@ -1216,4 +1126,210 @@ namespace Orbbec
         OB_LEFT_HAND_COORDINATE_SYSTEM  = 0,
         OB_RIGHT_HAND_COORDINATE_SYSTEM = 1,
     } 
+
+    /**
+    * @brief Enumeration of device development modes
+    */
+    public enum DeviceDevelopmentMode {
+        /**
+        * @brief User mode (default mode), which provides full camera device functionality
+        */
+        OB_USER_MODE = 0,
+
+        /**
+        * @brief Developer mode, which allows developers to access the operating system and software/hardware resources on the device directly
+        */
+        OB_DEVELOPER_MODE = 1,
+    }
+
+    /**
+    * @brief The synchronization mode of the device.
+    */
+    public enum MultiDeviceSyncMode{
+
+        /**
+        * @brief free run mode
+        * @brief The device does not synchronize with other devices,
+        * @brief The Color and Depth can be set to different frame rates.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_FREE_RUN = 1 << 0,
+
+        /**
+        * @brief standalone mode
+        * @brief The device does not synchronize with other devices.
+        * @brief The Color and Depth should be set to same frame rates, the Color and Depth will be synchronized.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_STANDALONE = 1 << 1,
+
+        /**
+        * @brief primary mode
+        * @brief The device is the primary device in the multi-device system, it will output the trigger signal via VSYNC_OUT pin on synchronization port by
+        * default.
+        * @brief The Color and Depth should be set to same frame rates, the Color and Depth will be synchronized and can be adjusted by @ref colorDelayUs, @ref
+        * depthDelayUs or @ref trigger2ImageDelayUs.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_PRIMARY = 1 << 2,
+
+        /**
+        * @brief secondary mode
+        * @brief The device is the secondary device in the multi-device system, it will receive the trigger signal via VSYNC_IN pin on synchronization port. It
+        * will out the trigger signal via VSYNC_OUT pin on synchronization port by default.
+        * @brief The Color and Depth should be set to same frame rates, the Color and Depth will be synchronized and can be adjusted by @ref colorDelayUs, @ref
+        * depthDelayUs or @ref trigger2ImageDelayUs.
+        * @brief After starting the stream, the device will wait for the trigger signal to start capturing images, and will stop capturing images when the trigger
+        * signal is stopped.
+        *
+        * @attention The frequency of the trigger signal should be same as the frame rate of the stream profile which is set when starting the stream.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_SECONDARY = 1 << 3,
+
+        /**
+        * @brief secondary synced mode
+        * @brief The device is the secondary device in the multi-device system, it will receive the trigger signal via VSYNC_IN pin on synchronization port. It
+        * will out the trigger signal via VSYNC_OUT pin on synchronization port by default.
+        * @brief The Color and Depth should be set to same frame rates, the Color and Depth will be synchronized and can be adjusted by @ref colorDelayUs, @ref
+        * depthDelayUs or @ref trigger2ImageDelayUs.
+        * @brief After starting the stream, the device will be immediately start capturing images, and will adjust the capture time when the trigger signal is
+        * received to synchronize with the primary device. If the trigger signal is stopped, the device will still capture images.
+        *
+        * @attention The frequency of the trigger signal should be same as the frame rate of the stream profile which is set when starting the stream.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_SECONDARY_SYNCED = 1 << 4,
+
+        /**
+        * @brief software triggering mode
+        * @brief The device will start one time image capture after receiving the capture command and will output the trigger signal via VSYNC_OUT pin by default.
+        * The capture command can be sent form host by call @ref ob_device_trigger_capture. The number of images captured each time can be set by @ref
+        * framesPerTrigger.
+        * @brief The Color and Depth should be set to same frame rates, the Color and Depth will be synchronized and can be adjusted by @ref colorDelayUs, @ref
+        * depthDelayUs or @ref trigger2ImageDelayUs.
+        *
+        * @brief The frequency of the user call @ref ob_device_trigger_capture to send the capture command multiplied by the number of frames per trigger should be
+        * less than the frame rate of the stream profile which is set when starting the stream.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_SOFTWARE_TRIGGERING = 1 << 5,
+
+        /**
+        * @brief hardware triggering mode
+        * @brief The device will start one time image capture after receiving the trigger signal via VSYNC_IN pin on synchronization port and will output the
+        * trigger signal via VSYNC_OUT pin by default. The number of images captured each time can be set by @ref framesPerTrigger.
+        * @brief The Color and Depth should be set to same frame rates, the Color and Depth will be synchronized and can be adjusted by @ref colorDelayUs, @ref
+        * depthDelayUs or @ref trigger2ImageDelayUs.
+        *
+        * @attention The frequency of the trigger signal multiplied by the number of frames per trigger should be less than the frame rate of the stream profile
+        * which is set when starting the stream.
+        * @attention The trigger signal input via VSYNC_IN pin on synchronization port should be ouput by other device via VSYNC_OUT pin in hardware triggering
+        * mode or software triggering mode.
+        * @attention Due to different models may have different signal input requirements, please do not use different models to output trigger
+        * signal as input-trigger signal.
+        */
+        OB_MULTI_DEVICE_SYNC_MODE_HARDWARE_TRIGGERING = 1 << 6,
+
+    }
+
+    /**
+    * @brief The synchronization configuration of the device.
+    */
+    public struct MultiDeviceSyncConfig{
+        /**
+        * @brief The sync mode of the device.
+        */
+        MultiDeviceSyncMode syncMode;
+
+        /**
+        * @brief The delay time of the depth image capture after receiving the capture command or trigger signal in microseconds.
+        *
+        * @attention This parameter is only valid for some models， please refer to the product manual for details.
+        */
+        int depthDelayUs;
+
+        /**
+        * @brief The delay time of the color image capture after receiving the capture command or trigger signal in microseconds.
+        *
+        * @attention This parameter is only valid for some models， please refer to the product manual for details.
+        */
+        int colorDelayUs;
+
+        /**
+        * @brief The delay time of the image capture after receiving the capture command or trigger signal in microseconds.
+        * @brief The depth and color images are captured synchronously as the product design and can not change the delay between the depth and color images.
+        *
+        * @attention For Orbbec Astra 2 device, this parameter is valid only when the @ref triggerOutDelayUs is set to 0.
+        * @attention This parameter is only valid for some models to replace @ref depthDelayUs and @ref colorDelayUs, please refer to the product manual for
+        * details.
+        */
+        int trigger2ImageDelayUs;
+
+        /**
+        * @brief Trigger signal output enable flag.
+        * @brief After the trigger signal output is enabled, the trigger signal will be output when the capture command or trigger signal is received. User can
+        * adjust the delay time of the trigger signal output by @ref triggerOutDelayUs.
+        *
+        * @attention For some models, the trigger signal output is always enabled and cannot be disabled.
+        * @attention If device is in the @ref OB_MULTI_DEVICE_SYNC_MODE_FREE_RUN or @ref OB_MULTI_DEVICE_SYNC_MODE_STANDALONE mode, the trigger signal output is
+        * always disabled. Set this parameter to true will not take effect.
+        */
+        bool triggerOutEnable;
+
+        /**
+        * @brief The delay time of the trigger signal output after receiving the capture command or trigger signal in microseconds.
+        *
+        * @attention For Orbbec Astra 2 device, only supported -1 and 0. -1 means the trigger signal output delay is automatically adjusted by the device, 0 means
+        * the trigger signal output is disabled.
+        */
+        int triggerOutDelayUs;
+
+        /**
+        * @brief The frame number of each stream after each trigger in triggering mode.
+        *
+        * @attention This parameter is only valid when the triggering mode is set to @ref OB_MULTI_DEVICE_SYNC_MODE_HARDWARE_TRIGGERING or @ref
+        * OB_MULTI_DEVICE_SYNC_MODE_SOFTWARE_TRIGGERING.
+        * @attention The trigger frequency multiplied by the number of frames per trigger cannot exceed the maximum frame rate of the stream profile which is set
+        * when starting the stream.
+        */
+        int framesPerTrigger;
+    }
+
+    /**
+    * @brief The timestamp reset configuration of the device.
+    *
+    */
+    public struct DeviceTimestampResetConfig{
+        /**
+        * @brief Whether to enable the timestamp reset function.
+        * @brief If the timestamp reset function is enabled, the timer for calculating the timestamp for output frames will be reset to 0 when the timestamp reset
+        * command or timestamp reset signal is received, and one timestamp reset signal will be output via TIMER_SYNC_OUT pin on synchronization port by default.
+        * The timestamp reset signal is input via TIMER_SYNC_IN pin on the synchronization port.
+        *
+        * @attention For some models, the timestamp reset function is always enabled and cannot be disabled.
+        */
+        bool enable;
+
+        /**
+        * @brief The delay time of executing the timestamp reset function after receiving the command or signal in microseconds.
+        */
+        int timestamp_reset_delay_us;
+
+        /**
+        * @brief the timestamp reset signal output enable flag.
+        *
+        * @attention For some models, the timestamp reset signal output is always enabled and cannot be disabled.
+        */
+        bool timestamp_reset_signal_output_enable;
+    }
+
+    /**
+    * @brief Baseline calibration parameters
+    */
+    public struct BaselineCalibrationParam{
+        /**
+        * @brief Baseline length
+        */
+        float baseline;
+        /**
+        * @brief Calibration distance
+        */
+        float zpd;
+    }
+
 }

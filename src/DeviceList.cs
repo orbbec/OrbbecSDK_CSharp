@@ -154,6 +154,39 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(handle);
         }
 
+        public String ConnectionType(UInt32 index)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_device_connection_type(_handle.Ptr, index, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(handle);
+        }
+
+        public String IPAddress(UInt32 index)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_device_ip_address(_handle.Ptr, index, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(handle);
+        }
+
+        public String ExtensionInfo(UInt32 index)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_extension_info(_handle.Ptr, index, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(handle);
+        }
+
         /**
         * \if English
         * @brief Get the specified device object from the device list

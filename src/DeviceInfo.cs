@@ -188,6 +188,28 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        public String IPAddress()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_device_info_ip_address(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
+        }
+
+        public String ExtensionInfo()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_device_info_get_extension_info(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
+        }
+
         /**
         * \if English
         * @brief Get the version number of the hardware

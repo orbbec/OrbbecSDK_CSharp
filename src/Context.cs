@@ -4,25 +4,36 @@ using System.Runtime.InteropServices;
 namespace Orbbec
 {
     public delegate void DeviceChangedCallback(DeviceList removed, DeviceList added);
+    public delegate void LogCallback(LogSeverity logSeverity, String message);
 
     public class Context : IDisposable
     {
         private NativeHandle _handle;
-        private DeviceChangedCallback _callback;
-        private NativeDeviceChangedCallback _nativeCallback;
+        private DeviceChangedCallback _deviceChangedCallback;
+        private NativeDeviceChangedCallback _nativeDeviceChangedCallback;
+        private static LogCallback _logCallback;
+        private static NativeLogCallback _nativeLogCallback;
 
         private void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userData)
         {
             DeviceList removed = new DeviceList(removedPtr);
             DeviceList added = new DeviceList(addedPtr);
-            if (_callback != null)
+            if (_deviceChangedCallback != null)
             {
-                _callback(removed, added);
+                _deviceChangedCallback(removed, added);
             }
             else
             {
                 removed.Dispose();
                 added.Dispose();
+            }
+        }
+
+        private void OnLogCallback(LogSeverity logSeverity, String message, IntPtr userData)
+        {
+            if(_logCallback != null)
+            {
+                _logCallback(logSeverity, message);
             }
         }
 
@@ -45,7 +56,8 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
-            _nativeCallback = new NativeDeviceChangedCallback(OnDeviceChanged);
+            _nativeDeviceChangedCallback = new NativeDeviceChangedCallback(OnDeviceChanged);
+            _nativeLogCallback = new NativeLogCallback(OnLogCallback);
         }
 
         /**
@@ -67,7 +79,7 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
-            _nativeCallback = new NativeDeviceChangedCallback(OnDeviceChanged);
+            _nativeDeviceChangedCallback = new NativeDeviceChangedCallback(OnDeviceChanged);
         }
 
         /**
@@ -90,6 +102,16 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             return new DeviceList(handle);
+        }
+
+        public void EnableNetDeviceEnumeration(bool enable)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_enable_net_device_enumeration(_handle.Ptr, enable, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         /**
@@ -123,9 +145,9 @@ namespace Orbbec
         */
         public void SetDeviceChangedCallback(DeviceChangedCallback callback)
         {
-            _callback = callback;
+            _deviceChangedCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_device_changed_callback(_handle.Ptr, _nativeCallback, IntPtr.Zero, ref error);
+            obNative.ob_set_device_changed_callback(_handle.Ptr, _nativeDeviceChangedCallback, IntPtr.Zero, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -143,10 +165,10 @@ namespace Orbbec
         * @param repeatInterval 定时同步时间间隔（单位ms；如果repeatInterval=0，表示只同步一次，不再定时执行）
         * \endif
         */
-        public void EnableMultiDeviceSync(UInt64 repeatInterval)
+        public void EnableDeviceClockSync(UInt64 repeatInterval)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_enable_multi_device_sync(_handle.Ptr, repeatInterval, ref error);
+            obNative.ob_enable_device_clock_sync(_handle.Ptr, repeatInterval, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -212,6 +234,17 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_set_logger_to_console(logSeverity, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public static void SetLoggerCallback(LogSeverity logSeverity, LogCallback callback)
+        {
+            _logCallback = callback;
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_set_logger_callback(logSeverity, _nativeLogCallback, IntPtr.Zero, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

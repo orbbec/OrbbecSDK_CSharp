@@ -342,6 +342,18 @@ namespace Orbbec
             return cameraParam;
         }
 
+        public CameraParam GetCameraParamWithProfile(UInt32 colorWidth, UInt32 colorHeight, UInt32 depthWidth, UInt32 depthHeight)
+        {
+            IntPtr error = IntPtr.Zero;
+            CameraParam cameraParam;
+            obNative.ob_pipeline_get_camera_param_with_profile(out cameraParam, _handle.Ptr, colorWidth, colorHeight, depthWidth, depthHeight, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return cameraParam;
+        }
+
         /**
         * \if English
         * @brief Return a list of D2C-enabled depth sensor resolutions corresponding to the input color sensor resolution

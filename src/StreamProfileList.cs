@@ -42,6 +42,28 @@ namespace Orbbec
             return new VideoStreamProfile(handle);
         }
 
+        public AccelStreamProfile GetAccelStreamProfile(AccelFullScaleRange fullScaleRange, AccelSampleRate sampleRate)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_stream_profile_list_get_accel_stream_profile(_handle.Ptr, fullScaleRange, sampleRate, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new AccelStreamProfile(handle);
+        }
+
+        public GyroStreamProfile GetGyroStreamProfile(GyroFullScaleRange fullScaleRange, GyroSampleRate sampleRate)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_stream_profile_list_get_gyro_stream_profile(_handle.Ptr, fullScaleRange, sampleRate, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new GyroStreamProfile(handle);
+        }
+
         /**
         * \if English
         * @brief Get StreamProfile by index number

@@ -15,6 +15,7 @@ namespace Orbbec
     internal delegate void NativePlaybackCallback(IntPtr framePtr, IntPtr userData);
     internal delegate void NativeMediaStateCallback(MediaState state, IntPtr userData);
     internal delegate void NativeFrameCallback(IntPtr framePtr, IntPtr userData);
+    internal delegate void NativeLogCallback(LogSeverity logSeverity, String message, IntPtr userData);
 
     internal class obNative
     {
@@ -41,6 +42,10 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_query_device_list")]
         public static extern IntPtr ob_query_device_list(IntPtr context, ref IntPtr error);
 
+        //void ob_enable_net_device_enumeration(ob_context *context, bool enable, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_enable_net_device_enumeration")]
+        public static extern void ob_enable_net_device_enumeration(IntPtr context, bool enable, ref IntPtr error);
+
         //ob_device *ob_create_net_device(ob_context *context, const char *address, uint16_t port, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_net_device")]
         public static extern IntPtr ob_create_net_device(IntPtr context, String address, UInt16 port, ref IntPtr error);
@@ -49,9 +54,9 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_set_device_changed_callback")]
         public static extern void ob_set_device_changed_callback(IntPtr context, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceChangedCallback callback, IntPtr userData, ref IntPtr error);
 
-        //void ob_enable_multi_device_sync(ob_context *context, uint64_t repeatInterval, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_enable_multi_device_sync")]
-        public static extern void ob_enable_multi_device_sync(IntPtr context, UInt64 repeatInterval, ref IntPtr error);
+        //void ob_enable_device_clock_sync(ob_context *context, uint64_t repeatInterval, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_enable_device_clock_sync")]
+        public static extern void ob_enable_device_clock_sync(IntPtr context, UInt64 repeatInterval, ref IntPtr error);
 
         //void ob_set_logger_severity(ob_log_severity severity, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_set_logger_severity")]
@@ -64,6 +69,10 @@ namespace Orbbec
         //void ob_set_logger_to_console(ob_log_severity severity, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_set_logger_to_console")]
         public static extern void ob_set_logger_to_console(LogSeverity logSeverity, ref IntPtr error);
+
+        //void ob_set_logger_callback(ob_log_severity severity, ob_log_callback callback, void *user_data, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_set_logger_callback")]
+        public static extern void ob_set_logger_callback(LogSeverity logSeverity, NativeLogCallback callback, IntPtr userData, ref IntPtr error);
         #endregion
 
         #region Device
@@ -90,6 +99,18 @@ namespace Orbbec
         //const char *ob_device_list_get_device_serial_number(ob_device_list *list, uint32_t index, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_list_get_device_serial_number")]
         public static extern IntPtr ob_device_list_get_device_serial_number(IntPtr deviceList, UInt32 index, ref IntPtr error);
+
+        //const char *ob_device_list_get_device_connection_type(ob_device_list *list, uint32_t index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_list_get_device_connection_type")]
+        public static extern IntPtr ob_device_list_get_device_connection_type(IntPtr deviceList, UInt32 index, ref IntPtr error);
+
+        //const char *ob_device_list_get_device_ip_address(ob_device_list *list, uint32_t index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_list_get_device_ip_address")]
+        public static extern IntPtr ob_device_list_get_device_ip_address(IntPtr deviceList, UInt32 index, ref IntPtr error);
+
+        //const char *ob_device_list_get_extension_info(ob_device_list *list, uint32_t index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_list_get_extension_info")]
+        public static extern IntPtr ob_device_list_get_extension_info(IntPtr deviceList, UInt32 index, ref IntPtr error);
 
         //ob_device *ob_device_list_get_device(ob_device_list *list, uint32_t index, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_list_get_device")]
@@ -223,13 +244,21 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_device_read_flash")]
         public static extern void ob_device_read_flash(IntPtr device, UInt32 offset, UInt32 dataSize, NativeGetDataCallback callback, bool async, IntPtr userData, ref IntPtr error);
         
-        //uint64_t ob_device_sync_device_time(ob_device *device, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_sync_device_time")]
-        public static extern UInt64 ob_device_sync_device_time(IntPtr device, ref IntPtr error);
+        //void ob_device_write_customer_data(ob_device *device, const void *data, uint32_t data_size, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_write_customer_data")]
+        public static extern void ob_device_write_customer_data(IntPtr device, IntPtr data, UInt32 dataSize, ref IntPtr error);
+        
+        //void ob_device_read_customer_data(ob_device *device, void *data, uint32_t *data_size, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_read_customer_data")]
+        public static extern void ob_device_read_customer_data(IntPtr device, IntPtr data, out UInt32 dataSize, ref IntPtr error);
         
         //void ob_device_upgrade(ob_device *device, const char *path, ob_device_upgrade_callback callback, bool async, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_upgrade")]
         public static extern void ob_device_upgrade(IntPtr device, String path, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceUpgradeCallback callback, bool async, IntPtr userData, ref IntPtr error);
+
+        //void ob_device_upgrade_from_data(ob_device *device, const char *file_data, uint32_t file_size, ob_device_upgrade_callback callback, bool async, void *user_data, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_upgrade_from_data")]
+        public static extern void ob_device_upgrade_from_data(IntPtr device, IntPtr fileData, UInt32 fileSize, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceUpgradeCallback callback, bool asycn, IntPtr userData, ref IntPtr error);
 
         //ob_device_state ob_device_get_device_state( ob_device* device, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_get_device_state")]
@@ -314,6 +343,14 @@ namespace Orbbec
         //const char *ob_device_info_connection_type(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_connection_type")]
         public static extern IntPtr ob_device_info_connection_type(IntPtr deviceInfo, ref IntPtr error);
+        
+        //const char *ob_device_info_ip_address(ob_device_info *info, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_info_ip_address")]
+        public static extern IntPtr ob_device_info_ip_address(IntPtr deviceInfo, ref IntPtr error);
+
+        //const char *ob_device_info_get_extension_info(ob_device_info *info, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_info_get_extension_info")]
+        public static extern IntPtr ob_device_info_get_extension_info(IntPtr deviceInfo, ref IntPtr error);
 
         //const char *ob_device_info_hardware_version(ob_device_info *info, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_hardware_version")]
@@ -354,6 +391,38 @@ namespace Orbbec
         //void ob_delete_depth_work_mode_list(ob_depth_work_mode_list *work_mode_list, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_delete_depth_work_mode_list")]
         public static extern void ob_delete_depth_work_mode_list(IntPtr workModeList, ref IntPtr error);
+
+        //uint16_t ob_device_get_supported_multi_device_sync_mode_bitmap(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_supported_multi_device_sync_mode_bitmap")]
+        public static extern UInt16 ob_device_get_supported_multi_device_sync_mode_bitmap(IntPtr device, ref IntPtr error);
+        
+        //void ob_device_set_multi_device_sync_config(ob_device *device, const ob_multi_device_sync_config *config, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_set_multi_device_sync_config")]
+        public static extern void ob_device_set_multi_device_sync_config(IntPtr device, IntPtr config, ref IntPtr error);
+
+        //ob_multi_device_sync_config ob_device_get_multi_device_sync_config(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_multi_device_sync_config")]
+        public static extern void ob_device_get_multi_device_sync_config(out MultiDeviceSyncConfig config, IntPtr device, ref IntPtr error);
+
+        //void ob_device_trigger_capture(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_trigger_capture")]
+        public static extern void ob_device_trigger_capture(IntPtr device, ref IntPtr error);
+
+        //void ob_device_set_timestamp_reset_config(ob_device *device, const ob_device_timestamp_reset_config *config, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_set_timestamp_reset_config")]
+        public static extern void ob_device_set_timestamp_reset_config(IntPtr device, IntPtr config, ref IntPtr error);
+
+        //ob_device_timestamp_reset_config ob_device_get_timestamp_reset_config(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_timestamp_reset_config")]
+        public static extern DeviceTimestampResetConfig ob_device_get_timestamp_reset_config(IntPtr device, ref IntPtr error);
+
+        //void ob_device_timestamp_reset(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_timestamp_reset")]
+        public static extern void ob_device_timestamp_reset(IntPtr device, ref IntPtr error);
+
+        //void ob_device_timer_sync_with_host(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_timer_sync_with_host")]
+        public static extern void ob_device_timer_sync_with_host(IntPtr device, ref IntPtr error);
         #endregion
 
         #region Error
@@ -659,6 +728,10 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_pipeline_switch_config")]
         public static extern void ob_pipeline_switch_config(IntPtr pipeline, IntPtr config, ref IntPtr error);
 
+        //ob_camera_param ob_pipeline_get_camera_param_with_profile(ob_pipeline *pipeline, uint32_t colorWidth, uint32_t colorHeight, uint32_t depthWidth, uint32_t depthHeight, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_pipeline_get_camera_param_with_profile")]
+        public static extern void ob_pipeline_get_camera_param_with_profile(out CameraParam cameraParam, IntPtr pipeline, UInt32 colorWidth, UInt32 colorHeight, UInt32 depthWidth, UInt32 depthHeight, ref IntPtr error);
+
         //ob_camera_param ob_pipeline_get_camera_param(ob_pipeline *pipeline, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_pipeline_get_camera_param")]
         public static extern void ob_pipeline_get_camera_param(out CameraParam cameraParam, IntPtr pipeline, ref IntPtr error);
@@ -867,6 +940,14 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_stream_profile_list_get_video_stream_profile")]
         public static extern IntPtr ob_stream_profile_list_get_video_stream_profile(IntPtr profileList, int width, int height, Format format, int fps, ref IntPtr error);
         
+        //ob_stream_profile *ob_stream_profile_list_get_accel_stream_profile(ob_stream_profile_list *profile_list, ob_accel_full_scale_range fullScaleRange, ob_accel_sample_rate sampleRate, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_stream_profile_list_get_accel_stream_profile")]
+        public static extern IntPtr ob_stream_profile_list_get_accel_stream_profile(IntPtr profileList, AccelFullScaleRange fullScaleRange, AccelSampleRate sampleRate, ref IntPtr error);
+
+        //ob_stream_profile *ob_stream_profile_list_get_gyro_stream_profile(ob_stream_profile_list *profile_list, ob_gyro_full_scale_range fullScaleRange, ob_gyro_sample_rate sampleRate, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_stream_profile_list_get_gyro_stream_profile")]
+        public static extern IntPtr ob_stream_profile_list_get_gyro_stream_profile(IntPtr profileList, GyroFullScaleRange fullScaleRange, GyroSampleRate sampleRate, ref IntPtr error);
+
         //ob_stream_profile *ob_stream_profile_list_get_profile(ob_stream_profile_list *profile_list, int index, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_stream_profile_list_get_profile")]
         public static extern IntPtr ob_stream_profile_list_get_profile(IntPtr profileList, int index, ref IntPtr error);

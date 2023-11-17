@@ -605,6 +605,28 @@ namespace Orbbec
             }
         }
 
+        public void WriteCustomData(byte[] data, UInt32 dataSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            GCHandle gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            IntPtr intPtr = gcHandle.AddrOfPinnedObject();
+            obNative.ob_device_write_customer_data(_handle.Ptr, intPtr, dataSize, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void ReadCustomData(IntPtr dataPtr, out UInt32 dataSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_read_customer_data(_handle.Ptr, dataPtr, out dataSize, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         /**
         * \if English
         * @brief Set raw data type of device property [Asynchronous callback]
@@ -763,26 +785,6 @@ namespace Orbbec
 
         /**
         * \if English
-        * @brief Synchronize device time (synchronize local systemtime to device)
-        * @return UInt64 command (round trip time， rtt）
-        * \else
-        * @brief 同步设备时间（向设备授时，同步本地系统时间到设备）
-        * @return UInt64 命令往返时间延时（round trip time， rtt）
-        * \endif
-        */
-        public UInt64 SyncDeviceTime()
-        {
-            IntPtr error = IntPtr.Zero;
-            UInt64 time = obNative.ob_device_sync_device_time(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return time;
-        }
-
-        /**
-        * \if English
         * @brief Upgrade the device firmware
         *
         * @param filePath Firmware path
@@ -801,6 +803,19 @@ namespace Orbbec
             _deviceUpgradeCallback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_upgrade(_handle.Ptr, filePath, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void DeviceUpgradeFromData(byte[] fileData, DeviceUpgradeCallback callback, bool async = true)
+        {
+            _deviceUpgradeCallback = callback;
+            IntPtr error = IntPtr.Zero;
+            GCHandle gcHandle = GCHandle.Alloc(fileData, GCHandleType.Pinned);
+            IntPtr intPtr = gcHandle.AddrOfPinnedObject();
+            obNative.ob_device_upgrade_from_data(_handle.Ptr, intPtr, (UInt32)fileData.Length, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1105,6 +1120,94 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_set_sync_config(_handle.Ptr, deviceSyncConfig, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public UInt16 GetSupportedMultiDeviceSyncModeBitmap()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt16 result = obNative.ob_device_get_supported_multi_device_sync_mode_bitmap(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return result;
+        }
+
+        public void SetMultiDeviceSyncConfig(MultiDeviceSyncConfig config)
+        {
+            IntPtr error = IntPtr.Zero;
+            GCHandle gcHandle = GCHandle.Alloc(config, GCHandleType.Pinned);
+            IntPtr ptr = gcHandle.AddrOfPinnedObject();
+            obNative.ob_device_set_multi_device_sync_config(_handle.Ptr, ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public MultiDeviceSyncConfig GetMultiDeviceSyncConfig()
+        {
+            IntPtr error = IntPtr.Zero;
+            MultiDeviceSyncConfig config;
+            obNative.ob_device_get_multi_device_sync_config(out config, _handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return config;
+        }
+
+        public void TriggerCapture()
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_trigger_capture(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void SetTimestampResetConfig(DeviceTimestampResetConfig config)
+        {
+            IntPtr error = IntPtr.Zero;
+            GCHandle gcHandle = GCHandle.Alloc(config, GCHandleType.Pinned);
+            IntPtr ptr = gcHandle.AddrOfPinnedObject();
+            obNative.ob_device_set_timestamp_reset_config(_handle.Ptr, ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public DeviceTimestampResetConfig GetTimestampResetConfig()
+        {
+            IntPtr error = IntPtr.Zero;
+            DeviceTimestampResetConfig config = obNative.ob_device_get_timestamp_reset_config(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return config;
+        }
+
+        public void TimestampReset()
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_timestamp_reset(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void TimerSyncWithHost()
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_timer_sync_with_host(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
