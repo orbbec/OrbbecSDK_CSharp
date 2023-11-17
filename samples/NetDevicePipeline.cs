@@ -1,10 +1,53 @@
 using System;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Orbbec;
 
-//10.10.71.55
 class TestClass
 {
+    static string pointcloudPath = "points.ply";
+
+    public static void WritePointPly(byte[] data)
+    {
+        int pointSize = Marshal.SizeOf(typeof(Point));
+        int pointsSize = data.Length / Marshal.SizeOf(typeof(Point));
+
+        Point[] points = new Point[pointsSize];
+
+        IntPtr dataPtr = Marshal.AllocHGlobal(data.Length);
+        Marshal.Copy(data, 0, dataPtr, data.Length);
+        for (int i = 0; i < pointsSize; i++)
+        {
+            IntPtr pointPtr = new IntPtr(dataPtr.ToInt64() + i * pointSize);
+            points[i] = (Point)Marshal.PtrToStructure(pointPtr, typeof(Point));
+        }
+        Marshal.FreeHGlobal(dataPtr);
+
+        FileStream fs = new FileStream(pointcloudPath, FileMode.Create);
+        var writer = new StreamWriter(fs);
+        writer.Write("ply\n");
+        writer.Write("format ascii 1.0\n");
+        writer.Write("element vertex " + pointsSize + "\n");
+        writer.Write("property float x\n");
+        writer.Write("property float y\n");
+        writer.Write("property float z\n");
+        writer.Write("end_header\n");
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            writer.Write(points[i].x);
+            writer.Write(" ");
+            writer.Write(points[i].y);
+            writer.Write(" ");
+            writer.Write(points[i].z);
+            writer.Write("\n");
+        }
+
+        writer.Close();
+        fs.Close();
+    }
+
     static void Main(string[] args)
     {
         Context ctx = new Context();
@@ -23,6 +66,11 @@ class TestClass
 
         byte[] colorData = null;
         byte[] depthData = null;
+        byte[] pointsData = null;
+        CameraParam cameraParam;
+        PointCloudFilter pointCloudFilter = new PointCloudFilter();
+
+        bool saved = false;
 
         pipeline.Start(config, (frameset) =>{
             if(frameset == null)
@@ -59,11 +107,39 @@ class TestClass
                 depthFrame.Dispose();
                 System.IO.File.WriteAllBytes("depth.raw", depthData);
             }
-            
+
+            if (depthFrame != null)
+            {
+                var frame = pointCloudFilter.Process(frameset);
+                if (frame != null)
+                {
+                    var pointFrame = frame.As<PointsFrame>();
+                    var dataSize = pointFrame.GetDataSize();
+                    if (pointsData == null || pointsData.Length != dataSize)
+                    {
+                        pointsData = new byte[dataSize];
+                    }
+                    pointFrame.CopyData(ref pointsData);
+                    pointFrame.Dispose();
+                    frame.Dispose();
+
+                    //点云保存非常耗时，最好放在一个单独线程执行
+                    if (!saved)
+                    {
+                        WritePointPly(pointsData);
+                        saved = true;
+                    }
+                }
+            }
+
             frameset.Dispose();
         });
 
-        while(true)
+        cameraParam = pipeline.GetCameraParam();
+        pointCloudFilter.SetCameraParam(cameraParam);
+        pointCloudFilter.SetPointFormat(Format.OB_FORMAT_POINT);
+
+        while (true)
         {
             Thread.Sleep(100);
         }

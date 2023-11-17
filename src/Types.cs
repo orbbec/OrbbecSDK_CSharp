@@ -260,10 +260,10 @@ namespace Orbbec
     */
     public struct DataChunk
     {
-        IntPtr data;    ///< \if English current block data pointer \else 当前块数据指针 \endif
-        UInt32 size;    ///< \if English Current block data length \else 当前块数据长度 \endif
-        UInt32 offset;  ///< \if English The offset of the current data block relative to the complete data \else 当前数据块相对完整数据的偏移 \endif
-        UInt32 fullDataSize;  ///< \if English full data size \else 完整数据大小 \endif
+        public IntPtr data;    ///< \if English current block data pointer \else 当前块数据指针 \endif
+        public UInt32 size;    ///< \if English Current block data length \else 当前块数据长度 \endif
+        public UInt32 offset;  ///< \if English The offset of the current data block relative to the complete data \else 当前数据块相对完整数据的偏移 \endif
+        public UInt32 fullDataSize;  ///< \if English full data size \else 完整数据大小 \endif
     }
 
     /**
@@ -392,12 +392,12 @@ namespace Orbbec
     */
     public struct OBCameraParam_V0
     {
-        CameraIntrinsic  depthIntrinsic;   ///< Depth camera internal parameters
-        CameraIntrinsic  rgbIntrinsic;     ///< Color camera internal parameters
-        CameraDistortion depthDistortion;  ///< Depth camera distortion parameters
+        public CameraIntrinsic  depthIntrinsic;   ///< Depth camera internal parameters
+        public CameraIntrinsic  rgbIntrinsic;     ///< Color camera internal parameters
+        public CameraDistortion depthDistortion;  ///< Depth camera distortion parameters
 
-        CameraDistortion rgbDistortion;  ///< Distortion parameters for color camera
-        D2CTransform     transform;      ///< Rotation/transformation matrix
+        public CameraDistortion rgbDistortion;  ///< Distortion parameters for color camera
+        public D2CTransform     transform;      ///< Rotation/transformation matrix
     }
 
     /**
@@ -405,13 +405,13 @@ namespace Orbbec
     */
     public struct OBMarginFilterConfig
     {
-        int      margin_x_th;       ///< Horizontal threshold settings
-        int      margin_y_th;       ///< Vertical threshold settings
-        int      limit_x_th;        ///< Maximum horizontal threshold
-        int      limit_y_th;        ///< Maximum vertical threshold
-        UInt32 width;             ///< Image width
-        UInt32 height;            ///< Image height
-        bool     enable_direction;  ///< Set to true for horizontal and vertical, false for horizontal only
+        public int      margin_x_th;       ///< Horizontal threshold settings
+        public int      margin_y_th;       ///< Vertical threshold settings
+        public int      limit_x_th;        ///< Maximum horizontal threshold
+        public int      limit_y_th;        ///< Maximum vertical threshold
+        public UInt32 width;             ///< Image width
+        public UInt32 height;            ///< Image height
+        public bool     enable_direction;  ///< Set to true for horizontal and vertical, false for horizontal only
     }
 
     /**
@@ -549,9 +549,9 @@ namespace Orbbec
      */
     public struct AccelValue
     {
-        float x;  ///< X-direction component
-        float y;  ///< Y-direction component
-        float z;  ///< Z-direction component
+        public float x;  ///< X-direction component
+        public float y;  ///< Y-direction component
+        public float z;  ///< Z-direction component
     }
 
     /**
@@ -559,9 +559,9 @@ namespace Orbbec
      */
     public struct GyroValue
     {
-        float x;  ///< X-direction component
-        float y;  ///< Y-direction component
-        float z;  ///< Z-direction component
+        public float x;  ///< X-direction component
+        public float y;  ///< Y-direction component
+        public float z;  ///< Z-direction component
     }
 
     /**
@@ -573,17 +573,17 @@ namespace Orbbec
      */
     public struct DeviceTemperature
     {
-        float cpuTemp;         ///< CPU temperature
-        float irTemp;          ///< IR temperature
-        float ldmTemp;         ///< Laser temperature
-        float mainBoardTemp;   ///< Motherboard temperature
-        float tecTemp;         ///< TEC temperature
-        float imuTemp;         ///< IMU temperature
-        float rgbTemp;         ///< RGB temperature
-        float irLeftTemp;      ///< Left IR temperature
-        float irRightTemp;     ///< Right IR temperature
-        float chipTopTemp;     ///< MX6600 top temperature
-        float chipBottomTemp;  ///< MX6600 bottom temperature
+        public float cpuTemp;         ///< CPU temperature
+        public float irTemp;          ///< IR temperature
+        public float ldmTemp;         ///< Laser temperature
+        public float mainBoardTemp;   ///< Motherboard temperature
+        public float tecTemp;         ///< TEC temperature
+        public float imuTemp;         ///< IMU temperature
+        public float rgbTemp;         ///< RGB temperature
+        public float irLeftTemp;      ///< Left IR temperature
+        public float irRightTemp;     ///< Right IR temperature
+        public float chipTopTemp;     ///< MX6600 top temperature
+        public float chipBottomTemp;  ///< MX6600 bottom temperature
     }
 
     /**
@@ -945,9 +945,9 @@ namespace Orbbec
     */
     public struct DepthWorkMode {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        byte[] checksum;  ///< \if English Checksum of work mode \else 相机深度模式对应哈希二进制数组 \endif
+        public byte[] checksum;  ///< \if English Checksum of work mode \else 相机深度模式对应哈希二进制数组 \endif
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        char[]    name;      ///< \if English 名称 \else Name of work mode \endif
+        public char[]    name;      ///< \if English 名称 \else Name of work mode \endif
     }
 
     /**
@@ -955,9 +955,9 @@ namespace Orbbec
     *
     */
     public struct ProtocolVersion {
-        byte major;  ///< 主版本号
-        byte minor;  ///< 次版本号
-        byte patch;  ///< 补丁版本
+        public byte major;  ///< 主版本号
+        public byte minor;  ///< 次版本号
+        public byte patch;  ///< 补丁版本
     }
 
     /**
@@ -985,27 +985,27 @@ namespace Orbbec
         /**
         * @brief CmdVersion of propertyId
         */
-        CmdVersion cmdVersion;
+        public CmdVersion cmdVersion;
 
         /**
         * @brief Data containing itemCount of elements
         */
-        IntPtr data;
+        public IntPtr data;
 
         /**
         * @brief Data size in bytes
         */
-        UInt32 dataSize;
+        public UInt32 dataSize;
 
         /**
         * @brief Size of data item
         */
-        UInt32 itemTypeSize;
+        public UInt32 itemTypeSize;
 
         /**
         * @brief Count of data item
         */
-        UInt32 itemCount;
+        public UInt32 itemCount;
     }
 
     /**
@@ -1234,21 +1234,21 @@ namespace Orbbec
         /**
         * @brief The sync mode of the device.
         */
-        MultiDeviceSyncMode syncMode;
+        public MultiDeviceSyncMode syncMode;
 
         /**
         * @brief The delay time of the depth image capture after receiving the capture command or trigger signal in microseconds.
         *
         * @attention This parameter is only valid for some models， please refer to the product manual for details.
         */
-        int depthDelayUs;
+        public int depthDelayUs;
 
         /**
         * @brief The delay time of the color image capture after receiving the capture command or trigger signal in microseconds.
         *
         * @attention This parameter is only valid for some models， please refer to the product manual for details.
         */
-        int colorDelayUs;
+        public int colorDelayUs;
 
         /**
         * @brief The delay time of the image capture after receiving the capture command or trigger signal in microseconds.
@@ -1258,7 +1258,7 @@ namespace Orbbec
         * @attention This parameter is only valid for some models to replace @ref depthDelayUs and @ref colorDelayUs, please refer to the product manual for
         * details.
         */
-        int trigger2ImageDelayUs;
+        public int trigger2ImageDelayUs;
 
         /**
         * @brief Trigger signal output enable flag.
@@ -1269,7 +1269,7 @@ namespace Orbbec
         * @attention If device is in the @ref OB_MULTI_DEVICE_SYNC_MODE_FREE_RUN or @ref OB_MULTI_DEVICE_SYNC_MODE_STANDALONE mode, the trigger signal output is
         * always disabled. Set this parameter to true will not take effect.
         */
-        bool triggerOutEnable;
+        public bool triggerOutEnable;
 
         /**
         * @brief The delay time of the trigger signal output after receiving the capture command or trigger signal in microseconds.
@@ -1277,7 +1277,7 @@ namespace Orbbec
         * @attention For Orbbec Astra 2 device, only supported -1 and 0. -1 means the trigger signal output delay is automatically adjusted by the device, 0 means
         * the trigger signal output is disabled.
         */
-        int triggerOutDelayUs;
+        public int triggerOutDelayUs;
 
         /**
         * @brief The frame number of each stream after each trigger in triggering mode.
@@ -1287,7 +1287,7 @@ namespace Orbbec
         * @attention The trigger frequency multiplied by the number of frames per trigger cannot exceed the maximum frame rate of the stream profile which is set
         * when starting the stream.
         */
-        int framesPerTrigger;
+        public int framesPerTrigger;
     }
 
     /**
@@ -1303,19 +1303,19 @@ namespace Orbbec
         *
         * @attention For some models, the timestamp reset function is always enabled and cannot be disabled.
         */
-        bool enable;
+        public bool enable;
 
         /**
         * @brief The delay time of executing the timestamp reset function after receiving the command or signal in microseconds.
         */
-        int timestamp_reset_delay_us;
+        public int timestamp_reset_delay_us;
 
         /**
         * @brief the timestamp reset signal output enable flag.
         *
         * @attention For some models, the timestamp reset signal output is always enabled and cannot be disabled.
         */
-        bool timestamp_reset_signal_output_enable;
+        public bool timestamp_reset_signal_output_enable;
     }
 
     /**
@@ -1325,11 +1325,11 @@ namespace Orbbec
         /**
         * @brief Baseline length
         */
-        float baseline;
+        public float baseline;
         /**
         * @brief Calibration distance
         */
-        float zpd;
+        public float zpd;
     }
 
 }
