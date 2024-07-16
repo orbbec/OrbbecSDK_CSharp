@@ -4,8 +4,6 @@ project(ob_csharp VERSION 0.1.0 LANGUAGES CSharp)
 
 include(CSharpUtilities)
 
-# add_definitions(-DORBBEC_DEBUG)
-
 add_library(${PROJECT_NAME} SHARED 
     src/Config.cs
     src/Context.cs
@@ -33,6 +31,3 @@ add_library(${PROJECT_NAME} SHARED
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v3.5")
-
-add_subdirectory(samples)
-add_subdirectory(tests)
