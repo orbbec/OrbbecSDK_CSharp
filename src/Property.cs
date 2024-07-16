@@ -218,7 +218,7 @@ namespace Orbbec
         /**
          * @brief Laser energy level
          */
-        OB_PROP_LASER_ENERGY_LEVEL_INT = 99,
+        OB_PROP_LASER_POWER_LEVEL_CONTROL_INT = 99,
 
         /**
          * @brief LDP's measure distance, unit: mm
@@ -284,7 +284,7 @@ namespace Orbbec
          * @brief Get hardware laser energy level which real state of laser element. OB_PROP_LASER_ENERGY_LEVEL_INT（99）will effect this command
          * which it setting and changed the hardware laser energy level.
          */
-        OB_PROP_LASER_HW_ENERGY_LEVEL_INT = 119,
+        OB_PROP_LASER_POWER_ACTUAL_LEVEL_INT = 119,
 
         /**
          * @brief USB's power state, enum type: OBUSBPowerState
@@ -347,9 +347,10 @@ namespace Orbbec
         OB_PROP_TIMER_RESET_ENABLE_BOOL = 140,
 
         /**
-         * @brief Enable switch for USB3.0 repeated recognition on the device.
-         */
-        OB_PROP_DEVICE_USB3_REPEAT_IDENTIFY_BOOL = 141,
+        * @brief Enable or disable the device to retry USB2.0 re-identification when the device is connected to a USB2.0 port.
+        * @brief This feature ensures that the device is not mistakenly identified as a USB 2.0 device when connected to a USB 3.0 port.
+        */
+        OB_PROP_DEVICE_USB2_REPEAT_IDENTIFY_BOOL = 141,
 
         /**
          * @brief Reboot device delay mode. Delay time unit: ms, range: [0, 8000).
@@ -366,6 +367,58 @@ namespace Orbbec
          */
         OB_PROP_LASER_PULSE_WIDTH_PROTECTION_STATUS_BOOL = 149,
 
+        /**
+        * @brief depth noise removal filter
+        */
+        OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_BOOL = 165,
+
+        /**
+        * @brief Laser always on, true: always on, false: off, laser will be turned off when out of exposure time
+        */
+        OB_PROP_LASER_ALWAYS_ON_BOOL = 174,
+
+        /**
+        * @brief Laser on/off alternate mode, 0: off, 1: on-off alternate, 2: off-on alternate
+        * @attention When turn on this mode, the laser will turn on and turn off alternately each frame.
+        */
+        OB_PROP_LASER_ON_OFF_PATTERN_INT = 175,
+
+        /**
+        * @brief Depth unit flexible adjustment\
+        * @brief This property allows continuous adjustment of the depth unit, unlike @ref OB_PROP_DEPTH_PRECISION_LEVEL_INT must be set to some fixed value.
+        */
+        OB_PROP_DEPTH_UNIT_FLEXIBLE_ADJUSTMENT_FLOAT = 176,
+
+        /**
+        * @brief Laser control, 0: off, 1: on, 2: auto
+        *
+        */
+        OB_PROP_LASER_CONTROL_INT = 182,
+
+        /**
+        * @brief IR brightness
+        */
+        OB_PROP_IR_BRIGHTNESS_INT = 184,
+
+        /**
+        * @brief slave device sync status
+        */
+        OB_PROP_SLAVE_DEVICE_SYNC_STATUS_BOOL = 188,
+
+        /**
+        * @brief Color AE max exposure
+        */
+        OB_PROP_COLOR_AE_MAX_EXPOSURE_INT = 189,
+
+        /**
+        * @brief IR AE max exposure
+        */
+        OB_PROP_IR_AE_MAX_EXPOSURE_INT = 190,
+
+        /**
+        * @brief disparity search range mode
+        */
+        OB_PROP_DISP_SEARCH_RANGE_MODE_INT = 191,
         /**
          * @brief Baseline calibration parameters
          */
@@ -423,6 +476,32 @@ namespace Orbbec
          * @attention read only
          */
         OB_STRUCT_DEVICE_STATIC_IP_CONFIG_RECORD = 1053,
+
+        /**
+        * @brief Using to configure the depth sensor's HDR mode
+        * @brief The Value type is @ref OBHdrConfig
+        *
+        * @attention After enable HDR mode, the depth sensor auto exposure will be disabled.
+        */
+        OB_STRUCT_DEPTH_HDR_CONFIG = 1059,
+
+        /**
+        * @brief Color Sensor AE ROI configuration
+        * @brief The Value type is @ref OBRegionOfInterest
+        */
+        OB_STRUCT_COLOR_AE_ROI = 1060,
+
+        /**
+        * @brief Depth Sensor AE ROI configuration
+        * @brief The Value type is @ref OBRegionOfInterest
+        * @brief Since the ir sensor is the same physical sensor as the depth sensor, this property will also effect the ir sensor.
+        */
+        OB_STRUCT_DEPTH_AE_ROI = 1061,
+
+        /**
+        * @brief ASIC serial number
+        */
+        OB_STRUCT_ASIC_SERIAL_NUMBER = 1063,
 
         /**
          * @brief Color camera auto exposure
@@ -565,6 +644,26 @@ namespace Orbbec
         OB_PROP_COLOR_HDR_BOOL = 2034,
 
         /**
+        * @brief IR long exposure mode switch read and write.
+        */
+        OB_PROP_IR_LONG_EXPOSURE_BOOL = 2035,
+
+        /**
+        * @brief Setting and getting the USB device frame skipping mode status, true: frame skipping mode, false: non-frame skipping mode.
+        */
+        OB_PROP_SKIP_FRAME_BOOL = 2036,
+
+        /**
+        * @brief Depth HDR merge, true: on, false: off.
+        */
+        OB_PROP_HDR_MERGE_BOOL = 2037,
+
+        /**
+        * @brief Color camera FOCUS
+        */
+        OB_PROP_COLOR_FOCUS_INT = 2038,
+
+        /**
          * @brief Software disparity to depth
          */
         OB_PROP_SDK_DISPARITY_TO_DEPTH_BOOL = 3004,
@@ -598,6 +697,11 @@ namespace Orbbec
          * @brief Right IR frame data unpacking function switch (each current will be turned on by default, support RLE/Y10/Y11/Y12/Y14 format)
          */
         OB_PROP_SDK_IR_RIGHT_FRAME_UNPACK_BOOL = 3012,
+
+        /**
+        * @brief depth Margin Filter
+        */
+        OB_PROP_SDK_DEPTH_RECTIFY_MG_FILTER_BOOL = 3013,
 
         /**
          * @brief Calibration JSON file read from device (Femto Mega, read only)

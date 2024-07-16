@@ -392,6 +392,60 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_delete_depth_work_mode_list")]
         public static extern void ob_delete_depth_work_mode_list(IntPtr workModeList, ref IntPtr error);
 
+        //void ob_delete_data_bundle(ob_data_bundle *data_bundle, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_delete_data_bundle")]
+        public static extern void ob_delete_data_bundle(IntPtr dataBundle, ref IntPtr error);
+
+        //bool ob_device_is_global_timestamp_supported(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_is_global_timestamp_supported")]
+        public static extern bool ob_device_is_global_timestamp_supported(IntPtr device, ref IntPtr error);
+
+        //void ob_device_load_depth_filter_config(ob_device *device, const char *file_path, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_load_depth_filter_config")]
+        public static extern void ob_device_load_depth_filter_config(IntPtr device, string filePath, ref IntPtr error);
+
+        //void ob_device_reset_default_depth_filter_config(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_reset_default_depth_filter_config")]
+        public static extern void ob_device_reset_default_depth_filter_config(IntPtr device, ref IntPtr error);
+
+        //const char *ob_device_get_current_preset_name(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_current_preset_name")]
+        public static extern IntPtr ob_device_get_current_preset_name(IntPtr device, ref IntPtr error);
+
+        //void ob_device_load_preset(ob_device *device, const char *preset_name, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_load_preset")]
+        public static extern void ob_device_load_preset(IntPtr device, string presetName, ref IntPtr error);
+
+        //void ob_device_load_preset_from_json_file(ob_device *device, const char *json_file_path, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_load_preset_from_json_file")]
+        public static extern void ob_device_load_preset_from_json_file(IntPtr device, string jsonFilePath, ref IntPtr error);
+
+        //void ob_device_export_current_settings_as_preset_json_file(ob_device *device, const char *json_file_path, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_export_current_settings_as_preset_json_file")]
+        public static extern void ob_device_export_current_settings_as_preset_json_file(IntPtr device, string jsonFilePath, ref IntPtr error);
+
+        //ob_device_preset_list *ob_device_get_available_preset_list(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_available_preset_list")]
+        public static extern IntPtr ob_device_get_available_preset_list(IntPtr device, ref IntPtr error);
+
+        //void ob_delete_preset_list(ob_device_preset_list *preset_list, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_delete_preset_list")]
+        public static extern void ob_delete_preset_list(IntPtr presetList, ref IntPtr error);
+
+        //uint32_t ob_device_preset_list_count(ob_device_preset_list *preset_list, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_preset_list_count")]
+        public static extern UInt32 ob_device_preset_list_count(IntPtr presetList, ref IntPtr error);
+
+        //const char *ob_device_preset_list_get_name(ob_device_preset_list *preset_list, uint32_t index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_preset_list_get_name")]
+        public static extern IntPtr ob_device_preset_list_get_name(IntPtr presetList, UInt32 index, ref IntPtr error);
+
+        //bool ob_device_preset_list_has_preset(ob_device_preset_list *preset_list, const char *preset_name, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_preset_list_has_preset")]
+        public static extern bool ob_device_preset_list_has_preset(IntPtr presetList, string presetName, ref IntPtr error);
+        #endregion
+
+        #region MultipleDevice
         //uint16_t ob_device_get_supported_multi_device_sync_mode_bitmap(ob_device *device, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_get_supported_multi_device_sync_mode_bitmap")]
         public static extern UInt16 ob_device_get_supported_multi_device_sync_mode_bitmap(IntPtr device, ref IntPtr error);
@@ -430,7 +484,7 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_error_status")]
         public static extern Status ob_error_status(IntPtr error);
 
-        //const char* ob_error_message( ob_error* error );
+        //const char *ob_error_message(const ob_error *error);
         [DllImport(obsdk, EntryPoint = "ob_error_message")]
         public static extern IntPtr ob_error_message(IntPtr error);
 
@@ -500,6 +554,182 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_create_decompression_filter")]
         public static extern IntPtr ob_create_decompression_filter(ref IntPtr error);
 
+        //ob_filter *ob_create_holefilling_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_holefilling_filter")]
+        public static extern IntPtr ob_create_holefilling_filter(ref IntPtr error);
+
+        //void ob_holefilling_filter_set_mode(ob_filter *filter, ob_hole_filling_mode mode, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_holefilling_filter_set_mode")]
+        public static extern void ob_holefilling_filter_set_mode(IntPtr filter, HoleFillingMode mode, ref IntPtr error);
+
+        //ob_hole_filling_mode ob_holefilling_filter_get_mode(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_holefilling_filter_get_mode")]
+        public static extern HoleFillingMode ob_holefilling_filter_get_mode(IntPtr filter, ref IntPtr error);
+
+        //ob_filter *ob_create_temporal_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_temporal_filter")]
+        public static extern IntPtr ob_create_temporal_filter(ref IntPtr error);
+
+        //ob_float_property_range ob_temporal_filter_get_diffscale_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_temporal_filter_get_diffscale_range")]
+        public static extern void ob_temporal_filter_get_diffscale_range(out FloatPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //void ob_temporal_filter_set_diffscale_value(ob_filter *filter, float value, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_temporal_filter_set_diffscale_value")]
+        public static extern void ob_temporal_filter_set_diffscale_value(IntPtr filter, float value, ref IntPtr error);
+
+        //ob_float_property_range ob_temporal_filter_get_weight_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_temporal_filter_get_weight_range")]
+        public static extern void ob_temporal_filter_get_weight_range(out FloatPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //void ob_temporal_filter_set_weight_value(ob_filter *filter, float value, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_temporal_filter_set_weight_value")]
+        public static extern void ob_temporal_filter_set_weight_value(IntPtr filter, float value, ref IntPtr error);
+
+        //ob_filter *ob_create_spatial_advanced_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_spatial_advanced_filter")]
+        public static extern IntPtr ob_create_spatial_advanced_filter(ref IntPtr error);
+
+        //ob_float_property_range ob_spatial_advanced_filter_get_alpha_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_get_alpha_range")]
+        public static extern void ob_spatial_advanced_filter_get_alpha_range(out FloatPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_uint16_property_range ob_spatial_advanced_filter_get_disp_diff_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_get_disp_diff_range")]
+        public static extern void ob_spatial_advanced_filter_get_disp_diff_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_uint16_property_range ob_spatial_advanced_filter_get_radius_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_get_radius_range")]
+        public static extern void ob_spatial_advanced_filter_get_radius_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_int_property_range ob_spatial_advanced_filter_get_magnitude_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_get_magnitude_range")]
+        public static extern void ob_spatial_advanced_filter_get_magnitude_range(out IntPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_spatial_advanced_filter_params ob_spatial_advanced_filter_get_filter_params(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_get_filter_params")]
+        public static extern void ob_spatial_advanced_filter_get_filter_params(out SpatialAdvancedFilterParams filterParams, IntPtr filter, ref IntPtr error);
+
+        //void ob_spatial_advanced_filter_set_filter_params(ob_filter *filter, ob_spatial_advanced_filter_params params, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_set_filter_params")]
+        public static extern void ob_spatial_advanced_filter_set_filter_params(IntPtr filter, SpatialAdvancedFilterParams filterParams, ref IntPtr error);
+
+        //ob_filter *ob_create_noise_removal_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_noise_removal_filter")]
+        public static extern IntPtr ob_create_noise_removal_filter(ref IntPtr error);
+
+        //ob_uint16_property_range ob_noise_removal_filter_get_disp_diff_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_noise_removal_filter_get_disp_diff_range")]
+        public static extern void ob_noise_removal_filter_get_disp_diff_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_int_property_range ob_noise_removal_filter_get_max_size_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_noise_removal_filter_get_max_size_range")]
+        public static extern void ob_noise_removal_filter_get_max_size_range(out IntPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //void ob_noise_removal_filter_set_filter_params(ob_filter *filter, ob_noise_removal_filter_params params, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_noise_removal_filter_set_filter_params")]
+        public static extern void ob_noise_removal_filter_set_filter_params(IntPtr filter, NoiseRemovalFilterParams filterParams, ref IntPtr error);
+
+        //ob_noise_removal_filter_params ob_noise_removal_filter_get_filter_params(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_noise_removal_filter_get_filter_params")]
+        public static extern void ob_noise_removal_filter_get_filter_params(out NoiseRemovalFilterParams filterParams, IntPtr filter, ref IntPtr error);
+
+        //ob_filter *ob_create_edge_noise_removal_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_edge_noise_removal_filter")]
+        public static extern IntPtr ob_create_edge_noise_removal_filter(ref IntPtr error);
+
+        //void ob_edge_noise_removal_filter_set_filter_params(ob_filter *filter, ob_edge_noise_removal_filter_params params, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_set_filter_params")]
+        public static extern void ob_edge_noise_removal_filter_set_filter_params(IntPtr filter, EdgeNoiseRemovalFilterParams filterParams, ref IntPtr error);
+
+        //ob_edge_noise_removal_filter_params ob_edge_noise_removal_filter_get_filter_params(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_get_filter_params")]
+        public static extern void ob_edge_noise_removal_filter_get_filter_params(out EdgeNoiseRemovalFilterParams filterParams, IntPtr filter, ref IntPtr error);
+
+        //ob_uint16_property_range ob_edge_noise_removal_filter_get_margin_left_th_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_get_margin_left_th_range")]
+        public static extern void ob_edge_noise_removal_filter_get_margin_left_th_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_uint16_property_range ob_edge_noise_removal_filter_get_margin_right_th_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_get_margin_right_th_range")]
+        public static extern void ob_edge_noise_removal_filter_get_margin_right_th_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_uint16_property_range ob_edge_noise_removal_filter_get_margin_top_th_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_get_margin_top_th_range")]
+        public static extern void ob_edge_noise_removal_filter_get_margin_top_th_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_uint16_property_range ob_edge_noise_removal_filter_get_margin_bottom_th_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_get_margin_bottom_th_range")]
+        public static extern void ob_edge_noise_removal_filter_get_margin_bottom_th_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_filter *ob_create_decimation_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_decimation_filter")]
+        public static extern IntPtr ob_create_decimation_filter(ref IntPtr error);
+
+        //ob_uint8_property_range ob_decimation_filter_get_scale_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_decimation_filter_get_scale_range")]
+        public static extern UInt8PropertyRange ob_decimation_filter_get_scale_range(IntPtr filter, ref IntPtr error);
+
+        //void ob_decimation_filter_set_scale_value(ob_filter *filter, uint8_t value, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_decimation_filter_set_scale_value")]
+        public static extern void ob_decimation_filter_set_scale_value(IntPtr filter, byte value, ref IntPtr error);
+
+        //uint8_t ob_decimation_filter_get_scale_value(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_decimation_filter_get_scale_value")]
+        public static extern byte ob_decimation_filter_get_scale_value(IntPtr filter, ref IntPtr error);
+
+        //ob_filter *ob_create_threshold_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_threshold_filter")]
+        public static extern IntPtr ob_create_threshold_filter(ref IntPtr error);
+
+        //ob_int_property_range ob_threshold_filter_get_min_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_threshold_filter_get_min_range")]
+        public static extern void ob_threshold_filter_get_min_range(out IntPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //ob_int_property_range ob_threshold_filter_get_max_range(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_threshold_filter_get_max_range")]
+        public static extern void ob_threshold_filter_get_max_range(out IntPropertyRange range, IntPtr filter, ref IntPtr error);
+
+        //bool ob_threshold_filter_set_scale_value(ob_filter *filter, uint16_t min, uint16_t max, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_threshold_filter_set_scale_value")]
+        public static extern bool ob_threshold_filter_set_scale_value(IntPtr filter, UInt16 min, UInt16 max, ref IntPtr error);
+
+        //ob_filter *ob_create_sequenceId_filter(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_sequenceId_filter")]
+        public static extern IntPtr ob_create_sequenceId_filter(ref IntPtr error);
+
+        //void ob_sequence_id_filter_select_sequence_id(ob_filter *filter, int sequence_id, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_sequence_id_filter_select_sequence_id")]
+        public static extern void ob_sequence_id_filter_select_sequence_id(IntPtr filter, int sequence_id, ref IntPtr error);
+
+        //int ob_sequence_id_filter_get_sequence_id(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_sequence_id_filter_get_sequence_id")]
+        public static extern int ob_sequence_id_filter_get_sequence_id(IntPtr filter, ref IntPtr error);
+
+        //ob_sequence_id_item *ob_sequence_id_filter_get_sequence_id_list(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_sequence_id_filter_get_sequence_id_list")]
+        public static extern IntPtr ob_sequence_id_filter_get_sequence_id_list(IntPtr filter, ref IntPtr error);
+
+        //int ob_sequence_id_filter_get_sequence_id_list_size(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_sequence_id_filter_get_sequence_id_list_size")]
+        public static extern int ob_sequence_id_filter_get_sequence_id_list_size(IntPtr filter, ref IntPtr error);
+
+        //ob_filter *ob_create_hdr_merge(ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_create_hdr_merge")]
+        public static extern IntPtr ob_create_hdr_merge(ref IntPtr error);
+
+        //ob_filter *ob_create_align(ob_error **error, ob_stream_type align_to_stream);
+        [DllImport(obsdk, EntryPoint = "ob_create_align")]
+        public static extern IntPtr ob_create_align(ref IntPtr error, StreamType alignToStream);
+
+        //ob_stream_type ob_align_get_to_stream_type(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_align_get_to_stream_type")]
+        public static extern StreamType ob_align_get_to_stream_type(IntPtr filter, ref IntPtr error);
+
+        //ob_filter *ob_create_disparity_transform(ob_error **error, bool depth_to_disparity);
+        [DllImport(obsdk, EntryPoint = "ob_create_disparity_transform")]
+        public static extern IntPtr ob_create_disparity_transform(ref IntPtr error, bool depth_to_disparity);
+
         //void ob_filter_reset( ob_filter* filter, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_reset")]
         public static extern void ob_filter_reset(IntPtr filter, ref IntPtr error);
@@ -507,6 +737,14 @@ namespace Orbbec
         //ob_frame* ob_filter_process( ob_filter* filter, ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_process")]
         public static extern IntPtr ob_filter_process(IntPtr filter, IntPtr frame, ref IntPtr error);
+
+        //void ob_filter_enable(ob_filter *filter, bool enable, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_filter_enable")]
+        public static extern void ob_filter_enable(IntPtr filter, bool enable, ref IntPtr error);
+
+        //bool ob_filter_is_enable(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_filter_is_enable")]
+        public static extern bool ob_filter_is_enable(IntPtr filter, ref IntPtr error);
 
         //void ob_filter_set_callback( ob_filter* filter, ob_filter_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_set_callback")]
@@ -546,6 +784,14 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_frame_system_time_stamp")]
         public static extern UInt64 ob_frame_system_time_stamp(IntPtr frame, ref IntPtr error);
 
+        //uint64_t ob_frame_system_time_stamp_us(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_system_time_stamp_us")]
+        public static extern UInt64 ob_frame_system_time_stamp_us(IntPtr frame, ref IntPtr error);
+
+        //uint64_t ob_frame_global_time_stamp_us(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_global_time_stamp_us")]
+        public static extern UInt64 ob_frame_global_time_stamp_us(IntPtr frame, ref IntPtr error);
+
         //void* ob_frame_data( ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_frame_data")]
         public static extern IntPtr ob_frame_data(IntPtr frame, ref IntPtr error);
@@ -554,6 +800,34 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_frame_data_size")]
         public static extern UInt32 ob_frame_data_size(IntPtr frame, ref IntPtr error);
 
+        //void *ob_frame_metadata(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_metadata")]
+        public static extern IntPtr ob_frame_metadata(IntPtr frame, ref IntPtr error);
+
+        //uint32_t ob_frame_metadata_size(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_metadata_size")]
+        public static extern UInt32 ob_frame_metadata_size(IntPtr frame, ref IntPtr error);
+
+        //bool ob_frame_has_metadata(ob_frame *frame, ob_frame_metadata_type type, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_has_metadata")]
+        public static extern bool ob_frame_has_metadata(IntPtr frame, uint type, ref IntPtr error);
+
+        //int64_t ob_frame_get_metadata_value(ob_frame *frame, ob_frame_metadata_type type, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_get_metadata_value")]
+        public static extern Int64 ob_frame_get_metadata_value(IntPtr frame, uint type, ref IntPtr error);
+
+        //ob_stream_profile* ob_frame_get_stream_profile(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_get_stream_profile")]
+        public static extern IntPtr ob_frame_get_stream_profile(IntPtr frame, ref IntPtr error);
+
+        //ob_sensor* ob_frame_get_sensor(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_get_sensor")]
+        public static extern IntPtr ob_frame_get_sensor(IntPtr frame, ref IntPtr error);
+
+        //ob_device* ob_frame_get_device(ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frame_get_device")]
+        public static extern IntPtr ob_frame_get_device(IntPtr frame, ref IntPtr error);
+
         //uint32_t ob_video_frame_width( ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_video_frame_width")]
         public static extern UInt32 ob_video_frame_width(IntPtr frame, ref IntPtr error);
@@ -561,14 +835,6 @@ namespace Orbbec
         //uint32_t ob_video_frame_height( ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_video_frame_height")]
         public static extern UInt32 ob_video_frame_height(IntPtr frame, ref IntPtr error);
-
-        //void* ob_video_frame_metadata( ob_frame* frame, ob_error** error );
-        [DllImport(obsdk, EntryPoint = "ob_video_frame_metadata")]
-        public static extern IntPtr ob_video_frame_metadata(IntPtr frame, ref IntPtr error);
-
-        //uint32_t ob_video_frame_metadata_size( ob_frame* frame, ob_error** error );
-        [DllImport(obsdk, EntryPoint = "ob_video_frame_metadata_size")]
-        public static extern UInt32 ob_video_frame_metadata_size(IntPtr frame, ref IntPtr error);
 
         //uint8_t ob_video_frame_pixel_available_bit_size(ob_frame *frame, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_video_frame_pixel_available_bit_size")]
@@ -613,6 +879,10 @@ namespace Orbbec
         //ob_frame *ob_frameset_get_frame(ob_frame *frameset, ob_frame_type frame_type, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_frameset_get_frame")]
         public static extern IntPtr ob_frameset_get_frame(IntPtr frameset, FrameType frameType, ref IntPtr error);
+
+        //ob_frame *ob_frameset_get_frame_by_index(ob_frame *frameset, int index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_frameset_get_frame_by_index")]
+        public static extern IntPtr ob_frameset_get_frame_by_index(IntPtr frameset, int index, ref IntPtr error);
 
         //ob_accel_value ob_accel_frame_value( ob_frame* frame, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_accel_frame_value")]
@@ -735,6 +1005,10 @@ namespace Orbbec
         //ob_camera_param ob_pipeline_get_camera_param(ob_pipeline *pipeline, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_pipeline_get_camera_param")]
         public static extern void ob_pipeline_get_camera_param(out CameraParam cameraParam, IntPtr pipeline, ref IntPtr error);
+
+        //ob_calibration_param ob_pipeline_get_calibration_param(ob_pipeline *pipeline, ob_config *config, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_pipeline_get_calibration_param")]
+        public static extern void ob_pipeline_get_calibration_param(out CalibrationParam calibrationParam, IntPtr pipeline, IntPtr config, ref IntPtr error);
         
         //ob_stream_profile_list *ob_get_d2c_depth_profile_list(ob_pipeline *pipeline, ob_stream_profile *color_profile,ob_align_mode align_mode, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_get_d2c_depth_profile_list")]
@@ -768,9 +1042,25 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_config_enable_stream")]
         public static extern void ob_config_enable_stream(IntPtr config, IntPtr profile, ref IntPtr error);
 
+        //void ob_config_enable_video_stream(ob_config *config, ob_stream_type type, int width, int height, int fps, ob_format format, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_config_enable_video_stream")]
+        public static extern void ob_config_enable_video_stream(IntPtr config, StreamType streamType, int width, int height, int fps, Format format, ref IntPtr error);
+
+        //void ob_config_enable_accel_stream(ob_config *config, ob_accel_full_scale_range full_scale_range, ob_accel_sample_rate sample_rate, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_config_enable_accel_stream")]
+        public static extern void ob_config_enable_accel_stream(IntPtr config, AccelFullScaleRange fullScaleRange, AccelSampleRate sampleRate, ref IntPtr error);
+
+        //void ob_config_enable_gyro_stream(ob_config *config, ob_gyro_full_scale_range full_scale_range, ob_gyro_sample_rate sample_rate, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_config_enable_gyro_stream")]
+        public static extern void ob_config_enable_gyro_stream(IntPtr config, GyroFullScaleRange fullScaleRange, GyroSampleRate sampleRate, ref IntPtr error);
+
         //void ob_config_enable_all_stream( ob_config* config, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_config_enable_all_stream")]
         public static extern void ob_config_enable_all_stream(IntPtr config, ref IntPtr error);
+
+        //ob_stream_profile_list *ob_config_get_enabled_stream_profile_list(ob_config *config, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_config_get_enabled_stream_profile_list")]
+        public static extern IntPtr ob_config_get_enabled_stream_profile_list(IntPtr config, ref IntPtr error);
 
         //void ob_config_disable_stream( ob_config* config, ob_stream_type type, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_config_disable_stream")]
@@ -858,9 +1148,29 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_sensor_get_type")]
         public static extern SensorType ob_sensor_get_type(IntPtr sensor, ref IntPtr error);
 
-        //ob_stream_profile_list* ob_sensor_get_stream_profile_list( ob_sensor* sensor, uint32_t* count, ob_error** error );
+        //ob_stream_profile_list *ob_sensor_get_stream_profile_list(ob_sensor *sensor, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_sensor_get_stream_profile_list")]
         public static extern IntPtr ob_sensor_get_stream_profile_list(IntPtr sensor, ref IntPtr error);
+
+        //ob_filter_list *ob_sensor_get_recommended_filter_list(ob_sensor *sensor, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_sensor_get_recommended_filter_list")]
+        public static extern IntPtr ob_sensor_get_recommended_filter_list(IntPtr sensor, ref IntPtr error);
+
+        //uint32_t ob_filter_list_get_count(ob_filter_list *filter_list, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_filter_list_get_count")]
+        public static extern UInt32 ob_filter_list_get_count(IntPtr filterList, ref IntPtr error);
+
+        //ob_filter *ob_get_filter(ob_filter_list *filter_list, uint32_t index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_get_filter")]
+        public static extern IntPtr ob_get_filter(IntPtr filterList, UInt32 index, ref IntPtr error);
+
+        //const char *ob_get_filter_name(ob_filter *filter, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_get_filter_name")]
+        public static extern IntPtr ob_get_filter_name(IntPtr filter, ref IntPtr error);
+
+        //void ob_delete_filter_list(ob_filter_list *filter_list, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_delete_filter_list")]
+        public static extern void ob_delete_filter_list(IntPtr filterList, ref IntPtr error);
 
         //void ob_sensor_start( ob_sensor* sensor, ob_stream_profile* profile, ob_frame_callback callback, void* user_data, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_sensor_start")]
@@ -908,6 +1218,10 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_stream_profile_type")]
         public static extern StreamType ob_stream_profile_type(IntPtr profile, ref IntPtr error);
 
+        //ob_extrinsic ob_stream_profile_get_extrinsic_to(ob_stream_profile *source, ob_stream_profile *target, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_stream_profile_get_extrinsic_to")]
+        public static extern void ob_stream_profile_get_extrinsic_to(out Extrinsic extrinsic, IntPtr source, IntPtr target, ref IntPtr error);
+
         //uint32_t ob_video_stream_profile_fps( ob_stream_profile* profile, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_video_stream_profile_fps")]
         public static extern UInt32 ob_video_stream_profile_fps(IntPtr profile, ref IntPtr error);
@@ -920,6 +1234,14 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_video_stream_profile_height")]
         public static extern UInt32 ob_video_stream_profile_height(IntPtr profile, ref IntPtr error);
 
+        //ob_camera_intrinsic ob_video_stream_get_intrinsic(ob_stream_profile *profile, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_video_stream_get_intrinsic")]
+        public static extern void ob_video_stream_get_intrinsic(out CameraIntrinsic intrinsic, IntPtr profile, ref IntPtr error);
+
+        //ob_camera_distortion ob_video_stream_get_distortion(ob_stream_profile *profile, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_video_stream_get_distortion")]
+        public static extern void ob_video_stream_get_distortion(out CameraDistortion distortion, IntPtr profile, ref IntPtr error);
+
         //ob_accel_full_scale_range ob_accel_stream_profile_full_scale_range( ob_stream_profile* profile, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_accel_stream_profile_full_scale_range")]
         public static extern AccelFullScaleRange ob_accel_stream_profile_full_scale_range(IntPtr profile, ref IntPtr error);
@@ -928,9 +1250,17 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_accel_stream_profile_sample_rate")]
         public static extern AccelSampleRate ob_accel_stream_profile_sample_rate(IntPtr profile, ref IntPtr error);
 
+        //ob_accel_intrinsic ob_accel_stream_profile_get_intrinsic(ob_stream_profile *profile, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_accel_stream_profile_get_intrinsic")]
+        public static extern void ob_accel_stream_profile_get_intrinsic(out AccelIntrinsic intrinsic, IntPtr profile, ref IntPtr error);
+
         //ob_gyro_full_scale_range ob_gyro_stream_profile_full_scale_range( ob_stream_profile* profile, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_gyro_stream_profile_full_scale_range")]
         public static extern GyroFullScaleRange ob_gyro_stream_profile_full_scale_range(IntPtr profile, ref IntPtr error);
+
+        //ob_gyro_intrinsic ob_gyro_stream_get_intrinsic(ob_stream_profile *profile, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_gyro_stream_get_intrinsic")]
+        public static extern void ob_gyro_stream_get_intrinsic(out GyroIntrinsic intrinsic, IntPtr profile, ref IntPtr error);
 
         //ob_gyro_sample_rate ob_gyro_stream_profile_sample_rate( ob_stream_profile* profile, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_gyro_stream_profile_sample_rate")]
@@ -963,6 +1293,44 @@ namespace Orbbec
         //void ob_delete_stream_profile( ob_stream_profile* profile, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_delete_stream_profile")]
         public static extern void ob_delete_stream_profile(IntPtr profile, ref IntPtr error);
+        #endregion
+
+        #region Utils
+        //bool ob_calibration_3d_to_3d(const ob_calibration_param calibration_param, const ob_point3f source_point3f, const ob_sensor_type source_sensor_type, const ob_sensor_type target_sensor_type, ob_point3f *target_point3f, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_calibration_3d_to_3d")]
+        public static extern bool ob_calibration_3d_to_3d(CalibrationParam calibrationParam, Point3f sourcePoint3f, SensorType sourceSensorType, SensorType targetSensorType, out Point3f targetPoint3f, ref IntPtr error);
+
+        //bool ob_calibration_2d_to_3d(const ob_calibration_param calibration_param, const ob_point2f source_point2f, const float source_depth_pixel_value, const ob_sensor_type source_sensor_type, const ob_sensor_type target_sensor_type, ob_point3f *target_point3f, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_calibration_2d_to_3d")]
+        public static extern bool ob_calibration_2d_to_3d(CalibrationParam calibrationParam, Point2f sourcePoint2f, float sourceDepthPixelValue, SensorType sourceSensorType, SensorType targetSensorType, out Point3f targetPoint3f, ref IntPtr error);
+
+        //bool ob_calibration_2d_to_3d_undistortion(const ob_calibration_param calibration_param, const ob_point2f source_point2f, const float source_depth_pixel_value, const ob_sensor_type source_sensor_type, const ob_sensor_type target_sensor_type, ob_point3f *target_point3f, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_calibration_2d_to_3d_undistortion")]
+        public static extern bool ob_calibration_2d_to_3d_undistortion(CalibrationParam calibrationParam, Point2f sourcePoint2f, float sourceDepthPixelValue, SensorType sourceSensorType, SensorType targetSensorType, out Point3f targetPoint3f, ref IntPtr error);
+
+        //bool ob_calibration_3d_to_2d(const ob_calibration_param calibration_param, const ob_point3f source_point3f, const ob_sensor_type source_sensor_type, const ob_sensor_type target_sensor_type, ob_point2f *target_point2f, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_calibration_3d_to_2d")]
+        public static extern bool ob_calibration_3d_to_2d(CalibrationParam calibrationParam, Point3f sourcePoint3f, SensorType sourceSensorType, SensorType targetSensorType, out Point2f targetPoint2f, ref IntPtr error);
+
+        //bool ob_calibration_2d_to_2d(const ob_calibration_param calibration_param, const ob_point2f source_point2f, const float source_depth_pixel_value, const ob_sensor_type source_sensor_type, const ob_sensor_type target_sensor_type, ob_point2f *target_point2f, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_calibration_2d_to_2d")]
+        public static extern bool ob_calibration_2d_to_2d(CalibrationParam calibrationParam, Point2f sourcePoint2f, float sourceDepthPixelValue, SensorType sourceSensorType, SensorType targetSensorType, Point2f targetPoint2f, ref IntPtr error);
+
+        //ob_frame *transformation_depth_frame_to_color_camera(ob_device *device, ob_frame *depth_frame, uint32_t target_color_camera_width, uint32_t target_color_camera_height, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "transformation_depth_frame_to_color_camera")]
+        public static extern IntPtr transformation_depth_frame_to_color_camera(IntPtr device, IntPtr depthFrame, UInt32 targetColorCameraWidth, UInt32 targetColorCameraHeight, ref IntPtr error);
+
+        //bool transformation_init_xy_tables(const ob_calibration_param calibration_param, const ob_sensor_type sensor_type, float *data, uint32_t *data_size, ob_xy_tables *xy_tables, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "transformation_init_xy_tables")]
+        public static extern bool transformation_init_xy_tables(CalibrationParam calibrationParam, SensorType sensorType, IntPtr data, IntPtr dataSize, IntPtr xyTables, ref IntPtr error);
+
+        //void transformation_depth_to_pointcloud(ob_xy_tables *xy_tables, const void *depth_image_data, void *pointcloud_data, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "transformation_depth_to_pointcloud")]
+        public static extern void transformation_depth_to_pointcloud(IntPtr xyTables, IntPtr depthImageData, IntPtr pointcloudData, ref IntPtr error);
+
+        //void transformation_depth_to_rgbd_pointcloud(ob_xy_tables *xy_tables, const void *depth_image_data, const void *color_image_data, void *pointcloud_data, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "transformation_depth_to_rgbd_pointcloud")]
+        public static extern void transformation_depth_to_rgbd_pointcloud(IntPtr xyTables, IntPtr depthImageData, IntPtr colorImageData, IntPtr pointcloudData, ref IntPtr error);
         #endregion
 
         #region Version

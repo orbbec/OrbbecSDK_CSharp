@@ -10,17 +10,21 @@ namespace Orbbec
     public class Playback : IDisposable
     {
         private NativeHandle _handle;
-        private PlaybackCallback _playbackCallback;
+        private static Dictionary<IntPtr, PlaybackCallback> _playbackCallbacks = new Dictionary<IntPtr, PlaybackCallback>();
         private NativePlaybackCallback _nativePlaybackCallback;
-        private MediaStateCallback _mediaStateCallback;
+        private static Dictionary<IntPtr, MediaStateCallback> _mediaStateCallbacks = new Dictionary<IntPtr, MediaStateCallback>();
         private NativeMediaStateCallback _nativeMediaStateCallback;
 
-        private void OnPlayback(IntPtr framePtr, IntPtr userData)
+#if ORBBEC_UNITY
+        [AOT.MonoPInvokeCallback (typeof(PlaybackCallback))]
+#endif
+        private static void OnPlayback(IntPtr framePtr, IntPtr userData)
         {
             Frame frame = new Frame(framePtr);
-            if(_playbackCallback != null)
+            _playbackCallbacks.TryGetValue(userData, out PlaybackCallback callback);
+            if(callback != null)
             {
-                _playbackCallback(frame);
+                callback(frame);
             }
             else
             {
@@ -28,11 +32,15 @@ namespace Orbbec
             }
         }
 
-        private void OnMediaState(MediaState state, IntPtr userData)
+#if ORBBEC_UNITY
+        [AOT.MonoPInvokeCallback (typeof(MediaStateCallback))]
+#endif
+        private static void OnMediaState(MediaState state, IntPtr userData)
         {
-            if(_nativePlaybackCallback != null)
+            _mediaStateCallbacks.TryGetValue(userData, out MediaStateCallback callback);
+            if(callback != null)
             {
-                _mediaStateCallback(state);
+                callback(state);
             }
         }
 
@@ -85,9 +93,9 @@ namespace Orbbec
         */
         public void Start(PlaybackCallback callback, MediaType mediaType)
         {
-            _playbackCallback = callback;
+            _playbackCallbacks[_handle.Ptr] = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_playback_start(_handle.Ptr, _nativePlaybackCallback, IntPtr.Zero, mediaType, ref error);
+            obNative.ob_playback_start(_handle.Ptr, _nativePlaybackCallback, _handle.Ptr, mediaType, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -122,9 +130,9 @@ namespace Orbbec
         */
         public void SetPlaybackStateCallback(MediaStateCallback callback)
         {
-            _mediaStateCallback = callback;
+            _mediaStateCallbacks[_handle.Ptr] = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_playback_state_callback(_handle.Ptr, _nativeMediaStateCallback, IntPtr.Zero, ref error);
+            obNative.ob_set_playback_state_callback(_handle.Ptr, _nativeMediaStateCallback, _handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

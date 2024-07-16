@@ -314,8 +314,8 @@ namespace Orbbec
         public Byte[] GetMetadata()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr data = obNative.ob_video_frame_metadata(_handle.Ptr, ref error);
-            UInt32 dataSize = obNative.ob_video_frame_metadata_size(_handle.Ptr, ref error);
+            IntPtr data = obNative.ob_frame_metadata(_handle.Ptr, ref error);
+            UInt32 dataSize = obNative.ob_frame_metadata_size(_handle.Ptr, ref error);
             Byte[] buffer = new Byte[dataSize];
             Marshal.Copy(data, buffer, 0, (int)dataSize);
             return buffer;
@@ -335,7 +335,7 @@ namespace Orbbec
         public UInt32 GetMetadataSize()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_video_frame_metadata_size(_handle.Ptr, ref error);
+            return obNative.ob_frame_metadata_size(_handle.Ptr, ref error);
         }
 
         /**

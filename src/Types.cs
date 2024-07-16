@@ -100,6 +100,7 @@ namespace Orbbec
         OB_SENSOR_IR_LEFT   = 6, /**< left IR */
         OB_SENSOR_IR_RIGHT  = 7, /**< Right IR */
         OB_SENSOR_RAW_PHASE = 8, /**< Raw Phase */
+        OB_SENSOR_COUNT,
     }
 
     /**
@@ -163,11 +164,11 @@ namespace Orbbec
         OB_FORMAT_MJPG       = 5,    /**< MJPEG encoding format */
         OB_FORMAT_H264       = 6,    /**< H.264 encoding format */
         OB_FORMAT_H265       = 7,    /**< H.265 encoding format */
-        OB_FORMAT_Y16        = 8,    /**< Y16 format, single channel 16-bit depth */
-        OB_FORMAT_Y8         = 9,    /**< Y8 format, single channel 8-bit depth */
-        OB_FORMAT_Y10        = 10,   /**< Y10 format, single channel 10-bit depth (SDK will unpack into Y16 by default) */
-        OB_FORMAT_Y11        = 11,   /**< Y11 format, single channel 11-bit depth (SDK will unpack into Y16 by default) */
-        OB_FORMAT_Y12        = 12,   /**< Y12 format, single channel 12-bit depth (SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y16        = 8,    /**< Y16 format, 16-bit per pixel, single-channel*/
+        OB_FORMAT_Y8         = 9,    /**< Y8 format, 8-bit per pixel, single-channel */
+        OB_FORMAT_Y10        = 10,   /**< Y10 format, 10-bit per pixel, single-channel(SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y11        = 11,   /**< Y11 format, 11-bit per pixel, single-channel (SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y12        = 12,   /**< Y12 format, 12-bit per pixel, single-channel(SDK will unpack into Y16 by default) */
         OB_FORMAT_GRAY       = 13,   /**< GRAY (the actual format is the same as YUYV) */
         OB_FORMAT_HEVC       = 14,   /**< HEVC encoding format (the actual format is the same as H265) */
         OB_FORMAT_I420       = 15,   /**< I420 format */
@@ -178,10 +179,17 @@ namespace Orbbec
         OB_FORMAT_RLE        = 21,   /**< RLE pressure test format (SDK will be unpacked into Y16 by default) */
         OB_FORMAT_RGB        = 22,   /**< RGB format (actual RGB888)  */
         OB_FORMAT_BGR        = 23,   /**< BGR format (actual BGR888) */
-        OB_FORMAT_Y14        = 24,   /**< Y14 format, single channel 14-bit depth (SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y14        = 24,   /**< Y14 format, 14-bit per pixel, single-channel (SDK will unpack into Y16 by default) */
         OB_FORMAT_BGRA       = 25,   /**< BGRA format */
         OB_FORMAT_COMPRESSED = 26,   /**< Compression format */
         OB_FORMAT_RVL        = 27,   /**< RVL pressure test format (SDK will be unpacked into Y16 by default) */
+        OB_FORMAT_Z16        = 28,   /**< Is same as Y16*/
+        OB_FORMAT_YV12       = 29,   /**< Is same as Y12, using for right ir stream*/
+        OB_FORMAT_BA81       = 30,   /**< Is same as Y8, using for right ir stream*/
+        OB_FORMAT_RGBA       = 31,   /**< RGBA format */
+        OB_FORMAT_BYR2       = 32,   /**< byr2 format */
+        OB_FORMAT_RW16       = 33,   /**< RAW16 format */
+        OB_FORMAT_DISP16     = 34,   /**< Y16 format for disparity map*/
         OB_FORMAT_UNKNOWN    = 0xff, /**< unknown format */
     }
 
@@ -299,6 +307,30 @@ namespace Orbbec
     }
 
     /**
+    * @brief Structure for float range
+    */
+    public struct UInt16PropertyRange 
+    {
+        public UInt16 cur;   ///< Current value
+        public UInt16 max;   ///< Maximum value
+        public UInt16 min;   ///< Minimum value
+        public UInt16 step;  ///< Step value
+        public UInt16 def;   ///< Default value
+    } 
+
+    /**
+    * @brief Structure for float range
+    */
+    public struct UInt8PropertyRange 
+    {
+        public byte cur;   ///< Current value
+        public byte max;   ///< Maximum value
+        public byte min;   ///< Minimum value
+        public byte step;  ///< Step value
+        public byte def;   ///< Default value
+    } 
+
+    /**
      * \if English
      * @brief Boolean-scoped structure
      * \else
@@ -321,7 +353,7 @@ namespace Orbbec
 
     /**
      * \if English
-     * @brief Camera internal parameters
+     * @brief Camera intrinsic parameters
      * \else
      * @brief 相机内参
      * \endif
@@ -334,6 +366,39 @@ namespace Orbbec
         public float cy;      ///< \if English Optical center ordinate \else 光心纵坐标 \endif
         public Int16 width;   ///< \if English image width \else 图像宽度 \endif
         public Int16 height;  ///< \if English image height \else 图像高度 \endif
+    }
+
+    /**
+    * @brief Structure for accelerometer intrinsic parameters
+    */
+    public struct AccelIntrinsic
+    {
+        public double noiseDensity;          ///< In-run bias instability
+        public double randomWalk;            ///< random walk
+        public double referenceTemp;         ///< reference temperature
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public double[] bias;               ///< bias for x, y, z axis
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public double[] gravity;            ///< gravity direction for x, y, z axis
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public double[] scaleMisalignment;  ///< scale factor and three-axis non-orthogonal error
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public double tempSlope;          ///< linear temperature drift coefficient
+    } 
+
+    /**
+    * @brief Structure for gyroscope intrinsic parameters
+    */
+    public struct GyroIntrinsic{
+        public double noiseDensity;          ///< In-run bias instability
+        public double randomWalk;            ///< random walk
+        public double referenceTemp;         ///< reference temperature
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public double[] bias;               ///< bias for x, y, z axis
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public double[] scaleMisalignment;  ///< scale factor and three-axis non-orthogonal error
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public double[] tempSlope;          ///< linear temperature drift coefficient
     }
 
     /**
@@ -355,6 +420,30 @@ namespace Orbbec
         public float p2;    ///< \if English Tangential distortion factor 2 \else 切向畸变系数2 \endif
     }
 
+    /** \brief Distortion model: defines how pixel coordinates should be mapped to sensor coordinates. */
+    public enum CameraDistortionModel{
+        OB_DISTORTION_NONE,                   /**< Rectilinear images. No distortion compensation required. */
+        OB_DISTORTION_MODIFIED_BROWN_CONRADY, /**< Equivalent to Brown-Conrady distortion, except that tangential distortion is applied to radially distorted points
+                                            */
+        OB_DISTORTION_INVERSE_BROWN_CONRADY,  /**< Equivalent to Brown-Conrady distortion, except undistorts image instead of distorting it */
+        OB_DISTORTION_BROWN_CONRADY,          /**< Unmodified Brown-Conrady distortion model */
+    } 
+
+    /** \brief Video stream intrinsics. */
+    public struct CameraAlignIntrinsic{
+        public int                     width;  /**< Width of the image in pixels */
+        public int                     height; /**< Height of the image in pixels */
+        public float                   ppx;    /**< Horizontal coordinate of the principal point of the image, as a pixel offset from the left edge */
+        public float                   ppy;    /**< Vertical coordinate of the principal point of the image, as a pixel offset from the top edge */
+        public float                   fx;     /**< Focal length of the image plane, as a multiple of pixel width */
+        public float                   fy;     /**< Focal length of the image plane, as a multiple of pixel height */
+        public CameraDistortionModel model;  /**< Distortion model of the image */
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+        public float[] coeffs; /**< Distortion coefficients. Order for Brown-Conrady: [k1, k2, p1, p2, k3]. Order for F-Theta Fish-eye: [k1, k2, k3, k4, 0]. Other models
+                            are subject to their own interpretations */
+    }
+
+
     /**
      * \if English
      * @brief Rotation/Transformation
@@ -363,6 +452,14 @@ namespace Orbbec
      * \endif
      */
     public struct D2CTransform
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public float[] rot;  ///< \if English Rotation matrix \else 旋转矩阵，行优先\endif
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+        public float[] trans;   ///< \if English transformation matrix \else 变化矩阵 \endif
+    }
+
+    public struct Extrinsic
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
         public float[] rot;  ///< \if English Rotation matrix \else 旋转矩阵，行优先\endif
@@ -401,6 +498,20 @@ namespace Orbbec
     }
 
     /**
+    * @brief calibration parameters
+    */
+    public struct CalibrationParam 
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public CameraIntrinsic[]  intrinsics;            ///< Sensor internal parameters
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
+        public CameraDistortion[] distortion;            ///< Sensor distortion
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 81)]
+        public Extrinsic[] extrinsics;  ///< The extrinsic parameters allow 3D coordinate conversions between sensor.To transform from a
+                                                                ///< source to a target 3D coordinate system,under extrinsics[source][target].
+    }
+
+    /**
     * @brief Configuration for depth margin filter
     */
     public struct OBMarginFilterConfig
@@ -412,6 +523,22 @@ namespace Orbbec
         public UInt32 width;             ///< Image width
         public UInt32 height;            ///< Image height
         public bool     enable_direction;  ///< Set to true for horizontal and vertical, false for horizontal only
+    }
+
+    /**
+    * @brief Configuration for mgc filter
+    */
+    public struct MGCFilterConfig
+    {
+        public UInt32 width;
+        public UInt32 height;
+        public int      max_width_left;
+        public int      max_width_right;
+        public int      max_radius;
+        public int      margin_x_th;
+        public int      margin_y_th;
+        public int      limit_x_th;
+        public int      limit_y_th;
     }
 
     /**
@@ -452,18 +579,24 @@ namespace Orbbec
      */
     public enum ConvertFormat
     {
-        FORMAT_YUYV_TO_RGB888 = 0, /**< YUYV to RGB888 */
-        FORMAT_I420_TO_RGB888,     /**< I420 to RGB888 */
-        FORMAT_NV21_TO_RGB888,     /**< NV21 to RGB888 */
-        FORMAT_NV12_TO_RGB888,     /**< NV12 to RGB888 */
-        FORMAT_MJPG_TO_I420,       /**< MJPG to I420 */
-        FORMAT_RGB888_TO_BGR,      /**< RGB888 to BGR */
-        FORMAT_MJPG_TO_NV21,       /**< MJPG to NV21 */
-        FORMAT_MJPG_TO_RGB888,     /**< MJPG to RGB888 */
-        FORMAT_MJPG_TO_BGR888,     /**< MJPG to BGR888 */
-        FORMAT_MJPG_TO_BGRA,       /**< MJPG to BGRA */
-        FORMAT_UYVY_TO_RGB888,     /**< UYVY to RGB888 */
-        FORMAT_BGR_TO_RGB,         /**< BGR to RGB */
+        FORMAT_YUYV_TO_RGB = 0, /**< YUYV to RGB */
+        FORMAT_I420_TO_RGB,     /**< I420 to RGB */
+        FORMAT_NV21_TO_RGB,     /**< NV21 to RGB */
+        FORMAT_NV12_TO_RGB,     /**< NV12 to RGB */
+        FORMAT_MJPG_TO_I420,    /**< MJPG to I420 */
+        FORMAT_RGB_TO_BGR,      /**< RGB888 to BGR */
+        FORMAT_MJPG_TO_NV21,    /**< MJPG to NV21 */
+        FORMAT_MJPG_TO_RGB,     /**< MJPG to RGB */
+        FORMAT_MJPG_TO_BGR,     /**< MJPG to BGR */
+        FORMAT_MJPG_TO_BGRA,    /**< MJPG to BGRA */
+        FORMAT_UYVY_TO_RGB,     /**< UYVY to RGB */
+        FORMAT_BGR_TO_RGB,      /**< BGR to RGB */
+        FORMAT_MJPG_TO_NV12,    /**< MJPG to NV12 */
+        FORMAT_YUYV_TO_BGR,     /**< YUYV to BGR */
+        FORMAT_YUYV_TO_RGBA,    /**< YUYV to RGBA */
+        FORMAT_YUYV_TO_BGRA,    /**< YUYV to BGRA */
+        FORMAT_YUYV_TO_Y16,     /**< YUYV to Y16 */
+        FORMAT_YUYV_TO_Y8,      /**< YUYV to Y8 */
     }
 
     /**
@@ -471,6 +604,7 @@ namespace Orbbec
     */
     public enum GyroSampleRate
     {
+        OB_SAMPLE_RATE_UNKNOWN   = 0, /**< Unknown sample rate */
         OB_SAMPLE_RATE_1_5625_HZ = 1, /**< 1.5625Hz */
         OB_SAMPLE_RATE_3_125_HZ,      /**< 3.125Hz */
         OB_SAMPLE_RATE_6_25_HZ,       /**< 6.25Hz */
@@ -488,11 +622,9 @@ namespace Orbbec
         OB_SAMPLE_RATE_32_KHZ,        /**< 32Hz */
     }
 
-    /**
-    * @brief Enumeration of accelerometer sample rate values
-    */
     public enum AccelSampleRate
     {
+        OB_SAMPLE_RATE_UNKNOWN   = 0, /**< Unknown sample rate */
         OB_SAMPLE_RATE_1_5625_HZ = 1, /**< 1.5625Hz */
         OB_SAMPLE_RATE_3_125_HZ,      /**< 3.125Hz */
         OB_SAMPLE_RATE_6_25_HZ,       /**< 6.25Hz */
@@ -519,14 +651,15 @@ namespace Orbbec
      */
     public enum GyroFullScaleRange
     {
-        OB_GYRO_FS_16dps = 1, /**< 16 degrees per second */
-        OB_GYRO_FS_31dps,     /**< 31 degrees per second */
-        OB_GYRO_FS_62dps,     /**< 62 degrees per second */
-        OB_GYRO_FS_125dps,    /**< 125 degrees per second */
-        OB_GYRO_FS_250dps,    /**< 250 degrees per second */
-        OB_GYRO_FS_500dps,    /**< 500 degrees per second */
-        OB_GYRO_FS_1000dps,   /**< 1000 degrees per second */
-        OB_GYRO_FS_2000dps,   /**< 2000 degrees per second */
+        OB_GYRO_FS_UNKNOWN = 0, /**< Unknown range */
+        OB_GYRO_FS_16dps   = 1, /**< 16 degrees per second */
+        OB_GYRO_FS_31dps,       /**< 31 degrees per second */
+        OB_GYRO_FS_62dps,       /**< 62 degrees per second */
+        OB_GYRO_FS_125dps,      /**< 125 degrees per second */
+        OB_GYRO_FS_250dps,      /**< 250 degrees per second */
+        OB_GYRO_FS_500dps,      /**< 500 degrees per second */
+        OB_GYRO_FS_1000dps,     /**< 1000 degrees per second */
+        OB_GYRO_FS_2000dps,     /**< 2000 degrees per second */
     }
 
     /**
@@ -538,10 +671,11 @@ namespace Orbbec
      */
     public enum AccelFullScaleRange
     {
-        OB_ACCEL_FS_2g = 1, /**< 1x the acceleration of gravity */
-        OB_ACCEL_FS_4g,     /**< 4x the acceleration of gravity */
-        OB_ACCEL_FS_8g,     /**< 8x the acceleration of gravity */
-        OB_ACCEL_FS_16g,    /**< 16x the acceleration of gravity */
+        OB_ACCEL_FS_UNKNOWN = 0, /**< Unknown range */
+        OB_ACCEL_FS_2g      = 1, /**< 1x the acceleration of gravity */
+        OB_ACCEL_FS_4g,          /**< 4x the acceleration of gravity */
+        OB_ACCEL_FS_8g,          /**< 8x the acceleration of gravity */
+        OB_ACCEL_FS_16g,         /**< 16x the acceleration of gravity */
     }
 
     /**
@@ -704,6 +838,30 @@ namespace Orbbec
         public float y;  ///< Y coordinate
         public float z;  ///< Z coordinate   
     }
+
+    public struct Point3f
+    {
+        public float x;  ///< X coordinate
+        public float y;  ///< Y coordinate
+        public float z;  ///< Z coordinate   
+    }
+
+    /**
+    * @brief 2D point structure in the SDK
+    */
+    public struct Point2f
+    {
+        public float x;  ///< X coordinate
+        public float y;  ///< Y coordinate
+    } 
+
+    public struct XYTables
+    {
+        public IntPtr xTable;  ///< table used to compute X coordinate
+        public IntPtr yTable;  ///< table used to compute Y coordinate
+        public int    width;   ///< width of x and y tables
+        public int    height;  ///< height of x and y tables
+    } 
 
     /**
      * \if English
@@ -949,6 +1107,67 @@ namespace Orbbec
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
         public char[]    name;      ///< \if English 名称 \else Name of work mode \endif
     }
+    
+    /**
+    * @brief SequenceId fliter list item
+    */
+    public struct SequenceIdItem
+    {
+        public int  sequenceSelectId;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        public char[] name;
+    } 
+
+    /**
+    * @brief Hole fillig mode
+    */
+    public enum HoleFillingMode
+    {
+        OB_HOLE_FILL_TOP     = 0,
+        OB_HOLE_FILL_NEAREST = 1,  // "max" means farest for depth, and nearest for disparity; FILL_NEAREST
+        OB_HOLE_FILL_FAREST  = 2,  // FILL_FAREST
+    }
+
+    public struct SpatialAdvancedFilterParams
+    {
+        public byte magnitude;  // magnitude
+        public float alpha;      // smooth_alpha
+        public UInt16 disp_diff;  // smooth_delta
+        public UInt16 radius;     // hole_fill
+    } 
+
+    public enum EdgeNoiseRemovalType {
+        OB_MG_FILTER  = 0,
+        OB_MGH_FILTER = 1,  // horizontal MG
+        OB_MGA_FILTER = 2,  // asym MG
+        OB_MGC_FILTER = 3,
+    }
+
+    public struct EdgeNoiseRemovalFilterParams
+    {
+        public EdgeNoiseRemovalType type;
+        public UInt16               marginLeftTh;
+        public UInt16               marginRightTh;
+        public UInt16               marginTopTh;
+        public UInt16               marginBottomTh;
+    } 
+
+    /**
+    * @brief 去噪方式
+    */
+    public enum DDONoiseRemovalType 
+    {
+        OB_NR_LUT     = 0,  // SPLIT
+        OB_NR_OVERALL = 1,  // NON_SPLIT
+    } 
+
+    public struct NoiseRemovalFilterParams
+    {
+        public UInt16              max_size;
+        public UInt16              disp_diff;
+        public DDONoiseRemovalType type;
+    } 
+
 
     /**
     * @brief 控制命令协议版本号
@@ -1331,5 +1550,227 @@ namespace Orbbec
         */
         public float zpd;
     }
+    
+    /**
+    * @brief HDR Configuration
+    */
+    public struct HdrConfig
+    {
 
+        /**
+        * @brief Enable/disable HDR, after enabling HDR, the exposure_1 and gain_1 will be used as the first exposure and gain, and the exposure_2 and gain_2 will
+        * be used as the second exposure and gain. The output image will be alternately exposed and gain between the first and second
+        * exposure and gain.
+        *
+        * @attention After enabling HDR, the auto exposure will be disabled.
+        */
+        public byte  enable;
+        public byte  sequence_name;  ///< Sequence name
+        public UInt32 exposure_1;     ///< Exposure time 1
+        public UInt32 gain_1;         ///< Gain 1
+        public UInt32 exposure_2;     ///< Exposure time 2
+        public UInt32 gain_2;         ///< Gain 2
+    } 
+
+    /**
+    * @brief The rect of the region of interest
+    */
+    public struct RegionOfInterest
+    {
+        public Int16 x0_left;
+        public Int16 y0_top;
+        public Int16 x1_right;
+        public Int16 y1_bottom;
+    }
+
+    /**
+    * @brief Frame metadata types
+    * @brief The frame metadata is a set of meta info generated by the device for current individual frame.
+    */
+    public enum FrameMetadataType
+    {
+        /**
+        * @brief Timestamp when the frame is captured.
+        * @attention Different device models may have different units. It is recommended to use the timestamp related functions to get the timestamp in the
+        * correct units.
+        */
+        OB_FRAME_METADATA_TYPE_TIMESTAMP = 0,
+
+        /**
+        * @brief Timestamp in the middle of the capture.
+        * @brief Usually is the middle of the exposure time.
+        *
+        * @attention Different device models may have different units.
+        */
+        OB_FRAME_METADATA_TYPE_SENSOR_TIMESTAMP = 1,
+
+        /**
+        * @brief The number of current frame.
+        */
+        OB_FRAME_METADATA_TYPE_FRAME_NUMBER = 2,
+
+        /**
+        * @brief Auto exposure status
+        * @brief If the value is 0, it means the auto exposure is disabled. Otherwise, it means the auto exposure is enabled.
+        */
+        OB_FRAME_METADATA_TYPE_AUTO_EXPOSURE = 3,
+
+        /**
+        * @brief Exposure time
+        *
+        * @attention Different sensor may have different units. Usually, it is 100us for color sensor and 1us for depth/infrared sensor.
+        */
+        OB_FRAME_METADATA_TYPE_EXPOSURE = 4,
+
+        /**
+        * @brief Gain
+        *
+        * @attention For some device models, the gain value represents the gain level, not the multiplier.
+        */
+        OB_FRAME_METADATA_TYPE_GAIN = 5,
+
+        /**
+        * @brief Auto white balance status
+        * @brief If the value is 0, it means the auto white balance is disabled. Otherwise, it means the auto white balance is enabled.
+        */
+        OB_FRAME_METADATA_TYPE_AUTO_WHITE_BALANCE = 6,
+
+        /**
+        * @brief White balance
+        */
+        OB_FRAME_METADATA_TYPE_WHITE_BALANCE = 7,
+
+        /**
+        * @brief Brightness
+        */
+        OB_FRAME_METADATA_TYPE_BRIGHTNESS = 8,
+
+        /**
+        * @brief Contrast
+        */
+        OB_FRAME_METADATA_TYPE_CONTRAST = 9,
+
+        /**
+        * @brief Saturation
+        */
+        OB_FRAME_METADATA_TYPE_SATURATION = 10,
+
+        /**
+        * @brief Sharpness
+        */
+        OB_FRAME_METADATA_TYPE_SHARPNESS = 11,
+
+        /**
+        * @brief Backlight compensation
+        */
+        OB_FRAME_METADATA_TYPE_BACKLIGHT_COMPENSATION = 12,
+
+        /**
+        * @brief Hue
+        */
+        OB_FRAME_METADATA_TYPE_HUE = 13,
+
+        /**
+        * @brief Gamma
+        */
+        OB_FRAME_METADATA_TYPE_GAMMA = 14,
+
+        /**
+        * @brief Power line frequency
+        * @brief For anti-flickering， 0：Close， 1： 50Hz， 2： 60Hz， 3： Auto
+        */
+        OB_FRAME_METADATA_TYPE_POWER_LINE_FREQUENCY = 15,
+
+        /**
+        * @brief Low light compensation
+        *
+        * @attention The low light compensation is a feature inside the device，and can not manually control it.
+        */
+        OB_FRAME_METADATA_TYPE_LOW_LIGHT_COMPENSATION = 16,
+
+        /**
+        * @brief Manual white balance setting
+        */
+        OB_FRAME_METADATA_TYPE_MANUAL_WHITE_BALANCE = 17,
+
+        /**
+        * @brief Actual frame rate
+        * @brief The actual frame rate will be calculated according to the exposure time and other parameters.
+        */
+        OB_FRAME_METADATA_TYPE_ACTUAL_FRAME_RATE = 18,
+
+        /**
+        * @brief Frame rate
+        */
+        OB_FRAME_METADATA_TYPE_FRAME_RATE = 19,
+
+        /**
+        * @brief Left region of interest for the auto exposure Algorithm.
+        */
+        OB_FRAME_METADATA_TYPE_AE_ROI_LEFT = 20,
+
+        /**
+        * @brief Top region of interest for the auto exposure Algorithm.
+        */
+        OB_FRAME_METADATA_TYPE_AE_ROI_TOP = 21,
+
+        /**
+        * @brief Right region of interest for the auto exposure Algorithm.
+        */
+        OB_FRAME_METADATA_TYPE_AE_ROI_RIGHT = 22,
+
+        /**
+        * @brief Bottom region of interest for the auto exposure Algorithm.
+        */
+        OB_FRAME_METADATA_TYPE_AE_ROI_BOTTOM = 23,
+
+        /**
+        * @brief Exposure priority
+        */
+        OB_FRAME_METADATA_TYPE_EXPOSURE_PRIORITY = 24,
+
+        /**
+        * @brief HDR sequence name
+        */
+        OB_FRAME_METADATA_TYPE_HDR_SEQUENCE_NAME = 25,
+
+        /**
+        * @brief HDR sequence size
+        */
+        OB_FRAME_METADATA_TYPE_HDR_SEQUENCE_SIZE = 26,
+
+        /**
+        * @brief HDR sequence index
+        */
+        OB_FRAME_METADATA_TYPE_HDR_SEQUENCE_INDEX = 27,
+
+        /**
+        * @brief Laser power value in mW
+        *
+        * @attention The laser power value is an approximate estimation.
+        */
+        OB_FRAME_METADATA_TYPE_LASER_POWER = 28,
+
+        /**
+        * @brief Laser power level
+        */
+        OB_FRAME_METADATA_TYPE_LASER_POWER_LEVEL = 29,
+
+        /**
+        * @brief Laser status
+        * @brief 0: Laser off, 1: Laser on
+        */
+        OB_FRAME_METADATA_TYPE_LASER_STATUS = 30,
+
+        /**
+        * @brief GPIO input data
+        */
+        OB_FRAME_METADATA_TYPE_GPIO_INPUT_DATA = 31,
+
+        /**
+        * @brief The number of frame metadata types, using for types iterating
+        * @attention It is not a valid frame metadata type
+        */
+        OB_FRAME_METADATA_TYPE_COUNT,
+    }
 }

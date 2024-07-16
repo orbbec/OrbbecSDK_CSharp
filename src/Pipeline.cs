@@ -10,15 +10,19 @@ namespace Orbbec
     {
         private NativeHandle _handle;
         private Device _device;
-        private FramesetCallback _callback;
+        private static Dictionary<IntPtr, FramesetCallback> _framesetCallbacks = new Dictionary<IntPtr, FramesetCallback>();
         private NativeFramesetCallback _nativeCallback;
-
-        private void OnFrameset(IntPtr framesetPtr, IntPtr userData)
+        
+#if ORBBEC_UNITY
+        [AOT.MonoPInvokeCallback(typeof(NativeFramesetCallback))]
+#endif
+        private static void OnFrameset(IntPtr framesetPtr, IntPtr userData)
         {
             Frameset frameset = new Frameset(framesetPtr);
-            if(_callback != null)
+            _framesetCallbacks.TryGetValue(userData, out FramesetCallback callback);
+            if(callback != null)
             {
-                _callback(frameset);
+                callback(frameset);
             }
             else
             {
@@ -132,9 +136,9 @@ namespace Orbbec
         */
         public void Start(Config config, FramesetCallback callback)
         {
-            _callback = callback;
+            _framesetCallbacks[_handle.Ptr] = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _nativeCallback, IntPtr.Zero, ref error);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _nativeCallback, _handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
