@@ -25,9 +25,31 @@ namespace Orbbec
                 int height = (int)frame.GetHeight();
                 int stride = wbmp.BackBufferStride;
                 int dataSize = (int)frame.GetDataSize();
+                byte[] data = new byte[frame.GetDataSize()];
+                frame.CopyData(ref data);
+                if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                {
+                    data = ConvertDepthToRGB(data);
+                }
                 var rect = new Int32Rect(0, 0, width, height);
-                wbmp.WritePixels(rect, frame.GetDataPtr(), dataSize, stride);
+                wbmp.WritePixels(rect, data, stride, 0);
             });
+        }
+
+        static byte[] ConvertDepthToRGB(byte[] depthData)
+        {
+            byte[] colorData = new byte[(depthData.Length / 2) * 3];
+            for (int i = 0; i < depthData.Length; i += 2)
+            {
+                ushort depthValue = (ushort)(depthData[i + 1] << 8 | depthData[i]);
+                float depth = (float)depthValue / 1000;
+                byte depthByte = (byte)(depth * 255);
+                int index = (i / 2) * 3;
+                colorData[index] = depthByte; // Red
+                colorData[index + 1] = depthByte; // Green
+                colorData[index + 2] = depthByte; // Blue
+            }
+            return colorData;
         }
 
         public SyncAlignWindow()
@@ -47,6 +69,7 @@ namespace Orbbec
                 config.EnableStream(depthProfile);
                 config.SetAlignMode(AlignMode.ALIGN_D2C_SW_MODE);
 
+                pipeline.EnableFrameSync();
                 pipeline.Start(config);
 
                 SetupWindow(colorProfile, depthProfile, out updateDepth, out updateColor);
@@ -89,7 +112,7 @@ namespace Orbbec
                                     out Action<VideoFrame> depth, out Action<VideoFrame> color)
         {
             using (var p = colorProfile.As<VideoStreamProfile>())
-                imgDepth.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Gray16, null);
+                imgDepth.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
             depth = UpdateImage(imgDepth);
 
             using (var p = colorProfile.As<VideoStreamProfile>())

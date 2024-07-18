@@ -25,9 +25,51 @@ namespace Orbbec
                 int height = (int)frame.GetHeight();
                 int stride = wbmp.BackBufferStride;
                 int dataSize = (int)frame.GetDataSize();
+                byte[] data = new byte[frame.GetDataSize()];
+                frame.CopyData(ref data);
+                if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                {
+                    data = ConvertDepthToRGBData(data);
+                }
+                else if(frame.GetFrameType() == FrameType.OB_FRAME_IR)
+                {
+                    data = ConvertIRToRGBData(data);
+                }
                 var rect = new Int32Rect(0, 0, width, height);
-                wbmp.WritePixels(rect, frame.GetDataPtr(), dataSize, stride);
+                wbmp.WritePixels(rect, data, stride, 0);
             });
+        }
+
+        static byte[] ConvertDepthToRGBData(byte[] depthData)
+        {
+            byte[] colorData = new byte[(depthData.Length / 2) * 3];
+            for (int i = 0; i < depthData.Length; i += 2)
+            {
+                ushort depthValue = (ushort)(depthData[i + 1] << 8 | depthData[i]);
+                float depth = (float)depthValue / 1000;
+                byte depthByte = (byte)(depth * 255);
+                int index = (i / 2) * 3;
+                colorData[index] = depthByte; // Red
+                colorData[index + 1] = depthByte; // Green
+                colorData[index + 2] = depthByte; // Blue
+            }
+            return colorData;
+        }
+
+        static byte[] ConvertIRToRGBData(byte[] irData)
+        {
+            byte[] colorData = new byte[(irData.Length / 2) * 3];
+            for (int i = 0; i < irData.Length; i += 2)
+            {
+                ushort irValue = (ushort)(irData[i + 1] << 8 | irData[i]);
+                byte irByte = (byte)(irValue >> 8); // Scale down to 8 bits
+
+                int index = (i / 2) * 3;
+                colorData[index] = irByte; // Red
+                colorData[index + 1] = irByte; // Green
+                colorData[index + 2] = irByte; // Blue
+            }
+            return colorData;
         }
 
         public MultiStreamWindow()
@@ -95,7 +137,7 @@ namespace Orbbec
                                     out Action<VideoFrame> depth, out Action<VideoFrame> color, out Action<VideoFrame> ir)
         {
             using (var p = depthProfile.As<VideoStreamProfile>())
-                imgDepth.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Gray16, null);
+                imgDepth.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
             depth = UpdateImage(imgDepth);
 
             using (var p = colorProfile.As<VideoStreamProfile>())
@@ -103,7 +145,7 @@ namespace Orbbec
             color = UpdateImage(imgColor);
 
             using (var p = irProfile.As<VideoStreamProfile>())
-                imgIr.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Gray16, null);
+                imgIr.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
             ir = UpdateImage(imgIr);
         }
     }
