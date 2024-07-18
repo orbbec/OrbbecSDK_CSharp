@@ -4,8 +4,6 @@ project(ob_csharp VERSION 0.1.0 LANGUAGES CSharp)
 
 include(CSharpUtilities)
 
-# add_definitions(-DORBBEC_DEBUG)
-
 add_library(${PROJECT_NAME} SHARED 
     src/Config.cs
     src/Context.cs
