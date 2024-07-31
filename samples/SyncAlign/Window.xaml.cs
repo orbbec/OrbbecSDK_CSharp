@@ -112,12 +112,12 @@ namespace Orbbec
                                     out Action<VideoFrame> depth, out Action<VideoFrame> color)
         {
             using (var p = colorProfile.As<VideoStreamProfile>())
+            {
                 imgDepth.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-            depth = UpdateImage(imgDepth);
-
-            using (var p = colorProfile.As<VideoStreamProfile>())
+                depth = UpdateImage(imgDepth);
                 imgColor.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-            color = UpdateImage(imgColor);
+                color = UpdateImage(imgColor);
+            }                
         }
     }
 }
