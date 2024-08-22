@@ -506,6 +506,7 @@ namespace Orbbec
         #endregion
 
         #region Filter
+        #region Pointcloud
         //ob_filter *ob_create_pointcloud_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_pointcloud_filter")]
         public static extern IntPtr ob_create_pointcloud_filter(ref IntPtr error);
@@ -533,7 +534,9 @@ namespace Orbbec
         //void ob_pointcloud_filter_set_coordinate_system(ob_filter *filter, ob_coordinate_system_type type, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_pointcloud_filter_set_coordinate_system")]
         public static extern void ob_pointcloud_filter_set_coordinate_system(IntPtr filter, CoordinateSystemType type, ref IntPtr error);
+        #endregion
 
+        #region Format Convert
         //ob_filter *ob_create_format_convert_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_format_convert_filter")]
         public static extern IntPtr ob_create_format_convert_filter(ref IntPtr error);
@@ -541,7 +544,9 @@ namespace Orbbec
         //void ob_format_convert_filter_set_format(ob_filter *filter, ob_convert_format type, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_format_convert_filter_set_format")]
         public static extern void ob_format_convert_filter_set_format(IntPtr filter, ConvertFormat format, ref IntPtr error);
+        #endregion
 
+        #region Compression/decompression
         //ob_filter *ob_create_compression_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_compression_filter")]
         public static extern IntPtr ob_create_compression_filter(ref IntPtr error);
@@ -553,7 +558,9 @@ namespace Orbbec
         //ob_filter *ob_create_decompression_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_decompression_filter")]
         public static extern IntPtr ob_create_decompression_filter(ref IntPtr error);
+        #endregion
 
+        #region Hole Filling
         //ob_filter *ob_create_holefilling_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_holefilling_filter")]
         public static extern IntPtr ob_create_holefilling_filter(ref IntPtr error);
@@ -565,7 +572,9 @@ namespace Orbbec
         //ob_hole_filling_mode ob_holefilling_filter_get_mode(ob_filter *filter, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_holefilling_filter_get_mode")]
         public static extern HoleFillingMode ob_holefilling_filter_get_mode(IntPtr filter, ref IntPtr error);
+        #endregion
 
+        #region Temporal
         //ob_filter *ob_create_temporal_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_temporal_filter")]
         public static extern IntPtr ob_create_temporal_filter(ref IntPtr error);
@@ -585,7 +594,9 @@ namespace Orbbec
         //void ob_temporal_filter_set_weight_value(ob_filter *filter, float value, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_temporal_filter_set_weight_value")]
         public static extern void ob_temporal_filter_set_weight_value(IntPtr filter, float value, ref IntPtr error);
+        #endregion
 
+        #region Spatial Advanced
         //ob_filter *ob_create_spatial_advanced_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_spatial_advanced_filter")]
         public static extern IntPtr ob_create_spatial_advanced_filter(ref IntPtr error);
@@ -613,7 +624,9 @@ namespace Orbbec
         //void ob_spatial_advanced_filter_set_filter_params(ob_filter *filter, ob_spatial_advanced_filter_params params, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_spatial_advanced_filter_set_filter_params")]
         public static extern void ob_spatial_advanced_filter_set_filter_params(IntPtr filter, SpatialAdvancedFilterParams filterParams, ref IntPtr error);
+        #endregion
 
+        #region Noise Removal
         //ob_filter *ob_create_noise_removal_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_noise_removal_filter")]
         public static extern IntPtr ob_create_noise_removal_filter(ref IntPtr error);
@@ -633,7 +646,9 @@ namespace Orbbec
         //ob_noise_removal_filter_params ob_noise_removal_filter_get_filter_params(ob_filter *filter, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_noise_removal_filter_get_filter_params")]
         public static extern void ob_noise_removal_filter_get_filter_params(out NoiseRemovalFilterParams filterParams, IntPtr filter, ref IntPtr error);
+        #endregion
 
+        #region Edge Noise Removal
         //ob_filter *ob_create_edge_noise_removal_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_edge_noise_removal_filter")]
         public static extern IntPtr ob_create_edge_noise_removal_filter(ref IntPtr error);
@@ -661,7 +676,9 @@ namespace Orbbec
         //ob_uint16_property_range ob_edge_noise_removal_filter_get_margin_bottom_th_range(ob_filter *filter, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_edge_noise_removal_filter_get_margin_bottom_th_range")]
         public static extern void ob_edge_noise_removal_filter_get_margin_bottom_th_range(out UInt16PropertyRange range, IntPtr filter, ref IntPtr error);
+        #endregion
 
+        #region Decimation
         //ob_filter *ob_create_decimation_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_decimation_filter")]
         public static extern IntPtr ob_create_decimation_filter(ref IntPtr error);
@@ -677,7 +694,9 @@ namespace Orbbec
         //uint8_t ob_decimation_filter_get_scale_value(ob_filter *filter, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_decimation_filter_get_scale_value")]
         public static extern byte ob_decimation_filter_get_scale_value(IntPtr filter, ref IntPtr error);
+        #endregion
 
+        #region Threshold
         //ob_filter *ob_create_threshold_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_threshold_filter")]
         public static extern IntPtr ob_create_threshold_filter(ref IntPtr error);
@@ -693,7 +712,9 @@ namespace Orbbec
         //bool ob_threshold_filter_set_scale_value(ob_filter *filter, uint16_t min, uint16_t max, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_threshold_filter_set_scale_value")]
         public static extern bool ob_threshold_filter_set_scale_value(IntPtr filter, UInt16 min, UInt16 max, ref IntPtr error);
+        #endregion
 
+        #region Sequence ID
         //ob_filter *ob_create_sequenceId_filter(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_sequenceId_filter")]
         public static extern IntPtr ob_create_sequenceId_filter(ref IntPtr error);
@@ -713,6 +734,7 @@ namespace Orbbec
         //int ob_sequence_id_filter_get_sequence_id_list_size(ob_filter *filter, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_sequence_id_filter_get_sequence_id_list_size")]
         public static extern int ob_sequence_id_filter_get_sequence_id_list_size(IntPtr filter, ref IntPtr error);
+        #endregion
 
         //ob_filter *ob_create_hdr_merge(ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_hdr_merge")]
@@ -730,6 +752,7 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_create_disparity_transform")]
         public static extern IntPtr ob_create_disparity_transform(ref IntPtr error, bool depth_to_disparity);
 
+        #region Common filter operations
         //void ob_filter_reset( ob_filter* filter, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_filter_reset")]
         public static extern void ob_filter_reset(IntPtr filter, ref IntPtr error);
@@ -758,6 +781,7 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_delete_filter")]
         public static extern void ob_delete_filter(IntPtr filter, ref IntPtr error);
         #endregion
+#endregion
 
         #region Frame
         //uint64_t ob_frame_index( ob_frame* frame, ob_error** error );

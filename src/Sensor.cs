@@ -84,6 +84,17 @@ namespace Orbbec
             return new StreamProfileList(handle);
         }
 
+        public FilterList GetRecommendedFilters()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr listHandle = obNative.ob_sensor_get_stream_profile_list(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new FilterList(listHandle);
+        }
+
         /**
         * \if English
         * @brief Open frame data stream and set up a callback
