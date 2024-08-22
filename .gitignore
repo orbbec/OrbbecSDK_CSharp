@@ -1,3 +1,5 @@
 build/
 doc/
 .vscode/
+/samples/PostProcessing/bin/Debug
+/samples/PostProcessing/obj/Debug
