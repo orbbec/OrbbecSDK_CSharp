@@ -16,7 +16,7 @@ namespace Orbbec
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        static Action<VideoFrame> UpdateImage(Image img)
+        static Action<VideoFrame> UpdateImage(Image img, Format format)
         {
             var wbmp = img.Source as WriteableBitmap;
             return new Action<VideoFrame>(frame =>
@@ -33,7 +33,7 @@ namespace Orbbec
                 }
                 else if(frame.GetFrameType() == FrameType.OB_FRAME_IR)
                 {
-                    data = ConvertIRToRGBData(data);
+                    data = ConvertIRToRGBData(data, format);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
@@ -56,19 +56,38 @@ namespace Orbbec
             return colorData;
         }
 
-        static byte[] ConvertIRToRGBData(byte[] irData)
+        static byte[] ConvertIRToRGBData(byte[] irData, Format format)
         {
-            byte[] colorData = new byte[(irData.Length / 2) * 3];
-            for (int i = 0; i < irData.Length; i += 2)
+            byte[] colorData = null;
+            switch (format)
             {
-                ushort irValue = (ushort)(irData[i + 1] << 8 | irData[i]);
-                byte irByte = (byte)(irValue >> 8); // Scale down to 8 bits
+                case Format.OB_FORMAT_Y16:
+                    colorData = new byte[(irData.Length / 2) * 3];
+                    for (int i = 0; i < irData.Length; i += 2)
+                    {
+                        ushort irValue = (ushort)(irData[i + 1] << 8 | irData[i]);
+                        byte irByte = (byte)(irValue >> 8); // Scale down to 8 bits
 
-                int index = (i / 2) * 3;
-                colorData[index] = irByte; // Red
-                colorData[index + 1] = irByte; // Green
-                colorData[index + 2] = irByte; // Blue
+                        int index = (i / 2) * 3;
+                        colorData[index] = irByte; // Red
+                        colorData[index + 1] = irByte; // Green
+                        colorData[index + 2] = irByte; // Blue
+                    }
+                    break;
+                case Format.OB_FORMAT_Y8:
+                    colorData = new byte[irData.Length * 3];
+                    for (int i = 0; i < irData.Length; i++)
+                    {
+                        byte irByte = irData[i];
+
+                        int index = i * 3;
+                        colorData[index] = irByte;
+                        colorData[index + 1] = irByte;
+                        colorData[index + 2] = irByte;
+                    }
+                    break;
             }
+
             return colorData;
         }
 
@@ -83,9 +102,11 @@ namespace Orbbec
             try
             {
                 Pipeline pipeline = new Pipeline();
+                StreamProfileList irProfileList = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_IR);
+
                 StreamProfile colorProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_RGB, 0);
                 StreamProfile depthProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y16, 0);
-                StreamProfile irProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_IR).GetVideoStreamProfile(0, 0, Format.OB_FORMAT_Y16, 0);
+                StreamProfile irProfile = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_IR).GetVideoStreamProfile(0, 0, irProfileList.GetProfile(0).GetFormat(), 0);
                 Config config = new Config();
                 config.EnableStream(colorProfile);
                 config.EnableStream(depthProfile);
@@ -138,15 +159,15 @@ namespace Orbbec
         {
             using (var p = depthProfile.As<VideoStreamProfile>())
                 imgDepth.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-            depth = UpdateImage(imgDepth);
+            depth = UpdateImage(imgDepth, depthProfile.GetFormat());
 
             using (var p = colorProfile.As<VideoStreamProfile>())
                 imgColor.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-            color = UpdateImage(imgColor);
+            color = UpdateImage(imgColor, colorProfile.GetFormat());
 
             using (var p = irProfile.As<VideoStreamProfile>())
                 imgIr.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
-            ir = UpdateImage(imgIr);
+            ir = UpdateImage(imgIr, irProfile.GetFormat());
         }
     }
 }
