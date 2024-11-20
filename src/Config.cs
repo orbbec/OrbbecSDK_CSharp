@@ -41,10 +41,119 @@ namespace Orbbec
         * \endif
         */
         public void EnableStream(StreamProfile streamProfile)
+        //public void EnableStream(StreamType streamType)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_config_enable_stream(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, ref error);
+            obNative.ob_config_enable_stream_with_stream_profile(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, ref error);
+            //obNative.ob_config_enable_stream_with_stream_profile(_handle.Ptr, streamType, ref error);
             if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Enable a stream with default profile
+        *
+        * @param streamType The type of the stream to be enabled
+        * \else
+        * @brief 启用默认配置文件的流
+        *
+        * @param sensorType 要启用的流的类型
+        * \endif
+        */
+        public void EnableStream(StreamType streamType)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_enable_stream(_handle.Ptr, streamType, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Enable a stream with default profile
+        *
+        * @param sensorType The type of the sensor to be enabled
+        * \else
+        * @brief 启用默认配置文件的流
+        *
+        * @param sensorType 要启用的流的类型
+        * \endif
+        */
+        public void EnableStream(SensorType sensorType)
+        {
+            IntPtr error = IntPtr.Zero;
+            StreamType streamType = TypeHelper.ConvertSensorTypeToStreamType(sensorType);
+            obNative.ob_config_enable_stream(_handle.Ptr, streamType, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Enable video stream with specified parameters
+        *
+        * @param config The pipeline configuration object
+        * @param streamType The type of the stream to be enabled
+        * @param width The width of the video stream
+        * @param height The height of the video stream
+        * @param fps The frame rate of the video stream
+        * @param format The format of the video stream
+        * \else
+        * @brief 使用指定参数启用视频流
+        *
+        * @param config pipe配置对象
+        * @param streamType 要启用的流的类型
+        * @param width 视频流的宽度
+        * @param height 视频流的高度
+        * @param fps 视频流的帧率
+        * @param format 视频流的格式
+        * \endif
+        */
+        public void EnableVideoStream(StreamType streamType, int width = 0, int height = 0,
+            int fps = 0, Format format = Format.OB_FORMAT_UNKNOWN)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_enable_video_stream(_handle.Ptr, streamType, width, height, fps, format, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Enable video stream with specified parameters
+        *
+        * @param config The pipeline configuration object
+        * @param sensorType The type of the sensor to be enabled
+        * @param width The width of the video stream
+        * @param height The height of the video stream
+        * @param fps The frame rate of the video stream
+        * @param format The format of the video stream
+        * \else
+        * @brief 使用指定参数启用视频流
+        *
+        * @param config pipe配置对象
+        * @param sensorType 要启用的传感器类型
+        * @param width 视频流的宽度
+        * @param height 视频流的高度
+        * @param fps 视频流的帧率
+        * @param format 视频流的格式
+        * \endif
+        */
+        public void EnableVideoStream(SensorType sensorType, int width, int height, int fps, Format format)
+        {
+            IntPtr error = IntPtr.Zero;
+            StreamType streamType = TypeHelper.ConvertSensorTypeToStreamType(sensorType);
+            obNative.ob_config_enable_video_stream(_handle.Ptr, streamType, width, height, fps, format, ref error);
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -140,7 +249,7 @@ namespace Orbbec
         public void SetDepthScaleRequire(bool enable)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_config_set_depth_scale_require(_handle.Ptr, enable, ref error);
+            obNative.ob_config_set_depth_scale_after_align_require(_handle.Ptr, enable, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -167,6 +276,30 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             obNative.ob_config_set_d2c_target_resolution(_handle.Ptr, d2cTargetWidth, d2cTargetHeight, ref error);
             if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Set the frame aggregation output mode for the pipeline configuration
+        * @brief The processing strategy when the FrameSet generated by the frame aggregation function does not contain the frames of all opened streams (which
+        * can be caused by different frame rates of each stream, or by the loss of frames of one stream): drop directly or output to the user.
+        *
+        * @param mode The frame aggregation output mode to be set (default mode is @ref OB_FRAME_AGGREGATE_OUTPUT_ANY_SITUATION)
+        * \else
+        * @brief 将pipeline配置设置为帧聚合输出模式
+        * @brief 当帧聚合功能生成的FrameSet不包含所有打开流的帧时的处理策略（这可能是由于每个流的帧速率不同，或者一个流的帧丢失造成的）：直接丢弃或输出给用户。
+        * 
+        * @param mode要设置的帧聚合输出模式（默认模式为@ref OB_FRAME_AGGREGATE_OUTPUT_ANY_SITUATION）
+        * \endif
+        */
+        public void SetFrameAggregateOutputMode(FrameAggregateOutputMode mode)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_set_frame_aggregate_output_mode(_handle.Ptr, mode, ref error);
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }

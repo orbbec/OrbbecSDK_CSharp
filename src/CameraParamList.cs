@@ -25,7 +25,7 @@ namespace Orbbec
         public UInt32 Count()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_camera_param_list_count(_handle.Ptr, ref error);
+            UInt32 count = obNative.ob_camera_param_list_get_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

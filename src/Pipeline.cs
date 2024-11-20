@@ -10,19 +10,15 @@ namespace Orbbec
     {
         private NativeHandle _handle;
         private Device _device;
-        private static Dictionary<IntPtr, FramesetCallback> _framesetCallbacks = new Dictionary<IntPtr, FramesetCallback>();
+        private FramesetCallback _callback;
         private NativeFramesetCallback _nativeCallback;
-        
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(NativeFramesetCallback))]
-#endif
-        private static void OnFrameset(IntPtr framesetPtr, IntPtr userData)
+
+        private void OnFrameset(IntPtr framesetPtr, IntPtr userData)
         {
             Frameset frameset = new Frameset(framesetPtr);
-            _framesetCallbacks.TryGetValue(userData, out FramesetCallback callback);
-            if(callback != null)
+            if(_callback != null)
             {
-                callback(frameset);
+                _callback(frameset);
             }
             else
             {
@@ -88,6 +84,7 @@ namespace Orbbec
         * @return Pipeline 返回pipeline对象
         * \endif
         */
+        [Obsolete]
         public Pipeline(string fileName)
         {
             IntPtr error = IntPtr.Zero;
@@ -136,9 +133,9 @@ namespace Orbbec
         */
         public void Start(Config config, FramesetCallback callback)
         {
-            _framesetCallbacks[_handle.Ptr] = callback;
+            _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _nativeCallback, _handle.Ptr, ref error);
+            obNative.ob_pipeline_start_with_callback(_handle.Ptr, config == null ? IntPtr.Zero : config.GetNativeHandle().Ptr, _nativeCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -249,6 +246,7 @@ namespace Orbbec
         * @return std::shared_ptr<Playback> 返回回放对象
         * \endif
         */
+        [Obsolete]
         public Playback GetPlayback()
         {
             IntPtr error = IntPtr.Zero;
@@ -386,34 +384,6 @@ namespace Orbbec
 
         /**
         * \if English
-        * @brief Get valid area between minimum distance and maximum distance after D2C
-        *
-        * @param minimumDistance minimum working distance
-        * @param maximumDistance maximum working distance
-        * @return Rect returns the area information valid after D2C at the working distance
-        * \else
-        * @brief 获取D2C后给定工作范围的有效区域
-        * 如果需要获取指定距离D2C后的ROI区域，将minimum_distance与maximum_distance设置成一样或者将maximum_distance设置成0
-        *
-        * @param minimumDistance 最小工作距离
-        * @param maximumDistance 最大工作距离
-        * @return Rect 返回在工作距离下D2C后有效的区域信息
-        * \endif
-        */
-        public Rect GetD2CValidArea(UInt32 minimumDistance, UInt32 maximumDistance = 0)
-        {
-            IntPtr error = IntPtr.Zero;
-            Rect rect;
-            obNative.ob_get_d2c_range_valid_area(out rect, _handle.Ptr, minimumDistance, maximumDistance, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return rect;
-        }
-
-        /**
-        * \if English
         * @brief Dynamically switch the corresponding config configuration
         *
         * @param config Updated config configuration
@@ -444,6 +414,7 @@ namespace Orbbec
         * @param filename 录制文件名
         * \endif
         */
+        [Obsolete]
         public void StartRecord(String fileName)
         {
             IntPtr error = IntPtr.Zero;
@@ -461,6 +432,7 @@ namespace Orbbec
         * @brief 停止录制
         * \endif
         */
+        [Obsolete]
         public void StopRecord()
         {
             IntPtr error = IntPtr.Zero;

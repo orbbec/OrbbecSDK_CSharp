@@ -25,7 +25,7 @@ namespace Orbbec
         public UInt32 Count()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_depth_work_mode_list_count(_handle.Ptr, ref error);
+            UInt32 count = obNative.ob_depth_work_mode_list_get_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -57,6 +57,26 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             return workMode;
+        }
+
+        public void LoadPresetFromJsonData(String presetName, IntPtr data, UInt32 size)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_load_preset_from_json_data(_handle.Ptr, presetName, data, size, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void ExportCurrentSettingsAsPresetJsonData(String presetName, IntPtr data, UInt32 size)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_export_current_settings_as_preset_json_data(_handle.Ptr, presetName, data, size, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
 
         internal void Delete(IntPtr handle)

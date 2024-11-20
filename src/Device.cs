@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Orbbec
@@ -13,74 +12,54 @@ namespace Orbbec
     public class Device : IDisposable
     {
         private NativeHandle _handle;
-        private static Dictionary<IntPtr, DeviceStateCallback> _deviceStateCallbacks = new Dictionary<IntPtr, DeviceStateCallback>();
+        private DeviceStateCallback _deviceStateCallback;
         private NativeDeviceStateCallback _nativeDeviceStateCallback;
-        private static Dictionary<IntPtr, SetDataCallback> _setDataCallbacks = new Dictionary<IntPtr, SetDataCallback>();
+        private SetDataCallback _setDataCallback;
         private NativeSetDataCallback _nativeSetDataCallback;
-        private static Dictionary<IntPtr, GetDataCallback> _getDataCallbacks = new Dictionary<IntPtr, GetDataCallback>();
+        private GetDataCallback _getDataCallback;
         private NativeGetDataCallback _nativeGetDataCallback;
-        private static Dictionary<IntPtr, DeviceUpgradeCallback> _deviceUpgradeCallbacks = new Dictionary<IntPtr, DeviceUpgradeCallback>();
+        private DeviceUpgradeCallback _deviceUpgradeCallback;
         private NativeDeviceUpgradeCallback _nativeDeviceUpgradeCallback;
-        private static Dictionary<IntPtr, SendFileCallback> _sendFileCallbacks = new Dictionary<IntPtr, SendFileCallback>();
+        private SendFileCallback _sendFileCallback;
         private NativeSendFileCallback _nativeSendFileCallback;
 
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(DeviceStateCallback))]
-#endif
-        private static void OnDeviceState(UInt64 state, String message, IntPtr userData)
+        private void OnDeviceState(UInt64 state, String message, IntPtr userData)
         {
-            _deviceStateCallbacks.TryGetValue(userData, out DeviceStateCallback callback);
-            if(callback != null)
+            if(_deviceStateCallback != null)
             {
-                callback(state, message);
+                _deviceStateCallback(state, message);
             }
         }
 
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(SetDataCallback))]
-#endif
-        private static void OnSetData(DataTranState state, uint percent, IntPtr userData)
+        private void OnSetData(DataTranState state, uint percent, IntPtr userData)
         {
-            _setDataCallbacks.TryGetValue(userData, out SetDataCallback callback);
-            if(callback != null)
+            if(_setDataCallback != null)
             {
-                callback(state, percent);
+                _setDataCallback(state, percent);
             }
         }
 
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback (typeof(GetDataCallback))]
-#endif
-        private static void OnGetData(DataTranState state, DataChunk dataChunk, IntPtr userData)
+        private void OnGetData(DataTranState state, DataChunk dataChunk, IntPtr userData)
         {
-            _getDataCallbacks.TryGetValue(userData, out GetDataCallback callback);
-            if(callback != null)
+            if(_getDataCallback != null)
             {
-                callback(state, dataChunk);
+                _getDataCallback(state, dataChunk);
             }
         }
 
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(DeviceUpgradeCallback))]
-#endif
-        private static void OnDeviceUpgrade(UpgradeState state, String message, byte percent, IntPtr userData)
+        private void OnDeviceUpgrade(UpgradeState state, String message, byte percent, IntPtr userData)
         {
-            _deviceUpgradeCallbacks.TryGetValue(userData, out DeviceUpgradeCallback callback);
-            if(callback != null)
+            if(_deviceUpgradeCallback != null)
             {
-                callback(state, message, percent);
+                _deviceUpgradeCallback(state, message, percent);
             }
         }
 
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(SendFileCallback))]
-#endif
-        private static void OnSendFile(FileTranState state, String message, byte percent, IntPtr userData)
+        private void OnFileSend(FileTranState state, String message, byte percent, IntPtr userData)
         {
-            _sendFileCallbacks.TryGetValue(userData, out SendFileCallback callback);
-            if(callback != null)
+            if(_sendFileCallback != null)
             {
-                callback(state, message, percent);
+                _sendFileCallback(state, message, percent);
             }
         }
 
@@ -91,7 +70,7 @@ namespace Orbbec
             _nativeSetDataCallback = new NativeSetDataCallback(OnSetData);
             _nativeGetDataCallback = new NativeGetDataCallback(OnGetData);
             _nativeDeviceUpgradeCallback = new NativeDeviceUpgradeCallback(OnDeviceUpgrade);
-            _nativeSendFileCallback = new NativeSendFileCallback(OnSendFile);
+            _nativeSendFileCallback = new NativeSendFileCallback(OnFileSend);
         }
 
         internal NativeHandle GetNativeHandle()
@@ -461,304 +440,6 @@ namespace Orbbec
 
         /**
         * \if English
-        * @brief AHB register write
-        *
-        * @param reg Register to be written
-        * @param mask  The mask to be writen
-        * @param value The value to be written
-        * \else
-        * @brief AHB写寄存器
-        *
-        * @param reg 要写入的寄存器
-        * @param mask 要写入的掩码
-        * @param value 要写入的值
-        * \endif
-        */
-        public void WriteAHB(UInt32 reg, UInt32 mask, UInt32 value)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_write_ahb(_handle.Ptr, reg, mask, value, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief AHB AHB register read
-        *
-        * @param reg Register to be read
-        * @param mask The mask to be read
-        * @param value The value to be returned
-        * \else
-        * @brief AHB读寄存器
-        *
-        * @param reg 要读取的寄存器
-        * @param mask 要读取的掩码
-        * @param value 读取的值返回
-        * \endif
-        */
-        public void ReadAHB(UInt32 reg, UInt32 mask, out UInt32 value)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_ahb(_handle.Ptr, reg, mask, out value, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief I2C register write
-        *
-        * @param reg I2C module ID to be written
-        * @param reg Register to be written
-        * @param mask The mask to be written
-        * @param value he value to be written
-        * \else
-        * @brief I2C写寄存器
-        *
-        * @param reg 要写入的I2C模块ID
-        * @param reg 要写入的寄存器
-        * @param mask 要写入的掩码
-        * @param value 要写入的值
-        * \endif
-        */
-        public void WriteI2C(UInt32 moduleId, UInt32 reg, UInt32 mask, UInt32 value)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_write_i2c(_handle.Ptr, moduleId, reg, mask, value, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief I2C registers read
-        *
-        * @param reg I2C module ID to be read
-        * @param reg Register to be read
-        * @param mask The mask to be read
-        * @param value The value to be returned
-        * \else
-        * @brief I2C读寄存器
-        *
-        * @param reg 要读取的I2C模块ID
-        * @param reg 要读取的寄存器
-        * @param mask 要读取的掩码
-        * @param value 读取的值返回
-        * \endif
-        */
-        public void ReadI2C(UInt32 moduleId, UInt32 reg, UInt32 mask, out UInt32 value)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_i2c(_handle.Ptr, moduleId, reg, mask, out value, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Set the properties of writing to Flash
-        *
-        * @param offset flash offset address
-        * @param data Property data to be written
-        * @param dataSize  The size of the property to be written
-        * @param callback Write flash progress callback
-        * @param async    Whether to execute asynchronously
-        * \else
-        * @brief 设置写入Flash的属性
-        *
-        * @param offset flash 偏移地址
-        * @param data 要写入的属性数据
-        * @param dataSize 要写入的属性大小
-        * @param callback 写flash进度回调
-        * @param async    是否异步执行
-        * \endif
-        */
-        public void WriteFlash(UInt32 offset, byte[] data, UInt32 dataSize, SetDataCallback callback, bool async = false)
-        {
-            _setDataCallbacks[_handle.Ptr] = callback;
-            IntPtr error = IntPtr.Zero;
-            GCHandle gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            IntPtr intPtr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_write_flash(_handle.Ptr, offset, intPtr, dataSize, _nativeSetDataCallback, async, _handle.Ptr, ref error);
-            gcHandle.Free();
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Read Flash property
-        *
-        * @param offset flash offset address
-        * @param data Property data to be read
-        * @param dataSize  The size of the property to get
-        * @param callback Read data returned by flash and progress callback
-        * @param async    Whether to execute asynchronously
-        * \else
-        * @brief 读取Flash的属性
-        *
-        * @param offset flash 偏移地址
-        * @param data 读取的属性数据
-        * @param dataSize 获取的属性大小
-        * @param callback 读flash返回的数据及进度回调
-        * @param async    是否异步执行
-        * \endif
-        */
-        public void ReadFlash(UInt32 offset, UInt32 dataSize, GetDataCallback callback, bool async = false)
-        {
-            _getDataCallbacks[_handle.Ptr] = callback;
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_flash(_handle.Ptr, offset, dataSize, _nativeGetDataCallback, async, _handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        public void WriteCustomData(byte[] data, UInt32 dataSize)
-        {
-            IntPtr error = IntPtr.Zero;
-            GCHandle gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            IntPtr intPtr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_write_customer_data(_handle.Ptr, intPtr, dataSize, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        public void ReadCustomData(IntPtr dataPtr, out UInt32 dataSize)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_read_customer_data(_handle.Ptr, dataPtr, out dataSize, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Set raw data type of device property [Asynchronous callback]
-        *
-        * @param propertyId Property id
-        * @param data Property data to be set
-        * @param dataSize The size of the property data to be set
-        * @param callback rawdata set progress callback
-        * @param async    Whether to execute asynchronously
-        * \else
-        * @brief 设置raw data类型的设备属性数据[异步回调]
-        *
-        * @param propertyId 属性id
-        * @param data 要设置的属性数据
-        * @param dataSize 要设置的属性数据大小
-        * @param callback rawdata设置进度回调
-        * @param async    是否异步执行
-        * \endif
-        */
-        public void SetRawData(PropertyId propertyId, byte[] data, UInt32 dataSize, SetDataCallback callback, bool async = false)
-        {
-            _setDataCallbacks[_handle.Ptr] = callback;
-            IntPtr error = IntPtr.Zero;
-            GCHandle gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            IntPtr intPtr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_set_raw_data(_handle.Ptr, propertyId, intPtr, dataSize, _nativeSetDataCallback, async, _handle.Ptr, ref error);
-            gcHandle.Free();
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Get raw data type of device property [Asynchronous callback]
-        *
-        * @param propertyId Property id
-        * @param data Property data obtained
-        * @param dataSize Get the size of the property
-        * @param callback  Get the returned data and progress callback
-        * @param async    Whether to execute asynchronously
-        * \else
-        * @brief 获取raw data类型的设备属性数据[异步回调]
-        *
-        * @param propertyId 属性id
-        * @param data 获取的属性数据
-        * @param dataSize 获取的属性大小
-        * @param callback 获取返回的数据及进度回调
-        * @param async    是否异步执行
-        * \endif
-        */
-        public void GetRawData(PropertyId propertyId, GetDataCallback callback, bool async = false)
-        {
-            _getDataCallbacks[_handle.Ptr] = callback;
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_get_raw_data(_handle.Ptr, propertyId, _nativeGetDataCallback, async, _handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Get the property protocol version
-        *
-        * @return ProtocolVersion
-        * \else
-        * @brief 获取设备的控制命令协议版本
-        *
-        * @return ProtocolVersion
-        * \endif
-        */
-        public ProtocolVersion GetProtocolVersion()
-        {
-            IntPtr error = IntPtr.Zero;
-            ProtocolVersion version = obNative.ob_device_get_protocol_version(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return version;
-        }
-
-        /**
-        * \if English
-        * @brief Get cmdVersion of property
-        *
-        * @param propertyId Property id
-        * @return OBCmdVersion
-        * \else
-        * @brief 获取控制命令的版本号
-        *
-        * @param propertyId 属性id
-        * @return OBCmdVersion
-        * \endif
-        */
-        public CmdVersion GetCmdVersion(PropertyId propertyId)
-        {
-            IntPtr error = IntPtr.Zero;
-            CmdVersion version = obNative.ob_device_get_cmd_version(_handle.Ptr, propertyId, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return version;
-        }
-
-        /**
-        * \if English
         * @brief Get number of devices supported property
         *
         * @return UInt32 returns the number of supported attributes
@@ -796,7 +477,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             PropertyItem propertyItem;
-            obNative.ob_device_get_supported_property(out propertyItem, _handle.Ptr, index, ref error);
+            obNative.ob_device_get_supported_property_item(out propertyItem, _handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -821,9 +502,9 @@ namespace Orbbec
         */
         public void DeviceUpgrade(String filePath, DeviceUpgradeCallback callback, bool async = true)
         {
-            _deviceUpgradeCallbacks[_handle.Ptr] = callback;
+            _deviceUpgradeCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_upgrade(_handle.Ptr, filePath, _nativeDeviceUpgradeCallback, async, _handle.Ptr, ref error);
+            obNative.ob_device_update_firmware(_handle.Ptr, filePath, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -832,39 +513,11 @@ namespace Orbbec
 
         public void DeviceUpgradeFromData(byte[] fileData, DeviceUpgradeCallback callback, bool async = true)
         {
-            _deviceUpgradeCallbacks[_handle.Ptr] = callback;
+            _deviceUpgradeCallback = callback;
             IntPtr error = IntPtr.Zero;
             GCHandle gcHandle = GCHandle.Alloc(fileData, GCHandleType.Pinned);
             IntPtr intPtr = gcHandle.AddrOfPinnedObject();
-            obNative.ob_device_upgrade_from_data(_handle.Ptr, intPtr, (UInt32)fileData.Length, _nativeDeviceUpgradeCallback, async, _handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Send files to the specified path on the device side [Asynchronouscallback]
-        *
-        * @param filePath Original file path
-        * @param dstPath  Accept the save path on the device side
-        * @param callback File transfer callback
-        * @param async    Whether to execute asynchronously
-        * \else
-        * @brief 发送文件到设备端指定路径[异步回调]
-        *
-        * @param filePath 原文件路径
-        * @param dstPath 设备端接受保存路径
-        * @param callback 文件传输回调
-        * @param async    是否异步执行
-        * \endif
-        */
-        public void SendFile(String filePath, String dstPath, SendFileCallback callback, bool async = true)
-        {
-            _sendFileCallbacks[_handle.Ptr] = callback;
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_send_file_to_destination(_handle.Ptr, filePath, dstPath, _nativeSendFileCallback, async, _handle.Ptr, ref error);
+            obNative.ob_device_update_firmware_from_data(_handle.Ptr, intPtr, (UInt32)fileData.Length, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -904,50 +557,9 @@ namespace Orbbec
         */
         public void SetDeviceStateChangedCallback(DeviceStateCallback callback)
         {
-            _deviceStateCallbacks[_handle.Ptr] = callback;
+            _deviceStateCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_state_changed(_handle.Ptr, _nativeDeviceStateCallback, _handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Verify device authorization code
-        * @param authCode Authorization code
-        * @return bool whether the activation is successfu
-        * \else
-        * @brief 验证设备授权码
-        * @param authCode 授权码
-        * @return bool 激活是否成功
-        * \endif
-        */
-        public bool ActivateAuthorization(String authCode)
-        {
-            IntPtr error = IntPtr.Zero;
-            bool authorization = obNative.ob_device_activate_authorization(_handle.Ptr, authCode, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return authorization;
-        }
-
-        /**
-        * \if English
-        * @brief Write authorization code
-        * @param authCode  Authorization code
-        * \else
-        * @brief 写入设备授权码
-        * @param authCode 授权码
-        * \endif
-        */
-        public void WriteAuthorizationCode(String authCode)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_write_authorization_code(_handle.Ptr, authCode, ref error);
+            obNative.ob_device_set_state_changed_callback(_handle.Ptr, _nativeDeviceStateCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1000,6 +612,17 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             return workMode;
+        }
+
+        public String DepthWorkModeName()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_device_get_current_depth_work_mode_name(_handle.Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
         }
 
         /**
@@ -1085,62 +708,6 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_device_reboot(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        /**
-        * \if English
-        * @brief Gets the current device synchronization configuration
-        * @brief Device synchronization: including exposure synchronization function and multi-camera synchronization function of different sensors within a single
-        * machine
-        *
-        * @return OBDeviceSyncConfig returns the device synchronization configuration
-        * \else
-        * @brief 获取当前设备同步配置
-        * @brief 设备同步：包括单机内的不同 Sensor 的曝光同步功能 和 多机同步功能
-        *
-        * @return OBDeviceSyncConfig 返回设备同步配置
-        * \endif
-        *
-        */
-        public DeviceSyncConfig GetSyncConfig()
-        {
-            IntPtr error = IntPtr.Zero;
-            DeviceSyncConfig config;
-            obNative.ob_device_get_sync_config(_handle.Ptr, out config, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return config;
-        }
-
-        /**
-        * \if English
-        * @brief Set the device synchronization configuration
-        * @brief Used to configure the exposure synchronization function and multi-camera synchronization function of different sensors in a single machine
-        *
-        * @attention Calling this function will directly write the configuration to the device Flash, and it will still take effect after the device restarts. To
-        * avoid affecting the Flash lifespan, do not update the configuration frequently.
-        *
-        * @param deviceSyncConfig Device synchronization configuration
-        * \else
-        * @brief 设置设备同步配置
-        * @brief 用于配置 单机内的不同 Sensor 的曝光同步功能 和 多机同步功能
-        *
-        * @attention 调用本函数会直接将配置写入设备Flash，设备重启后依然会生效。为了避免影响Flash寿命，不要频繁更新配置。
-        *
-        * @param deviceSyncConfig 设备同步配置
-        * \endif
-        *
-        */
-        public void SetSyncConfig(DeviceSyncConfig deviceSyncConfig)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_set_sync_config(_handle.Ptr, deviceSyncConfig, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -1233,6 +800,48 @@ namespace Orbbec
             {
                 throw new NativeException(new Error(error));
             }
+        }
+
+        public void EnableHeartbeat(bool enable)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_enable_heartbeat(_handle.Ptr, enable, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void SendAndReceiveData(IntPtr sendData, UInt32 sendDataSize, IntPtr receiveData, ref UInt32 receiveDataSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_send_and_receive_data(_handle.Ptr, sendData, sendDataSize, receiveData, ref receiveDataSize, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public bool IsExtensionInfoExist(String infoKey)
+        {
+            IntPtr error = IntPtr.Zero;
+            bool result = obNative.ob_device_is_extension_info_exist(_handle.Ptr, infoKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return result;
+        }
+
+        public String GetExtensionInfo(String infoKey)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_device_get_extension_info(_handle.Ptr, infoKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
         }
 
         internal void Delete(IntPtr handle)

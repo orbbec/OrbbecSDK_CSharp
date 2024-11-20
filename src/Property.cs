@@ -35,6 +35,11 @@ namespace Orbbec
         OB_PROP_FLOOD_LEVEL_INT = 7,
 
         /**
+         * @brief Enable/disable temperature compensation
+         */
+        OB_PROP_TEMPERATURE_COMPENSATION_BOOL = 8,
+
+        /**
          * @brief Depth mirror
          */
         OB_PROP_DEPTH_MIRROR_BOOL = 14,
@@ -194,6 +199,11 @@ namespace Orbbec
          * @brief D2C preprocessing switch (such as RGB cropping), 0: off, 1: on
          */
         OB_PROP_D2C_PREPROCESS_BOOL = 91,
+
+        /**
+         * @brief Enable/disable GPM function
+         */
+        OB_PROP_GPM_BOOL = 93,
 
         /**
          * @brief Custom RGB cropping switch, 0 is off, 1 is on custom cropping, and the ROI cropping area is issued
@@ -419,6 +429,14 @@ namespace Orbbec
         * @brief disparity search range mode
         */
         OB_PROP_DISP_SEARCH_RANGE_MODE_INT = 191,
+
+        /**
+         * @brief Repower device (cut off power and power on again)
+         *
+         * @brief Currently using for GMSL device, cut off power and power on again by GMSL host driver.
+         */
+        OB_PROP_DEVICE_REPOWER_BOOL = 202,
+
         /**
          * @brief Baseline calibration parameters
          */
@@ -664,6 +682,11 @@ namespace Orbbec
         OB_PROP_COLOR_FOCUS_INT = 2038,
 
         /**
+         * @brief Depth camera priority
+         */
+        OB_PROP_DEPTH_AUTO_EXPOSURE_PRIORITY_INT = 2052,
+
+        /**
          * @brief Software disparity to depth
          */
         OB_PROP_SDK_DISPARITY_TO_DEPTH_BOOL = 3004,
@@ -699,11 +722,6 @@ namespace Orbbec
         OB_PROP_SDK_IR_RIGHT_FRAME_UNPACK_BOOL = 3012,
 
         /**
-        * @brief depth Margin Filter
-        */
-        OB_PROP_SDK_DEPTH_RECTIFY_MG_FILTER_BOOL = 3013,
-
-        /**
          * @brief Calibration JSON file read from device (Femto Mega, read only)
          */
         OB_RAW_DATA_CAMERA_CALIB_JSON_FILE = 4029,
@@ -719,9 +737,9 @@ namespace Orbbec
 
     public struct PropertyItem
     {
-        PropertyId id;          ///< \if English Property id \else 属性id \endif
-        IntPtr name;        ///< \if English Property name \else 属性名字 \endif
-        PropertyType type;        ///< \if English Property type \else 属性类型 \endif
-        PermissionType permission;  ///< \if English Property read and write permission \else 属性读写权限 \endif
+        public PropertyId id;          ///< \if English Property id \else 属性id \endif
+        public IntPtr name;        ///< \if English Property name \else 属性名字 \endif
+        public PropertyType type;        ///< \if English Property type \else 属性类型 \endif
+        public PermissionType permission;  ///< \if English Property read and write permission \else 属性读写权限 \endif
     }
 }

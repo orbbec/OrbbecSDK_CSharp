@@ -72,7 +72,7 @@ namespace Orbbec
         public UInt64 GetIndex()
         {
             IntPtr error = IntPtr.Zero;
-            UInt64 index = obNative.ob_frame_index(_handle.Ptr, ref error);
+            UInt64 index = obNative.ob_frame_get_index(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -94,7 +94,7 @@ namespace Orbbec
         public Format GetFormat()
         {
             IntPtr error = IntPtr.Zero;
-            Format format = obNative.ob_frame_format(_handle.Ptr, ref error);
+            Format format = obNative.ob_frame_get_format(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -160,7 +160,7 @@ namespace Orbbec
         public UInt64 GetTimeStampUs()
         {
             IntPtr error = IntPtr.Zero;
-            UInt64 timestamp = obNative.ob_frame_time_stamp_us(_handle.Ptr, ref error);
+            UInt64 timestamp = obNative.ob_frame_get_timestamp_us(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -197,7 +197,7 @@ namespace Orbbec
         public void CopyData(ref Byte[] data)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr dataPtr = obNative.ob_frame_data(_handle.Ptr, ref error);
+            IntPtr dataPtr = obNative.ob_frame_get_data(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -212,7 +212,7 @@ namespace Orbbec
         public IntPtr GetDataPtr()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr dataPtr = obNative.ob_frame_data(_handle.Ptr, ref error);
+            IntPtr dataPtr = obNative.ob_frame_get_data(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -236,7 +236,7 @@ namespace Orbbec
         public UInt32 GetDataSize()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 dataSize = obNative.ob_frame_data_size(_handle.Ptr, ref error);
+            UInt32 dataSize = obNative.ob_frame_get_data_size(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -244,11 +244,109 @@ namespace Orbbec
             return dataSize;
         }
 
+        public static Frame Create(FrameType frameType, Format format, UInt32 dataSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_frame(frameType, format, dataSize, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Frame(handle);
+        }
+
+        public T CreateFrameFromOtherFrame<T>(bool shouldCopyData) where T : Frame
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_frame_from_other_frame(_handle.Ptr, shouldCopyData, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Frame(handle) as T;
+        }
+
+        public static Frame CreateFrameFromStreamProfile(StreamProfile streamProfile)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_frame_from_stream_profile(streamProfile.GetNativeHandle().Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Frame(handle);
+        }
+
+/*        public Frame CreateFrameFromBuffer(FrameType frameType, Format format, IntPtr buffer, UInt32 bufferSize, FrameDestroyCallback callback, IntPtr userData)
+        {
+            IntPtr error = IntPtr.Zero;
+            NativeFrameDestroyCallback _nativeCallback = new NativeFrameDestroyCallback((buffer, userData) => {
+                callback();
+            });
+            IntPtr handle = obNative.ob_create_frame_from_buffer(frameType, format, buffer, bufferSize, _nativeCallback, userData, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Frame(handle);
+        }*/
+
+        public void CopyInfo(Frame dstFrame)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_frame_copy_info(_handle.Ptr, dstFrame.GetNativeHandle().Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void UpdateData(IntPtr data, UInt32 dataSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_frame_update_data(_handle.Ptr, data, dataSize, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void UpdateMetaData(IntPtr metadata, UInt32 metaDataSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_frame_update_metadata(_handle.Ptr, metadata, metaDataSize, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void SetStreamProfile(StreamProfile streamProfile)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_frame_set_stream_profile(_handle.Ptr, streamProfile.GetNativeHandle().Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public StreamProfile GetStreamProfile()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_frame_get_stream_profile(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new StreamProfile(handle);
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_frame(handle, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -280,7 +378,7 @@ namespace Orbbec
         public UInt32 GetWidth()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_video_frame_width(_handle.Ptr, ref error);
+            return obNative.ob_video_frame_get_width(_handle.Ptr, ref error);
         }
 
         /**
@@ -297,7 +395,7 @@ namespace Orbbec
         public UInt32 GetHeight()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_video_frame_height(_handle.Ptr, ref error);
+            return obNative.ob_video_frame_get_height(_handle.Ptr, ref error);
         }
 
         /**
@@ -314,8 +412,8 @@ namespace Orbbec
         public Byte[] GetMetadata()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr data = obNative.ob_frame_metadata(_handle.Ptr, ref error);
-            UInt32 dataSize = obNative.ob_frame_metadata_size(_handle.Ptr, ref error);
+            IntPtr data = obNative.ob_frame_get_metadata(_handle.Ptr, ref error);
+            UInt32 dataSize = obNative.ob_frame_get_metadata_size(_handle.Ptr, ref error);
             Byte[] buffer = new Byte[dataSize];
             Marshal.Copy(data, buffer, 0, (int)dataSize);
             return buffer;
@@ -335,7 +433,7 @@ namespace Orbbec
         public UInt32 GetMetadataSize()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_metadata_size(_handle.Ptr, ref error);
+            return obNative.ob_frame_get_metadata_size(_handle.Ptr, ref error);
         }
 
         /**
@@ -354,7 +452,49 @@ namespace Orbbec
         byte PixelAvailableBitSize()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_video_frame_pixel_available_bit_size(_handle.Ptr, ref error);
+            return obNative.ob_video_frame_get_pixel_available_bit_size(_handle.Ptr, ref error);
+        }
+
+        public static VideoFrame Create(FrameType frameType, Format format, UInt32 width, UInt32 height, UInt32 strideBytes)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_video_frame(frameType, format, width, height, strideBytes, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new VideoFrame(handle);
+        }
+
+        public PixelType GetPixelType()
+        {
+            IntPtr error = IntPtr.Zero;
+            PixelType type =  obNative.ob_video_frame_get_pixel_type(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return type;
+        }
+
+        public void SetPixelType(PixelType pixelType)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_video_frame_set_pixel_type(_handle.Ptr, pixelType, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void SetPixelAvailableBitSize(UInt16 bitSize)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_video_frame_set_pixel_available_bit_size(_handle.Ptr, bitSize, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
     }
 
@@ -425,7 +565,7 @@ namespace Orbbec
         public float GetPositionValueScale()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_points_frame_get_position_value_scale(_handle.Ptr, ref error);
+            return obNative.ob_points_frame_get_coordinate_value_scale(_handle.Ptr, ref error);
         }
     }
 
@@ -443,7 +583,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             AccelValue accelValue;
-            obNative.ob_accel_frame_value(out accelValue, _handle.Ptr, ref error);
+            obNative.ob_accel_frame_get_value(out accelValue, _handle.Ptr, ref error);
             return accelValue;
         }
 
@@ -454,7 +594,7 @@ namespace Orbbec
         public float GetTemperature()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_accel_frame_temperature(_handle.Ptr, ref error);
+            return obNative.ob_accel_frame_get_temperature(_handle.Ptr, ref error);
         }
     }
 
@@ -472,7 +612,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             GyroValue gyroValue;
-            obNative.ob_gyro_frame_value(out gyroValue, _handle.Ptr, ref error);
+            obNative.ob_gyro_frame_get_value(out gyroValue, _handle.Ptr, ref error);
             return gyroValue;
         }
 
@@ -483,7 +623,7 @@ namespace Orbbec
         public float GetTemperature()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_gyro_frame_temperature(_handle.Ptr, ref error);
+            return obNative.ob_gyro_frame_get_temperature(_handle.Ptr, ref error);
         }
     }
 
@@ -507,7 +647,7 @@ namespace Orbbec
         public UInt32 GetFrameCount()
         {
             IntPtr error = IntPtr.Zero;
-            return obNative.ob_frameset_frame_count(_handle.Ptr, ref error);
+            return obNative.ob_frameset_get_count(_handle.Ptr, ref error);
         }
 
         /**
@@ -524,7 +664,7 @@ namespace Orbbec
         public DepthFrame GetDepthFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frameset_depth_frame(_handle.Ptr, ref error);
+            IntPtr handle = obNative.ob_frameset_get_depth_frame(_handle.Ptr, ref error);
             if(handle == IntPtr.Zero)
             {
                 return null;
@@ -546,7 +686,7 @@ namespace Orbbec
         public ColorFrame GetColorFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frameset_color_frame(_handle.Ptr, ref error);
+            IntPtr handle = obNative.ob_frameset_get_color_frame(_handle.Ptr, ref error);
             if (handle == IntPtr.Zero)
             {
                 return null;
@@ -568,7 +708,7 @@ namespace Orbbec
         public IRFrame GetIRFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frameset_ir_frame(_handle.Ptr, ref error);
+            IntPtr handle = obNative.ob_frameset_get_ir_frame(_handle.Ptr, ref error);
             if (handle == IntPtr.Zero)
             {
                 return null;
@@ -590,7 +730,7 @@ namespace Orbbec
         public PointsFrame GetPointsFrame()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_frameset_points_frame(_handle.Ptr, ref error);
+            IntPtr handle = obNative.ob_frameset_get_points_frame(_handle.Ptr, ref error);
             if (handle == IntPtr.Zero)
             {
                 return null;
@@ -620,6 +760,16 @@ namespace Orbbec
                 return null;
             }
             return new Frame(handle);
+        }
+
+        public void PushFrame(Frame frame)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_frameset_push_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
+            if(error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Orbbec
@@ -9,20 +8,15 @@ namespace Orbbec
     public class Filter : IDisposable
     {
         protected NativeHandle _handle;
-        // private FilterCallback _callback;
-        private static Dictionary<IntPtr, FilterCallback> _filterCallbacks = new Dictionary<IntPtr, FilterCallback>();
+        private FilterCallback _callback;
         private NativeFilterCallback _nativeCallback;
 
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(FilterCallback))]
-#endif
-        private static void OnFilter(IntPtr framePtr, IntPtr userData)
+        private void OnFilter(IntPtr framePtr, IntPtr userData)
         {
             Frame frame = new Frame(framePtr);
-            _filterCallbacks.TryGetValue(userData, out FilterCallback callback);
-            if(callback != null)
+            if(_callback != null)
             {
-                callback(frame);
+                _callback(frame);
             }
             else
             {
@@ -39,6 +33,17 @@ namespace Orbbec
         {
             _handle = new NativeHandle(handle, Delete);
             _nativeCallback = new NativeFilterCallback(OnFilter);
+        }
+
+        internal Filter CreatePrivateFilter(String name, String activationKey)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter(name, activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Filter(handle);
         }
 
         /**
@@ -75,7 +80,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_filter_process(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
-            if(handle == IntPtr.Zero)
+            if (handle == IntPtr.Zero)
             {
                 return null;
             }
@@ -95,9 +100,9 @@ namespace Orbbec
         */
         public void SetCallback(FilterCallback callback)
         {
-            _filterCallbacks[_handle.Ptr] = callback;
+            _callback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_filter_set_callback(_handle.Ptr, _nativeCallback, _handle.Ptr, ref error);
+            obNative.ob_filter_set_callback(_handle.Ptr, _nativeCallback, IntPtr.Zero, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -125,6 +130,84 @@ namespace Orbbec
             }
         }
 
+        /**
+        * \if English
+        * @brief Get the enable status of the frame post processing
+        *
+        * @return bool The post processing filter status. True: enable; False: disable
+        * \else
+        * @brief 获取帧后处理的启用状态
+        * 
+        * @return bool 后处理filter状态。True：启用；错误：禁用
+        * \endif
+        */
+        public bool IsEnable()
+        {
+            IntPtr error = IntPtr.Zero;
+            bool res = obNative.ob_filter_is_enabled(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return res;
+        }
+
+        public String GetName()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_filter_get_name(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
+        }
+
+        public static String GetVendorSpecificCode(String name)
+        {
+            IntPtr error = IntPtr.Zero;
+            String res = obNative.ob_filter_get_vendor_specific_code(name, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return res;
+        }
+
+        public String GetConfigSchema()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_filter_get_config_schema(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
+        }
+
+        public FilterConfigSchemaList GetConfigSchemaList()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_filter_get_config_schema_list(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new FilterConfigSchemaList(handle);
+        }
+
+
+
+        public void UpdateConfig(UInt16 argc, String argv)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_filter_update_config(_handle.Ptr, argc, argv, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
@@ -146,7 +229,8 @@ namespace Orbbec
         public PointCloudFilter()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_pointcloud_filter(ref error);
+            //IntPtr handle = obNative.ob_create_pointcloud_filter(ref error);
+            IntPtr handle = obNative.ob_create_filter("PointCloudFilter", ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -165,6 +249,7 @@ namespace Orbbec
         * @param param 相机内外参数
         * \endif
         */
+        [Obsolete]
         public void SetCameraParam(CameraParam cameraParam)
         {
             IntPtr error = IntPtr.Zero;
@@ -186,11 +271,12 @@ namespace Orbbec
         * @param type 点云类型深度点云或RGBD点云
         * \endif
         */
-        public void SetPointFormat(Format format)
+        public void SetCreatePointFormat(Format format)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_pointcloud_filter_set_point_format(_handle.Ptr, format, ref error);
-            if(error != IntPtr.Zero)
+            //obNative.ob_pointcloud_filter_set_point_format(_handle.Ptr, format, ref error);
+            obNative.ob_filter_set_config_value(_handle.Ptr, "pointFormat", (Double) format, ref error);
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -238,7 +324,8 @@ namespace Orbbec
         public void SetPositionDataScaled(float scale)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_pointcloud_filter_set_position_data_scale(_handle.Ptr, scale, ref error);
+            //obNative.ob_pointcloud_filter_set_position_data_scale(_handle.Ptr, scale, ref error);
+            obNative.ob_filter_set_config_value(_handle.Ptr, "coordinateDataScale", scale, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -293,7 +380,7 @@ namespace Orbbec
         public FormatConvertFilter()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_format_convert_filter(ref error);
+            IntPtr handle = obNative.ob_create_filter("FormatConverter", ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -371,6 +458,55 @@ namespace Orbbec
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+        }
+    }
+
+    public class HDRMergeFilter : Filter
+    {
+        public HDRMergeFilter()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter("HDRMerge", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+        }
+    }
+
+    public class AlignFilter : Filter
+    {
+        public AlignFilter()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter("Align", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+        }
+
+        public void SetAlignMode(StreamType mode)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_filter_set_config_value(_handle.Ptr, "AlignType", (double) mode, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public StreamType GetAlignMode()
+        {
+            IntPtr error = IntPtr.Zero;
+            double mode = obNative.ob_filter_get_config_value(_handle.Ptr, "AlignType", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return (StreamType) mode;
         }
     }
 }

@@ -3,15 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
-    /**
-    * @brief send data or receive data return status type
-    */
-    public enum HPStatusCode {
-        HP_STATUS_OK                      = 0,      /**< success*/
-        HP_STATUS_NO_DEVICE_FOUND         = 1,      /**< No device found*/
-        HP_STATUS_CONTROL_TRANSFER_FAILED = 2,      /**< Transfer failed*/
-        HP_STATUS_UNKNOWN_ERROR           = 0xffff, /**< Unknown error*/
-    }
 
     /**
     * \if English
@@ -71,6 +62,7 @@ namespace Orbbec
     public enum ExceptionType
     {
         OB_EXCEPTION_TYPE_UNKNOWN,                 /**< Unknown error, an error not clearly defined by the SDK */
+        OB_EXCEPTION_STD_EXCEPTION,                /**< Standard exception, an error caused by the standard library */
         OB_EXCEPTION_TYPE_CAMERA_DISCONNECTED,     /**< SDK device disconnection exception */
         OB_EXCEPTION_TYPE_PLATFORM,                /**< An error in the SDK adaptation platform layer means an error in the implementation of a specific system
                                                     platform */
@@ -100,7 +92,7 @@ namespace Orbbec
         OB_SENSOR_IR_LEFT   = 6, /**< left IR */
         OB_SENSOR_IR_RIGHT  = 7, /**< Right IR */
         OB_SENSOR_RAW_PHASE = 8, /**< Raw Phase */
-        OB_SENSOR_COUNT,
+        OB_SENSOR_TYPE_COUNT,
     }
 
     /**
@@ -122,6 +114,7 @@ namespace Orbbec
         OB_STREAM_IR_LEFT   = 6,  /**< Left IR stream */
         OB_STREAM_IR_RIGHT  = 7,  /**< Right IR stream */
         OB_STREAM_RAW_PHASE = 8,  /**< RawPhase Stream */
+        OB_SENSOR_TYPE_COUNT,     /**The total number of sensor types, is not a valid sensor type */
     }
 
     /**
@@ -145,6 +138,7 @@ namespace Orbbec
         OB_FRAME_IR_LEFT   = 8,  /**< Left IR frame */
         OB_FRAME_IR_RIGHT  = 9,  /**< Right IR frame */
         OB_FRAME_RAW_PHASE = 10, /**< Rawphase frame*/
+        OB_FRAME_TYPE_COUNT,     /**< The total number of frame types, is not a valid frame type */
     }
 
     /**
@@ -156,41 +150,40 @@ namespace Orbbec
     */
     public enum Format
     {
-        OB_FORMAT_YUYV       = 0,    /**< YUYV format */
-        OB_FORMAT_YUY2       = 1,    /**< YUY2 format (the actual format is the same as YUYV) */
-        OB_FORMAT_UYVY       = 2,    /**< UYVY format */
-        OB_FORMAT_NV12       = 3,    /**< NV12 format */
-        OB_FORMAT_NV21       = 4,    /**< NV21 format */
-        OB_FORMAT_MJPG       = 5,    /**< MJPEG encoding format */
-        OB_FORMAT_H264       = 6,    /**< H.264 encoding format */
-        OB_FORMAT_H265       = 7,    /**< H.265 encoding format */
-        OB_FORMAT_Y16        = 8,    /**< Y16 format, 16-bit per pixel, single-channel*/
-        OB_FORMAT_Y8         = 9,    /**< Y8 format, 8-bit per pixel, single-channel */
-        OB_FORMAT_Y10        = 10,   /**< Y10 format, 10-bit per pixel, single-channel(SDK will unpack into Y16 by default) */
-        OB_FORMAT_Y11        = 11,   /**< Y11 format, 11-bit per pixel, single-channel (SDK will unpack into Y16 by default) */
-        OB_FORMAT_Y12        = 12,   /**< Y12 format, 12-bit per pixel, single-channel(SDK will unpack into Y16 by default) */
-        OB_FORMAT_GRAY       = 13,   /**< GRAY (the actual format is the same as YUYV) */
-        OB_FORMAT_HEVC       = 14,   /**< HEVC encoding format (the actual format is the same as H265) */
-        OB_FORMAT_I420       = 15,   /**< I420 format */
-        OB_FORMAT_ACCEL      = 16,   /**< Acceleration data format */
-        OB_FORMAT_GYRO       = 17,   /**< Gyroscope data format */
-        OB_FORMAT_POINT      = 19,   /**< XYZ 3D coordinate point format */
-        OB_FORMAT_RGB_POINT  = 20,   /**< XYZ 3D coordinate point format with RGB information */
-        OB_FORMAT_RLE        = 21,   /**< RLE pressure test format (SDK will be unpacked into Y16 by default) */
-        OB_FORMAT_RGB        = 22,   /**< RGB format (actual RGB888)  */
-        OB_FORMAT_BGR        = 23,   /**< BGR format (actual BGR888) */
-        OB_FORMAT_Y14        = 24,   /**< Y14 format, 14-bit per pixel, single-channel (SDK will unpack into Y16 by default) */
-        OB_FORMAT_BGRA       = 25,   /**< BGRA format */
-        OB_FORMAT_COMPRESSED = 26,   /**< Compression format */
-        OB_FORMAT_RVL        = 27,   /**< RVL pressure test format (SDK will be unpacked into Y16 by default) */
-        OB_FORMAT_Z16        = 28,   /**< Is same as Y16*/
-        OB_FORMAT_YV12       = 29,   /**< Is same as Y12, using for right ir stream*/
-        OB_FORMAT_BA81       = 30,   /**< Is same as Y8, using for right ir stream*/
-        OB_FORMAT_RGBA       = 31,   /**< RGBA format */
-        OB_FORMAT_BYR2       = 32,   /**< byr2 format */
-        OB_FORMAT_RW16       = 33,   /**< RAW16 format */
-        OB_FORMAT_DISP16     = 34,   /**< Y16 format for disparity map*/
-        OB_FORMAT_UNKNOWN    = 0xff, /**< unknown format */
+        OB_FORMAT_UNKNOWN    = -1, /*< unknown format */
+        OB_FORMAT_YUYV       = 0,  /**< YUYV format */
+        OB_FORMAT_YUY2       = 1,  /**< YUY2 format (the actual format is the same as YUYV) */
+        OB_FORMAT_UYVY       = 2,  /**< UYVY format */
+        OB_FORMAT_NV12       = 3,  /**< NV12 format */
+        OB_FORMAT_NV21       = 4,  /**< NV21 format */
+        OB_FORMAT_MJPG       = 5,  /**< MJPEG encoding format */
+        OB_FORMAT_H264       = 6,  /**< H.264 encoding format */
+        OB_FORMAT_H265       = 7,  /**< H.265 encoding format */
+        OB_FORMAT_Y16        = 8,  /**< Y16 format, 16-bit per pixel, single-channel*/
+        OB_FORMAT_Y8         = 9,  /**< Y8 format, 8-bit per pixel, single-channel */
+        OB_FORMAT_Y10        = 10, /**< Y10 format, 10-bit per pixel, single-channel(SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y11        = 11, /**< Y11 format, 11-bit per pixel, single-channel (SDK will unpack into Y16 by default) */
+        OB_FORMAT_Y12        = 12, /**< Y12 format, 12-bit per pixel, single-channel(SDK will unpack into Y16 by default) */
+        OB_FORMAT_GRAY       = 13, /**< GRAY (the actual format is the same as YUYV) */
+        OB_FORMAT_HEVC       = 14, /**< HEVC encoding format (the actual format is the same as H265) */
+        OB_FORMAT_I420       = 15, /**< I420 format */
+        OB_FORMAT_ACCEL      = 16, /**< Acceleration data format */
+        OB_FORMAT_GYRO       = 17, /**< Gyroscope data format */
+        OB_FORMAT_POINT      = 19, /**< XYZ 3D coordinate point format, @ref OBPoint */
+        OB_FORMAT_RGB_POINT  = 20, /**< XYZ 3D coordinate point format with RGB information, @ref OBColorPoint */
+        OB_FORMAT_RLE        = 21, /**< RLE pressure test format (SDK will be unpacked into Y16 by default) */
+        OB_FORMAT_RGB        = 22, /**< RGB format (actual RGB888)  */
+        OB_FORMAT_BGR        = 23, /**< BGR format (actual BGR888) */
+        OB_FORMAT_Y14        = 24, /**< Y14 format, 14-bit per pixel, single-channel (SDK will unpack into Y16 by default) */
+        OB_FORMAT_BGRA       = 25, /**< BGRA format */
+        OB_FORMAT_COMPRESSED = 26, /**< Compression format */
+        OB_FORMAT_RVL        = 27, /**< RVL pressure test format (SDK will be unpacked into Y16 by default) */
+        OB_FORMAT_Z16        = 28, /**< Is same as Y16*/
+        OB_FORMAT_YV12       = 29, /**< Is same as Y12, using for right ir stream*/
+        OB_FORMAT_BA81       = 30, /**< Is same as Y8, using for right ir stream*/
+        OB_FORMAT_RGBA       = 31, /**< RGBA format */
+        OB_FORMAT_BYR2       = 32, /**< byr2 format */
+        OB_FORMAT_RW16       = 33, /**< RAW16 format */
     }
 
     /**
@@ -364,8 +357,8 @@ namespace Orbbec
         public float fy;      ///< \if English focal length in y direction \else y方向焦距 \endif
         public float cx;      ///< \if English Optical center abscissa \else 光心横坐标 \endif
         public float cy;      ///< \if English Optical center ordinate \else 光心纵坐标 \endif
-        public Int16 width;   ///< \if English image width \else 图像宽度 \endif
-        public Int16 height;  ///< \if English image height \else 图像高度 \endif
+        public short width;   ///< \if English image width \else 图像宽度 \endif
+        public short height;  ///< \if English image height \else 图像高度 \endif
     }
 
     /**
@@ -418,6 +411,7 @@ namespace Orbbec
         public float k6;    ///< \if English Radial distortion factor 6 \else 径向畸变系数6 \endif
         public float p1;    ///< \if English Tangential distortion factor 1 \else 切向畸变系数1 \endif
         public float p2;    ///< \if English Tangential distortion factor 2 \else 切向畸变系数2 \endif
+        CameraDistortionModel model;
     }
 
     /** \brief Distortion model: defines how pixel coordinates should be mapped to sensor coordinates. */
@@ -427,22 +421,9 @@ namespace Orbbec
                                             */
         OB_DISTORTION_INVERSE_BROWN_CONRADY,  /**< Equivalent to Brown-Conrady distortion, except undistorts image instead of distorting it */
         OB_DISTORTION_BROWN_CONRADY,          /**< Unmodified Brown-Conrady distortion model */
-    } 
-
-    /** \brief Video stream intrinsics. */
-    public struct CameraAlignIntrinsic{
-        public int                     width;  /**< Width of the image in pixels */
-        public int                     height; /**< Height of the image in pixels */
-        public float                   ppx;    /**< Horizontal coordinate of the principal point of the image, as a pixel offset from the left edge */
-        public float                   ppy;    /**< Vertical coordinate of the principal point of the image, as a pixel offset from the top edge */
-        public float                   fx;     /**< Focal length of the image plane, as a multiple of pixel width */
-        public float                   fy;     /**< Focal length of the image plane, as a multiple of pixel height */
-        public CameraDistortionModel model;  /**< Distortion model of the image */
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
-        public float[] coeffs; /**< Distortion coefficients. Order for Brown-Conrady: [k1, k2, p1, p2, k3]. Order for F-Theta Fish-eye: [k1, k2, k3, k4, 0]. Other models
-                            are subject to their own interpretations */
+        OB_DISTORTION_BROWN_CONRADY_K6,       /**< Unmodified Brown-Conrady distortion model with k6 supported */
+        OB_DISTORTION_KANNALA_BRANDT4,        /**< Kannala-Brandt distortion model */
     }
-
 
     /**
      * \if English
@@ -482,19 +463,6 @@ namespace Orbbec
         public CameraDistortion rgbDistortion;    ///< \if English Color camera distortion parameters 1 \else 彩色相机畸变参数 \endif   
         public D2CTransform transform;        ///< \if English rotation/transformation matrix \else 旋转/变换矩阵 \endif   
         public bool isMirrored;       ///< \if English Whether the image frame corresponding to this group of parameters is mirrored \else 本组参数对应的图像帧是否被镜像 \endif   
-    }
-
-    /**
-    * @brief Camera parameters
-    */
-    public struct OBCameraParam_V0
-    {
-        public CameraIntrinsic  depthIntrinsic;   ///< Depth camera internal parameters
-        public CameraIntrinsic  rgbIntrinsic;     ///< Color camera internal parameters
-        public CameraDistortion depthDistortion;  ///< Depth camera distortion parameters
-
-        public CameraDistortion rgbDistortion;  ///< Distortion parameters for color camera
-        public D2CTransform     transform;      ///< Rotation/transformation matrix
     }
 
     /**
@@ -642,6 +610,26 @@ namespace Orbbec
         OB_SAMPLE_RATE_32_KHZ,        /**< 32Hz */
     }
 
+    public enum IMUSampleRate
+    {
+        OB_SAMPLE_RATE_UNKNOWN = 0, /**< Unknown sample rate */
+        OB_SAMPLE_RATE_1_5625_HZ = 1, /**< 1.5625Hz */
+        OB_SAMPLE_RATE_3_125_HZ,      /**< 3.125Hz */
+        OB_SAMPLE_RATE_6_25_HZ,       /**< 6.25Hz */
+        OB_SAMPLE_RATE_12_5_HZ,       /**< 12.5Hz */
+        OB_SAMPLE_RATE_25_HZ,         /**< 25Hz */
+        OB_SAMPLE_RATE_50_HZ,         /**< 50Hz */
+        OB_SAMPLE_RATE_100_HZ,        /**< 100Hz */
+        OB_SAMPLE_RATE_200_HZ,        /**< 200Hz */
+        OB_SAMPLE_RATE_500_HZ,        /**< 500Hz */
+        OB_SAMPLE_RATE_1_KHZ,         /**< 1KHz */
+        OB_SAMPLE_RATE_2_KHZ,         /**< 2KHz */
+        OB_SAMPLE_RATE_4_KHZ,         /**< 4KHz */
+        OB_SAMPLE_RATE_8_KHZ,         /**< 8KHz */
+        OB_SAMPLE_RATE_16_KHZ,        /**< 16KHz */
+        OB_SAMPLE_RATE_32_KHZ,        /**< 32Hz */
+    }
+
     /**
      * \if English
      * @brief Enumeration of gyroscope ranges
@@ -651,7 +639,7 @@ namespace Orbbec
      */
     public enum GyroFullScaleRange
     {
-        OB_GYRO_FS_UNKNOWN = 0, /**< Unknown range */
+        OB_GYRO_FS_UNKNOWN = -1, /**< Unknown range */
         OB_GYRO_FS_16dps   = 1, /**< 16 degrees per second */
         OB_GYRO_FS_31dps,       /**< 31 degrees per second */
         OB_GYRO_FS_62dps,       /**< 62 degrees per second */
@@ -671,7 +659,7 @@ namespace Orbbec
      */
     public enum AccelFullScaleRange
     {
-        OB_ACCEL_FS_UNKNOWN = 0, /**< Unknown range */
+        OB_ACCEL_FS_UNKNOWN = -1, /**< Unknown range */
         OB_ACCEL_FS_2g      = 1, /**< 1x the acceleration of gravity */
         OB_ACCEL_FS_4g,          /**< 4x the acceleration of gravity */
         OB_ACCEL_FS_8g,          /**< 8x the acceleration of gravity */
@@ -692,6 +680,13 @@ namespace Orbbec
      * @brief Data structures for gyroscope
      */
     public struct GyroValue
+    {
+        public float x;  ///< X-direction component
+        public float y;  ///< Y-direction component
+        public float z;  ///< Z-direction component
+    }
+
+    public struct Float3D
     {
         public float x;  ///< X-direction component
         public float y;  ///< Y-direction component
@@ -743,6 +738,7 @@ namespace Orbbec
      */
     public enum DeviceType
     {
+        OB_DEVICE_TYPE_UNKNOWN               = -1,/**< Unknown device type */
         OB_STRUCTURED_LIGHT_MONOCULAR_CAMERA = 0, /**< Monocular structured light camera */
         OB_STRUCTURED_LIGHT_BINOCULAR_CAMERA = 1, /**< Binocular structured light camera */
         OB_TOF_CAMERA                        = 2, /**< Time-of-flight camera */
@@ -798,6 +794,19 @@ namespace Orbbec
      * \endif
      */
     public enum DepthPrecisionLevel
+    {
+        OB_PRECISION_1MM,   /**< 1mm */
+        OB_PRECISION_0MM8,  /**< 0.8mm */
+        OB_PRECISION_0MM4,  /**< 0.4mm */
+        OB_PRECISION_0MM1,  /**< 0.1mm */
+        OB_PRECISION_0MM2,  /**< 0.2mm */
+        OB_PRECISION_0MM5,  /**< 0.5mm */
+        OB_PRECISION_0MM05, /**< 0.05mm */
+        OB_PRECISION_UNKNOWN,
+        OB_PRECISION_COUNT,
+    }
+
+    public enum DepthUnit
     {
         OB_PRECISION_1MM,   /**< 1mm */
         OB_PRECISION_0MM8,  /**< 0.8mm */
@@ -1198,36 +1207,6 @@ namespace Orbbec
     }
 
     /**
-    * @brief Internal API for future publication
-    */
-    public struct DataBundle {
-        /**
-        * @brief CmdVersion of propertyId
-        */
-        public CmdVersion cmdVersion;
-
-        /**
-        * @brief Data containing itemCount of elements
-        */
-        public IntPtr data;
-
-        /**
-        * @brief Data size in bytes
-        */
-        public UInt32 dataSize;
-
-        /**
-        * @brief Size of data item
-        */
-        public UInt32 itemTypeSize;
-
-        /**
-        * @brief Count of data item
-        */
-        public UInt32 itemCount;
-    }
-
-    /**
      * @brief 网络设备的IP地址配置（ipv4）
      *
      */
@@ -1316,7 +1295,7 @@ namespace Orbbec
         /**
         * @brief Only FrameSet that contains all types of data frames will be output
         */
-        OB_FRAME_AGGREGATE_OUTPUT_FULL_FRAME_REQUIRE = 0,
+        OB_FRAME_AGGREGATE_OUTPUT_ALL_TYPE_FRAME_REQUIRE = 0,
 
         /**
         * @brief Color Frame Require output mode
@@ -1772,5 +1751,82 @@ namespace Orbbec
         * @attention It is not a valid frame metadata type
         */
         OB_FRAME_METADATA_TYPE_COUNT,
+    }
+
+    public enum PixelType
+    {
+        /**
+        * \if English
+        * Unknown pixel type, or undefined pixel type for current frame
+        * \else
+        * 像素类型未知，或当前帧的像素类型未定义
+        * \endif
+        */
+        OB_PIXEL_UNKNOWN = -1,
+        /**
+        * \if English
+        * Depth pixel type, the value of the pixel is the distance from the camera to the object
+        * \else
+        * 深度像素类型，像素的值是从相机到对象的距离
+        * \endif
+        */
+        OB_PIXEL_DEPTH = 0,
+        /**
+        * \if English
+        * Disparity for structured light camera
+        * \else
+        * 结构光相机的视差
+        * \endif
+        */
+        OB_PIXEL_DISPARITY = 2,
+        /**
+        * \if English
+        * Raw phase for tof camera
+        * \else
+        * tof相机的原始阶段
+        * \endif
+        */
+        OB_PIXEL_RAW_PHASE = 3,
+    }
+
+    public enum FilterConfigValueType
+    {
+        OB_FILTER_CONFIG_VALUE_TYPE_INVALID = -1,
+        OB_FILTER_CONFIG_VALUE_TYPE_INT = 0,
+        OB_FILTER_CONFIG_VALUE_TYPE_FLOAT = 1,
+        OB_FILTER_CONFIG_VALUE_TYPE_BOOLEAN = 2,
+    }
+
+    public struct FilterConfigSchemaItem
+    {
+        public String name;  ///< Name of the configuration item
+        public FilterConfigValueType type;  ///< Value type of the configuration item
+        public double min;   ///< Minimum value casted to double
+        public double max;   ///< Maximum value casted to double
+        public double step;  ///< Step value casted to double
+        public double def;   ///< Default value casted to double
+        public String desc;  ///< Description of the configuration item
+    }
+
+    public struct DeviceSerialNumber
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public char[] numberStr;
+    }
+
+    public struct DisparityParam
+    {
+        public double zpd;           // the distance to calib plane
+        public double zpps;          // zpps=z0/fx
+        public float baseline;       // baseline length, for monocular camera,it means the distance of laser to the center of IR-CMOS
+        public double fx;            // focus
+        public byte bitSize;         // disparity bit size（raw disp bit size，for example: MX6000 is 12, MX6600 is 14）
+        public float unit;           // reference units：unit=10 denote 1cm; unit=1 denote 1mm; unit=0.5 denote 0.5mm; and so on
+        public float minDisparity;   // dual disparity coefficient
+        public byte packMode;        // data pack mode
+        public float dispOffset;     // disparity offset，actual disp=chip disp + disp_offset
+        public int invalidDisp;      // invalid disparity，usually is 0，dual IR add a auxiliary value.
+        public int dispIntPlace;     // disp integer digits，default is 8，Gemini2 XL is 10
+        public UInt32 isDualCamera;  // 0 monocular camera，1 dual camera
     }
 }

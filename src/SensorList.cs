@@ -25,7 +25,7 @@ namespace Orbbec
         public UInt32 SensorCount()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_sensor_list_get_sensor_count(_handle.Ptr, ref error);
+            UInt32 count = obNative.ob_sensor_list_get_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -46,7 +46,7 @@ namespace Orbbec
         * @return SensorType 返回Sensor类型
         * \endif
         */
-        public SensorType SensorType(UInt32 index)
+        public SensorType SensorType(uint index)
         {
             IntPtr error = IntPtr.Zero;
             SensorType sensorType = obNative.ob_sensor_list_get_sensor_type(_handle.Ptr, index, ref error);

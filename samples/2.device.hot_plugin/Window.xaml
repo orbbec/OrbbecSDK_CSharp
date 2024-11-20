@@ -1,0 +1,17 @@
+<Window x:Class="Orbbec.HotPluginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Orbbec"
+        mc:Ignorable="d" WindowStartupLocation="CenterOwner"
+        Closing="Control_Closing"
+        Title="HotPlugin" Height="700" Width="1200" x:Name="control">
+    <Grid>
+        <TextBlock Name="DeviceInfoTextBlock" FontSize="16" FontWeight="Bold" Margin="10,10,10,0"/>
+        <ListBox Name="DeviceListBox" Margin="10,40,10,50" FontSize="14"/>
+        <Button Name="RebootDevicesButton" Content="Reboot Devices" Height="30" Width="150"
+                HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"
+                Click="RebootDevicesButton_Click"/>
+    </Grid>
+</Window>

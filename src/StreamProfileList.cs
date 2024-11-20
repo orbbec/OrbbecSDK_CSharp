@@ -102,7 +102,7 @@ namespace Orbbec
         public UInt32 ProfileCount()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_stream_profile_list_count(_handle.Ptr, ref error);
+            UInt32 count = obNative.ob_stream_profile_list_get_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

@@ -26,7 +26,7 @@ namespace Orbbec
         public UInt32 DeviceCount()
         {
             IntPtr error = IntPtr.Zero;
-            UInt32 count = obNative.ob_device_list_count(_handle.Ptr, ref error);
+            UInt32 count = obNative.ob_device_list_get_count(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -179,7 +179,7 @@ namespace Orbbec
         public String ExtensionInfo(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_device_list_get_extension_info(_handle.Ptr, index, ref error);
+            IntPtr handle = obNative.ob_device_info_get_extension_info(_handle.Ptr, index, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

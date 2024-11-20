@@ -26,7 +26,7 @@ namespace Orbbec
         public String Name()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_name(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_name(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -45,15 +45,15 @@ namespace Orbbec
         * @return int 返回设备的pid
         * \endif
         */
-        public int Pid()
+        public string Pid()
         {
             IntPtr error = IntPtr.Zero;
-            int pid = obNative.ob_device_info_pid(_handle.Ptr, ref error);
+            int pid = obNative.ob_device_info_get_pid(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return pid;
+            return "0x" + pid.ToString("X4");
         }
 
         /**
@@ -70,7 +70,7 @@ namespace Orbbec
         public int Vid()
         {
             IntPtr error = IntPtr.Zero;
-            int vid = obNative.ob_device_info_vid(_handle.Ptr, ref error);
+            int vid = obNative.ob_device_info_get_vid(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -92,7 +92,7 @@ namespace Orbbec
         public String Uid()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_uid(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_uid(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -114,7 +114,7 @@ namespace Orbbec
         public String SerialNumber()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_serial_number(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_serial_number(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -136,29 +136,7 @@ namespace Orbbec
         public String FirmwareVersion()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_firmware_version(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return Marshal.PtrToStringAnsi(ptr);
-        }
-
-        /**
-        * \if English
-        * @brief Get usb connection type (DEPRECATED)
-        *
-        * @return String returns usb connection type
-        * \else
-        * @brief 获取usb连接类型 (废弃接口)
-        *
-        * @return String 返回usb连接类型
-        * \endif
-        */
-        public String UsbType()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_usb_type(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_firmware_version(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -191,18 +169,7 @@ namespace Orbbec
         public String IPAddress()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_ip_address(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return Marshal.PtrToStringAnsi(ptr);
-        }
-
-        public String ExtensionInfo()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_get_extension_info(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_ip_address(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -224,7 +191,7 @@ namespace Orbbec
         public String HardwareVersion()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_hardware_version(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_hardware_version(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -246,7 +213,7 @@ namespace Orbbec
         public String SupportedMinSdkVersion()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_supported_min_sdk_version(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_supported_min_sdk_version(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -268,7 +235,7 @@ namespace Orbbec
         public String AsicName()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr ptr = obNative.ob_device_info_asicName(_handle.Ptr, ref error);
+            IntPtr ptr = obNative.ob_device_info_get_asicName(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -290,7 +257,7 @@ namespace Orbbec
         public DeviceType DeviceType()
         {
             IntPtr error = IntPtr.Zero;
-            DeviceType deviceType = obNative.ob_device_info_device_type(_handle.Ptr, ref error);
+            DeviceType deviceType = obNative.ob_device_info_get_device_type(_handle.Ptr, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

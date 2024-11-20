@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Orbbec
@@ -10,22 +9,18 @@ namespace Orbbec
     public class Context : IDisposable
     {
         private NativeHandle _handle;
+        private DeviceChangedCallback _deviceChangedCallback;
         private NativeDeviceChangedCallback _nativeDeviceChangedCallback;
-        public static Dictionary<IntPtr, DeviceChangedCallback> _deviceChangedCallbacks = new Dictionary<IntPtr, DeviceChangedCallback>();
         private static LogCallback _logCallback;
         private static NativeLogCallback _nativeLogCallback;
-        
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(NativeDeviceChangedCallback))]
-#endif
-        private static void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userData)
+
+        private void OnDeviceChanged(IntPtr removedPtr, IntPtr addedPtr, IntPtr userData)
         {
             DeviceList removed = new DeviceList(removedPtr);
             DeviceList added = new DeviceList(addedPtr);
-            _deviceChangedCallbacks.TryGetValue(userData, out DeviceChangedCallback callback);
-            if (callback != null)
+            if (_deviceChangedCallback != null)
             {
-                callback(removed, added);
+                _deviceChangedCallback(removed, added);
             }
             else
             {
@@ -33,11 +28,8 @@ namespace Orbbec
                 added.Dispose();
             }
         }
-        
-#if ORBBEC_UNITY
-        [AOT.MonoPInvokeCallback(typeof(NativeLogCallback))]
-#endif        
-        private static void OnLogCallback(LogSeverity logSeverity, String message, IntPtr userData)
+
+        private void OnLogCallback(LogSeverity logSeverity, String message, IntPtr userData)
         {
             if(_logCallback != null)
             {
@@ -153,9 +145,9 @@ namespace Orbbec
         */
         public void SetDeviceChangedCallback(DeviceChangedCallback callback)
         {
-            _deviceChangedCallbacks[_handle.Ptr] = callback;
+            _deviceChangedCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_device_changed_callback(_handle.Ptr, _nativeDeviceChangedCallback, _handle.Ptr, ref error);
+            obNative.ob_set_device_changed_callback(_handle.Ptr, _nativeDeviceChangedCallback, IntPtr.Zero, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -252,7 +244,35 @@ namespace Orbbec
         {
             _logCallback = callback;
             IntPtr error = IntPtr.Zero;
-            obNative.ob_set_logger_callback(logSeverity, _nativeLogCallback, IntPtr.Zero, ref error);
+            obNative.ob_set_logger_to_callback(logSeverity, _nativeLogCallback, IntPtr.Zero, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Set the extensions directory
+        * @brief The extensions directory is used to search for dynamic libraries that provide additional functionality to the SDK， such as the Frame filters.
+        *
+        * @attention Should be called before creating the context and pipeline, otherwise the default extensions directory (./extensions) will be used.
+        *
+        * @param directory Path to the extensions directory. If the path is empty, the existing settings will continue to be used (if the existing
+        * @param error Pointer to an error object that will be populated if an error occurs during extensions directory setting
+        * \else
+        * @brief 设置扩展目录
+        * @brief 扩展目录用于搜索为SDK提供额外功能的动态库，如Frame过滤器。
+        * 
+        * @attention 应在创建context和pipeline之前调用，否则将使用默认的扩展目录（./extensions）。
+        * 
+        * @param 扩展目录的路径。如果路径为空，则将继续使用现有设置（如果现有错误指针指向在扩展目录设置过程中发生错误时将填充的错误对象）
+        * \endif
+        */
+        public static void SetExtensionsDirectory(String directory)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_set_extensions_directory(directory, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
