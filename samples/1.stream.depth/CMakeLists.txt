@@ -25,3 +25,5 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_REFERENCES
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER samples
 )
+
+install(TARGETS 1.stream.depth RUNTIME DESTINATION bin)
