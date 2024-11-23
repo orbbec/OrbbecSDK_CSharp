@@ -3,7 +3,7 @@
 This is a wrapper for the Orbbec SDK for C#. It provides a simple and easy-to-use interface for accessing the Orbbec camera and performing various operations such as capturing depth images, color images, and performing point cloud generation.
 
 This branch is based on [Orbbec SDK v1](https://github.com/orbbec/OrbbecSDK) and 
-The v2-main branch, C# Wrapper is based the open source version of [Orbbec SDK v2](https://github.com/orbbec/OrbbecSDK_v2). 
+The v2-main branch is based the open source version of [Orbbec SDK v2](https://github.com/orbbec/OrbbecSDK_v2). 
 
 The C# wrapper for the open-source [Orbbec SDK v2](https://github.com/orbbec/OrbbecSDK_v2) is versioned as v2.x.x, while the C# wrapper for the [Orbbec SDK v1](https://github.com/orbbec/OrbbecSDK) is versioned as v1.x.x.
 
