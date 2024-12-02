@@ -304,11 +304,11 @@ namespace Orbbec
     */
     public struct UInt16PropertyRange 
     {
-        public UInt16 cur;   ///< Current value
-        public UInt16 max;   ///< Maximum value
-        public UInt16 min;   ///< Minimum value
-        public UInt16 step;  ///< Step value
-        public UInt16 def;   ///< Default value
+        public ushort cur;   ///< Current value
+        public ushort max;   ///< Maximum value
+        public ushort min;   ///< Minimum value
+        public ushort step;  ///< Step value
+        public ushort def;   ///< Default value
     } 
 
     /**
@@ -1141,8 +1141,8 @@ namespace Orbbec
     {
         public byte magnitude;  // magnitude
         public float alpha;      // smooth_alpha
-        public UInt16 disp_diff;  // smooth_delta
-        public UInt16 radius;     // hole_fill
+        public ushort disp_diff;  // smooth_delta
+        public ushort radius;     // hole_fill
     } 
 
     public enum EdgeNoiseRemovalType {
@@ -1155,10 +1155,10 @@ namespace Orbbec
     public struct EdgeNoiseRemovalFilterParams
     {
         public EdgeNoiseRemovalType type;
-        public UInt16               marginLeftTh;
-        public UInt16               marginRightTh;
-        public UInt16               marginTopTh;
-        public UInt16               marginBottomTh;
+        public ushort marginLeftTh;
+        public ushort marginRightTh;
+        public ushort marginTopTh;
+        public ushort marginBottomTh;
     } 
 
     /**
@@ -1797,15 +1797,16 @@ namespace Orbbec
         OB_FILTER_CONFIG_VALUE_TYPE_BOOLEAN = 2,
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct FilterConfigSchemaItem
     {
-        public String name;  ///< Name of the configuration item
+        public IntPtr name;  ///< Name of the configuration item
         public FilterConfigValueType type;  ///< Value type of the configuration item
         public double min;   ///< Minimum value casted to double
         public double max;   ///< Maximum value casted to double
         public double step;  ///< Step value casted to double
         public double def;   ///< Default value casted to double
-        public String desc;  ///< Description of the configuration item
+        public IntPtr desc;  ///< Description of the configuration item
     }
 
     public struct DeviceSerialNumber

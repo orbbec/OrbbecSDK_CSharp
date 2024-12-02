@@ -236,26 +236,6 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_device_get_calibration_camera_param_list")]
         public static extern IntPtr ob_device_get_calibration_camera_param_list(IntPtr device, ref IntPtr error);
 
-        //ob_depth_work_mode ob_device_get_current_depth_work_mode(ob_device *device, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_get_current_depth_work_mode")]
-        public static extern void ob_device_get_current_depth_work_mode(out DepthWorkMode workMode, IntPtr device, ref IntPtr error);
-
-        //const char *ob_device_get_current_depth_work_mode_name(const ob_device *device, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_get_current_depth_work_mode_name")]
-        public static extern IntPtr ob_device_get_current_depth_work_mode_name(IntPtr device, ref IntPtr error);
-
-        //ob_status ob_device_switch_depth_work_mode(ob_device *device, const ob_depth_work_mode *work_mode, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_switch_depth_work_mode")]
-        public static extern void ob_device_switch_depth_work_mode(IntPtr device, IntPtr workMode, ref IntPtr error);
-
-        //ob_status ob_device_switch_depth_work_mode_by_name(ob_device *device, const char *mode_name, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_switch_depth_work_mode_by_name")]
-        public static extern void ob_device_switch_depth_work_mode_by_name(IntPtr device, String modeName, ref IntPtr error);
-
-        //ob_depth_work_mode_list *ob_device_get_depth_work_mode_list(ob_device *device, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_get_depth_work_mode_list")]
-        public static extern IntPtr ob_device_get_depth_work_mode_list(IntPtr device, ref IntPtr error);
-
         //void ob_device_reboot(ob_device *device, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_reboot")]
         public static extern void ob_device_reboot(IntPtr device, ref IntPtr error);
@@ -328,6 +308,36 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_delete_camera_param_list")]
         public static extern void ob_delete_camera_param_list(IntPtr paramList, ref IntPtr error);
 
+        //bool ob_device_is_global_timestamp_supported(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_is_global_timestamp_supported")]
+        public static extern bool ob_device_is_global_timestamp_supported(IntPtr device, ref IntPtr error);
+
+        //void ob_device_enable_global_timestamp(ob_device *device, bool enable, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_enable_global_timestamp")]
+        public static extern bool ob_device_enable_global_timestamp(IntPtr device, bool enable, ref IntPtr error);
+        #endregion
+
+        #region Advanced
+        //ob_depth_work_mode ob_device_get_current_depth_work_mode(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_current_depth_work_mode")]
+        public static extern void ob_device_get_current_depth_work_mode(out DepthWorkMode workMode, IntPtr device, ref IntPtr error);
+
+        //const char *ob_device_get_current_depth_work_mode_name(const ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_current_depth_work_mode_name")]
+        public static extern IntPtr ob_device_get_current_depth_work_mode_name(IntPtr device, ref IntPtr error);
+
+        //ob_status ob_device_switch_depth_work_mode(ob_device *device, const ob_depth_work_mode *work_mode, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_switch_depth_work_mode")]
+        public static extern void ob_device_switch_depth_work_mode(IntPtr device, IntPtr workMode, ref IntPtr error);
+
+        //ob_status ob_device_switch_depth_work_mode_by_name(ob_device *device, const char *mode_name, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_switch_depth_work_mode_by_name")]
+        public static extern void ob_device_switch_depth_work_mode_by_name(IntPtr device, String modeName, ref IntPtr error);
+
+        //ob_depth_work_mode_list *ob_device_get_depth_work_mode_list(ob_device *device, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_get_depth_work_mode_list")]
+        public static extern IntPtr ob_device_get_depth_work_mode_list(IntPtr device, ref IntPtr error);
+
         //uint32_t ob_depth_work_mode_list_get_count(ob_depth_work_mode_list *work_mode_list, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_depth_work_mode_list_get_count")]
         public static extern UInt32 ob_depth_work_mode_list_get_count(IntPtr workModeList, ref IntPtr error);
@@ -339,14 +349,6 @@ namespace Orbbec
         //void ob_delete_depth_work_mode_list(ob_depth_work_mode_list *work_mode_list, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_delete_depth_work_mode_list")]
         public static extern void ob_delete_depth_work_mode_list(IntPtr workModeList, ref IntPtr error);
-
-        //bool ob_device_is_global_timestamp_supported(ob_device *device, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_is_global_timestamp_supported")]
-        public static extern bool ob_device_is_global_timestamp_supported(IntPtr device, ref IntPtr error);
-
-        //void ob_device_enable_global_timestamp(ob_device *device, bool enable, ob_error **error);
-        [DllImport(obsdk, EntryPoint = "ob_device_enable_global_timestamp")]
-        public static extern bool ob_device_enable_global_timestamp(IntPtr device, bool enable, ref IntPtr error);
 
         //const char *ob_device_get_current_preset_name(ob_device *device, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_get_current_preset_name")]
@@ -472,7 +474,7 @@ namespace Orbbec
 
         //ob_filter *ob_create_private_filter(const char *name, const char *activation_key, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_create_private_filter")]
-        public static extern IntPtr ob_create_private_filter(String name, String activationKey, ref IntPtr error);
+        public static extern IntPtr ob_create_private_filter(string name, string activationKey, ref IntPtr error);
 
         //const char *ob_filter_get_config_schema(const ob_filter *filter, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_filter_get_config_schema")]
@@ -488,7 +490,7 @@ namespace Orbbec
 
         //ob_filter_config_schema_item ob_filter_config_schema_list_get_item(const ob_filter_config_schema_list *config_schema_list, uint32_t index, ob_error** error);
         [DllImport(obsdk, EntryPoint = "ob_filter_config_schema_list_get_item")]
-        public static extern void ob_filter_config_schema_list_get_item(out FilterConfigSchemaItem configSchemaItem, IntPtr filterConfigSchemaList, UInt32 index, ref IntPtr error);
+        public static extern void ob_filter_config_schema_list_get_item(out FilterConfigSchemaItem configSchemaItem, IntPtr filterConfigSchemaList, uint index, ref IntPtr error);
 
         //void ob_delete_filter_config_schema_list(ob_filter_config_schema_list *config_schema_list, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_delete_filter_config_schema_list")]

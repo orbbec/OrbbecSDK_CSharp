@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Orbbec
@@ -10,11 +11,13 @@ namespace Orbbec
         protected NativeHandle _handle;
         private FilterCallback _callback;
         private NativeFilterCallback _nativeCallback;
+        protected string _name;
+        protected List<FilterConfigSchemaItem> _configSchemaList = new List<FilterConfigSchemaItem>();
 
         private void OnFilter(IntPtr framePtr, IntPtr userData)
         {
             Frame frame = new Frame(framePtr);
-            if(_callback != null)
+            if (_callback != null)
             {
                 _callback(frame);
             }
@@ -22,6 +25,64 @@ namespace Orbbec
             {
                 frame.Dispose();
             }
+        }
+
+        protected void Init()
+        {
+            IntPtr error = IntPtr.Zero;
+
+            _name = Marshal.PtrToStringAnsi(obNative.ob_filter_get_name(_handle.Ptr, ref error));
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+
+            IntPtr configSchemaListPtr = obNative.ob_filter_get_config_schema_list(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+
+            uint count = obNative.ob_filter_config_schema_list_get_count(configSchemaListPtr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+
+            for (uint i = 0; i < count; i++)
+            {
+                FilterConfigSchemaItem item;
+                obNative.ob_filter_config_schema_list_get_item(out item, configSchemaListPtr, i, ref error);
+                if (error != IntPtr.Zero)
+                {
+                    throw new NativeException(new Error(error));
+                }
+
+                _configSchemaList.Add(item);
+            }
+
+            obNative.ob_delete_filter_config_schema_list(configSchemaListPtr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        protected T GetPropertyRange<T>(string configName, Func<double, T> rangeFactory) where T : struct
+        {
+            if (_configSchemaList.Count == 0)
+            {
+                throw new InvalidOperationException("The configuration schema vector is empty.");
+            }
+
+            IntPtr error = IntPtr.Zero;
+            var cur = obNative.ob_filter_get_config_value(_handle.Ptr, configName, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+
+            return rangeFactory(cur);
         }
 
         internal Filter()
@@ -33,9 +94,45 @@ namespace Orbbec
         {
             _handle = new NativeHandle(handle, Delete);
             _nativeCallback = new NativeFilterCallback(OnFilter);
+            Init();
         }
 
-        internal Filter CreatePrivateFilter(String name, String activationKey)
+        public T As<T>() where T : Filter
+        {
+            switch (Name())
+            {
+                case "DecimationFilter":
+                    _handle.Retain();
+                    return new DecimationFilter(_handle.Ptr) as T;
+                case "HDRMerge":
+                    _handle.Retain();
+                    return new HdrMerge(_handle.Ptr) as T;
+                case "SequenceIdFilter":
+                    _handle.Retain();
+                    return new SequenceIdFilter(_handle.Ptr) as T;
+                case "SpatialAdvancedFilter":
+                    _handle.Retain();
+                    return new SpatialAdvancedFilter(_handle.Ptr, "") as T;
+                case "TemporalFilter":
+                    _handle.Retain();
+                    return new TemporalFilter(_handle.Ptr, "") as T;
+                case "HoleFillingFilter":
+                    _handle.Retain();
+                    return new HoleFillingFilter(_handle.Ptr, "") as T;
+                case "NoiseRemovalFilter":
+                    _handle.Retain();
+                    return new NoiseRemovalFilter(_handle.Ptr, "") as T;
+                case "DisparityTransform":
+                    _handle.Retain();
+                    return new DisparityTransform(_handle.Ptr, "") as T;
+                case "ThresholdFilter":
+                    _handle.Retain();
+                    return new ThresholdFilter(_handle.Ptr) as T;
+            }
+            return null;
+        }
+
+        internal Filter CreatePrivateFilter(string name, string activationKey = "")
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_private_filter(name, activationKey, ref error);
@@ -57,7 +154,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_reset(_handle.Ptr, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -103,7 +200,7 @@ namespace Orbbec
             _callback = callback;
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_set_callback(_handle.Ptr, _nativeCallback, IntPtr.Zero, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -124,7 +221,28 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_push_frame(_handle.Ptr, frame.GetNativeHandle().Ptr, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+        * \if English
+        * @brief Enable the frame post processing
+        * @brief The filter default is enable
+        *
+        * \else
+        * @brief 启用帧后处理
+        * @brief 滤波默认处于启用状态
+        * 
+        * \endif
+        */
+        public void Enable(bool enable)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_filter_enable(_handle.Ptr, enable, ref error);
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -141,7 +259,7 @@ namespace Orbbec
         * @return bool 后处理filter状态。True：启用；错误：禁用
         * \endif
         */
-        public bool IsEnable()
+        public bool IsEnabled()
         {
             IntPtr error = IntPtr.Zero;
             bool res = obNative.ob_filter_is_enabled(_handle.Ptr, ref error);
@@ -152,7 +270,7 @@ namespace Orbbec
             return res;
         }
 
-        public String GetName()
+        public string Name()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_filter_get_name(_handle.Ptr, ref error);
@@ -163,10 +281,10 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
-        public static String GetVendorSpecificCode(String name)
+        public static string GetVendorSpecificCode(string name)
         {
             IntPtr error = IntPtr.Zero;
-            String res = obNative.ob_filter_get_vendor_specific_code(name, ref error);
+            string res = obNative.ob_filter_get_vendor_specific_code(name, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -174,7 +292,7 @@ namespace Orbbec
             return res;
         }
 
-        public String GetConfigSchema()
+        public string GetConfigSchema()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_filter_get_config_schema(_handle.Ptr, ref error);
@@ -185,20 +303,18 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
-        public FilterConfigSchemaList GetConfigSchemaList()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_filter_get_config_schema_list(_handle.Ptr, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return new FilterConfigSchemaList(handle);
-        }
+        //public FilterConfigSchemaList GetConfigSchemaList()
+        //{
+        //    IntPtr error = IntPtr.Zero;
+        //    IntPtr handle = obNative.ob_filter_get_config_schema_list(_handle.Ptr, ref error);
+        //    if (error != IntPtr.Zero)
+        //    {
+        //        throw new NativeException(new Error(error));
+        //    }
+        //    return new FilterConfigSchemaList(handle);
+        //}
 
-
-
-        public void UpdateConfig(UInt16 argc, String argv)
+        public void UpdateConfig(UInt16 argc, string argv)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_filter_update_config(_handle.Ptr, argc, argv, ref error);
@@ -208,11 +324,37 @@ namespace Orbbec
             }
         }
 
-        internal void Delete(IntPtr handle)
+        public List<FilterConfigSchemaItem> GetConfigSchemaList()
+        {
+            return _configSchemaList;
+        }
+
+        public void SetConfigValue(string configName, double value)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_filter_set_config_value(_handle.Ptr, configName, value, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public double GetConfigValue(string configName)
+        {
+            IntPtr error = IntPtr.Zero;
+            double value = obNative.ob_filter_get_config_value(_handle.Ptr, configName, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return value;
+        }
+
+        internal virtual void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_delete_filter(handle, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -224,6 +366,77 @@ namespace Orbbec
         }
     }
 
+    public class FilterFactory
+    {
+        /**
+        * \if English
+        * @brief Create a filter by name.
+        * \else
+        * @brief 按名称创建filter。
+        * \endif
+        */
+        public static Filter CreateFilter(string name)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter(name, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Filter(handle);
+        }
+
+        /**
+         * \if English
+         * @brief Create a private filter by name and activation key.
+         * @brief Some private filters require an activation key to be activated, its depends on the vendor of the filter.
+         *
+         * @param name The name of the filter.
+         * @param activationKey The activation key of the filter.
+         * \else
+         * @brief 按名称和激活密钥创建私有filter。
+         * @brief 一些私有filter需要激活激活密钥，这取决于filter的供应商。
+         * 
+         * @param name filter的名称。
+         * @param activationKey filter的激活密钥。
+         */
+        public static Filter CreatePrivateFilter(string name, string activationKey)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter(name, activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new Filter(handle);
+        }
+
+        /**
+         * \if English
+         * @brief Get the vendor specific code of a filter by filter name.
+         * @brief A private filter can define its own vendor specific code for specific purposes.
+         *
+         * @param name The name of the filter.
+         * @return string The vendor specific code of the filter.
+         * \else
+         * @brief 按filter名称获取filter的供应商特定代码。
+         * @brief 私有filter可以为特定目的定义自己的供应商特定代码。
+         * 
+         * @param name filter的名称。
+         * @return string filter的供应商特定代码。
+         */
+        public static string GetFilterVendorSpecificCode(string name)
+        {
+            IntPtr error = IntPtr.Zero;
+            string code = obNative.ob_filter_get_vendor_specific_code(name, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return code;
+        }
+    }
+
     public class PointCloudFilter : Filter
     {
         public PointCloudFilter()
@@ -231,11 +444,12 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             //IntPtr handle = obNative.ob_create_pointcloud_filter(ref error);
             IntPtr handle = obNative.ob_create_filter("PointCloudFilter", ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
             _handle = new NativeHandle(handle, Delete);
+            Init();
         }
 
         /**
@@ -254,7 +468,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_pointcloud_filter_set_camera_param(_handle.Ptr, cameraParam, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -273,13 +487,7 @@ namespace Orbbec
         */
         public void SetCreatePointFormat(Format format)
         {
-            IntPtr error = IntPtr.Zero;
-            //obNative.ob_pointcloud_filter_set_point_format(_handle.Ptr, format, ref error);
-            obNative.ob_filter_set_config_value(_handle.Ptr, "pointFormat", (Double) format, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            SetConfigValue("pointFormat", (double)format);
         }
 
         /**
@@ -294,11 +502,12 @@ namespace Orbbec
         * @param state 对齐状态，True：开启对齐； False：关闭对齐
         * \endif
         */
+        [Obsolete]
         public void SetAlignState(bool state)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_pointcloud_filter_set_frame_align_state(_handle.Ptr, state, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -321,15 +530,15 @@ namespace Orbbec
         * @param scale 缩放比例
         * \endif
         */
+        [Obsolete]
         public void SetPositionDataScaled(float scale)
         {
-            IntPtr error = IntPtr.Zero;
-            //obNative.ob_pointcloud_filter_set_position_data_scale(_handle.Ptr, scale, ref error);
-            obNative.ob_filter_set_config_value(_handle.Ptr, "coordinateDataScale", scale, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            SetCoordinateDataScaled(scale);
+        }
+
+        public void SetCoordinateDataScaled(float factor)
+        {
+            SetConfigValue("coordinateDataScale", factor);
         }
 
         /**
@@ -345,12 +554,7 @@ namespace Orbbec
         */
         public void SetColorDataNormalization(bool state)
         {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_pointcloud_filter_set_color_data_normalization(_handle.Ptr, state, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            SetConfigValue("colorDataNormalization", state ? 1 : 0);
         }
 
         /**
@@ -366,12 +570,34 @@ namespace Orbbec
         */
         public void SetCoordinateSystem(CoordinateSystemType type)
         {
+            SetConfigValue("coordinateSystemType", (double)type);
+        }
+    }
+
+    public class AlignFilter : Filter
+    {
+        public AlignFilter(StreamType alignType)
+        {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_pointcloud_filter_set_coordinate_system(_handle.Ptr, type, ref error);
-            if(error != IntPtr.Zero)
+            IntPtr handle = obNative.ob_create_filter("Align", ref error);
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+
+            SetConfigValue("AlignType", (double)alignType);
+        }
+
+        public StreamType GetAlignMode()
+        {
+            return (StreamType)GetConfigValue("AlignType");
+        }
+
+        public void SetMatchTargetResolution(bool state)
+        {
+            SetConfigValue("MatchTargetRes", state ? 1 : 0);
         }
     }
 
@@ -381,7 +607,7 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_filter("FormatConverter", ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -399,24 +625,555 @@ namespace Orbbec
         * @param format 格式转化类型
         * \endif
         */
-        public void SetConvertFormat(ConvertFormat format)
+        public void SetConvertFormat(ConvertFormat type)
         {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_format_convert_filter_set_format(_handle.Ptr, format, ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
+            SetConfigValue("convertType", (double)type);
         }
     }
 
+    public class HdrMerge : Filter
+    {
+        internal HdrMerge(IntPtr handle) : base(handle) { }
+
+        public HdrMerge()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter("HDRMerge", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+    }
+
+    public class SequenceIdFilter : Filter
+    {
+        private Dictionary<float, string> sequenceIdList = new Dictionary<float, string>
+        {
+            { 0f, "all" },
+            { 1f, "1" }
+        };
+        private SequenceIdItem[] _outputSequenceIdList;
+
+        private void InitSeqenceIdList()
+        {
+            _outputSequenceIdList = new SequenceIdItem[sequenceIdList.Count];
+
+            int i = 0;
+            foreach (var pair in sequenceIdList)
+            {
+                var name = pair.Value.Length > 8 ? pair.Value.Substring(0, 8).PadRight(8, '\0') : pair.Value.PadRight(8, '\0');
+                _outputSequenceIdList[i] = new SequenceIdItem
+                {
+                    sequenceSelectId = (int)pair.Key,
+                    name = name.ToCharArray()
+                };
+                i++;
+            }
+        }
+
+        internal SequenceIdFilter(IntPtr handle) : base(handle) 
+        {
+            InitSeqenceIdList();
+        }
+
+        public SequenceIdFilter()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter("SequenceIdFilter", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+            InitSeqenceIdList();
+        }
+
+        /**
+        * \if English
+        * @brief Set the sequenceId filter params
+        *
+        * @param sequence id to pass the filter
+        * \else
+        * @brief 设置sequenceId滤波参数
+        *
+        * @param 通过滤波的序列 ID
+        * \endif
+        */
+        public void SelectSequenceId(int sequenceId)
+        {
+            SetConfigValue("sequenceid", sequenceId);
+        }
+
+        public int GetSelectSequenceId()
+        {
+            return (int)GetConfigValue("sequenceid");
+        }
+
+        public SequenceIdItem[] GetSequenceIdList()
+        {
+            return _outputSequenceIdList;
+        }
+
+        public int GetSequenceIdListSize()
+        {
+            return sequenceIdList.Count;
+        }
+
+        internal override void Delete(IntPtr handle)
+        {
+            base.Delete(handle);
+
+            if (_outputSequenceIdList != null)
+            {
+                _outputSequenceIdList = null;
+            }
+        }
+
+    }
+
+    public class DecimationFilter : Filter
+    {
+        internal DecimationFilter(IntPtr handle) : base(handle) { }
+
+        public DecimationFilter()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter("DecimationFilter", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+
+        public void SetScaleValue(byte value)
+        {
+            SetConfigValue("decimate", value);
+        }
+
+        public byte GetScaleValue()
+        {
+            return (byte)GetConfigValue("decimate");
+        }
+
+        public UInt8PropertyRange GetScaleRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt8PropertyRange scaleRange = new UInt8PropertyRange();
+            if (_configSchemaList.Count > 0)
+            {
+                scaleRange = GetPropertyRange<UInt8PropertyRange>("decimate", cur => new UInt8PropertyRange
+                {
+                    cur = (byte)cur,
+                    def = (byte)_configSchemaList[0].def,
+                    max = (byte)_configSchemaList[0].max,
+                    min = (byte)_configSchemaList[0].min,
+                    step = (byte)_configSchemaList[0].step
+                });
+            }
+            return scaleRange;
+        }
+    }
+
+    public class ThresholdFilter : Filter
+    {
+        internal ThresholdFilter(IntPtr handle) : base(handle) { }
+
+        public ThresholdFilter()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_filter("ThresholdFilter", ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+
+        public IntPropertyRange GetMinRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPropertyRange range = new IntPropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("min"))
+                {
+                    range = GetPropertyRange<IntPropertyRange>("min", cur => new IntPropertyRange
+                    {
+                        cur = (int)cur,
+                        def = (int)item.def,
+                        max = (int)item.max,
+                        min = (int)item.min,
+                        step = (int)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public IntPropertyRange GetMaxRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPropertyRange range = new IntPropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("max"))
+                {
+                    range = GetPropertyRange<IntPropertyRange>("max", cur => new IntPropertyRange
+                    {
+                        cur = (int)cur,
+                        def = (int)item.def,
+                        max = (int)item.max,
+                        min = (int)item.min,
+                        step = (int)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public bool SetValueRange(ushort min, ushort max)
+        {
+            if (min >= max)
+            {
+                return false;
+            }
+            SetConfigValue("min", min);
+            SetConfigValue("max", max);
+            return true;
+        }
+    }
+
+    public class SpatialAdvancedFilter : Filter
+    {
+        internal SpatialAdvancedFilter(IntPtr handle, string activationKey) : base(handle) {}
+
+        public SpatialAdvancedFilter(string activationKey = "")
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter("SpatialAdvancedFilter", activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+
+        public FloatPropertyRange GetAlphaRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            FloatPropertyRange range = new FloatPropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("alpha"))
+                {
+                    range = GetPropertyRange<FloatPropertyRange>("alpha", cur => new FloatPropertyRange
+                    {
+                        cur = (float)cur,
+                        def = (float)item.def,
+                        max = (float)item.max,
+                        min = (float)item.min,
+                        step = (float)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public UInt16PropertyRange GetDispDiffRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt16PropertyRange range = new UInt16PropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("disp_diff"))
+                {
+                    range = GetPropertyRange<UInt16PropertyRange>("disp_diff", cur => new UInt16PropertyRange
+                    {
+                        cur = (ushort)cur,
+                        def = (ushort)item.def,
+                        max = (ushort)item.max,
+                        min = (ushort)item.min,
+                        step = (ushort)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public UInt16PropertyRange GetRadiusRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt16PropertyRange range = new UInt16PropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("radius"))
+                {
+                    range = GetPropertyRange<UInt16PropertyRange>("radius", cur => new UInt16PropertyRange
+                    {
+                        cur = (ushort)cur,
+                        def = (ushort)item.def,
+                        max = (ushort)item.max,
+                        min = (ushort)item.min,
+                        step = (ushort)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public IntPropertyRange GetMagnitudeRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPropertyRange range = new IntPropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("magnitude"))
+                {
+                    range = GetPropertyRange<IntPropertyRange>("magnitude", cur => new IntPropertyRange
+                    {
+                        cur = (int)cur,
+                        def = (int)item.def,
+                        max = (int)item.max,
+                        min = (int)item.min,
+                        step = (int)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public SpatialAdvancedFilterParams GetFilterParams()
+        {
+            SpatialAdvancedFilterParams params_ = new SpatialAdvancedFilterParams();
+            params_.alpha = (float)GetConfigValue("alpha");
+            params_.disp_diff = (ushort)GetConfigValue("disp_diff");
+            params_.magnitude = (byte)GetConfigValue("magnitude");
+            params_.radius = (ushort)GetConfigValue("radius");
+            return params_;
+        }
+
+        public void SetFilterParams(SpatialAdvancedFilterParams params_)
+        {
+            SetConfigValue("alpha", params_.alpha);
+            SetConfigValue("disp_diff", params_.disp_diff);
+            SetConfigValue("magnitude", params_.magnitude);
+            SetConfigValue("radius", params_.radius);
+        }
+    }
+
+    public class HoleFillingFilter : Filter
+    {
+        internal HoleFillingFilter(IntPtr handle, string activationKey) : base(handle) { }
+
+        public HoleFillingFilter(string activationKey = "")
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter("HoleFillingFilter", activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+
+        public void SetFilterMode(HoleFillingMode mode)
+        {
+            SetConfigValue("hole_filling_mode", (double)mode);
+        }
+
+        public HoleFillingMode GetFilterMode()
+        {
+            return (HoleFillingMode)GetConfigValue("hole_filling_mode");
+        }
+    }
+
+    public class NoiseRemovalFilter : Filter
+    {
+        internal NoiseRemovalFilter(IntPtr handle, string activationKey) : base(handle) { }
+
+        public NoiseRemovalFilter(string activationKey = "")
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter("NoiseRemovalFilter", activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+
+        public void SetFilterParams(NoiseRemovalFilterParams filterParams)
+        {
+            SetConfigValue("max_size", filterParams.max_size);
+            SetConfigValue("min_diff", filterParams.disp_diff);
+        }
+
+        public NoiseRemovalFilterParams GetFilterParams()
+        {
+            NoiseRemovalFilterParams filterParams = new NoiseRemovalFilterParams();
+            filterParams.max_size = (UInt16)GetConfigValue("max_size");
+            filterParams.disp_diff = (UInt16)GetConfigValue("min_diff");
+            return filterParams;
+        }
+
+        public UInt16PropertyRange GetDispDiffRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt16PropertyRange range = new UInt16PropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("min_diff"))
+                {
+                    range = GetPropertyRange<UInt16PropertyRange>("min_diff", cur => new UInt16PropertyRange
+                    {
+                        cur = (ushort)cur,
+                        def = (ushort)item.def,
+                        max = (ushort)item.max,
+                        min = (ushort)item.min,
+                        step = (ushort)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public UInt16PropertyRange GetMaxSizeRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt16PropertyRange range = new UInt16PropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("max_size"))
+                {
+                    range = GetPropertyRange<UInt16PropertyRange>("max_size", cur => new UInt16PropertyRange
+                    {
+                        cur = (ushort)cur,
+                        def = (ushort)item.def,
+                        max = (ushort)item.max,
+                        min = (ushort)item.min,
+                        step = (ushort)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+    }
+
+    public class TemporalFilter : Filter
+    {
+        internal TemporalFilter(IntPtr handle, string activationKey) : base(handle) { }
+
+        public TemporalFilter(string activationKey = "")
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter("TemporalFilter", activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+
+        public FloatPropertyRange GetDiffScaleRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            FloatPropertyRange range = new FloatPropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("diff_scale"))
+                {
+                    range = GetPropertyRange<FloatPropertyRange>("diff_scale", cur => new FloatPropertyRange
+                    {
+                        cur = (float)cur,
+                        def = (float)item.def,
+                        max = (float)item.max,
+                        min = (float)item.min,
+                        step = (float)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public void SetDiffScale(float value)
+        {
+            SetConfigValue("diff_scale", value);
+        }
+
+        public FloatPropertyRange GetWeightRange()
+        {
+            IntPtr error = IntPtr.Zero;
+            FloatPropertyRange range = new FloatPropertyRange();
+            foreach (var item in _configSchemaList)
+            {
+                if (Marshal.PtrToStringAnsi(item.name).Equals("weight"))
+                {
+                    range = GetPropertyRange<FloatPropertyRange>("weight", cur => new FloatPropertyRange
+                    {
+                        cur = (float)cur,
+                        def = (float)item.def,
+                        max = (float)item.max,
+                        min = (float)item.min,
+                        step = (float)item.step
+                    });
+                    break;
+                }
+            }
+            return range;
+        }
+
+        public void SetWeight(float value)
+        {
+            SetConfigValue("weight", value);
+        }
+
+    }
+
+    public class DisparityTransform : Filter
+    {
+        internal DisparityTransform(IntPtr handle, string activationKey) : base(handle) { }
+
+        public DisparityTransform(string activationKey = "")
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_create_private_filter("DisparityTransform", activationKey, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            _handle = new NativeHandle(handle, Delete);
+            Init();
+        }
+    }
+
+    [Obsolete]
     public class CompressionFilter : Filter
     {
         public CompressionFilter()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_compression_filter(ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
@@ -440,33 +1197,20 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_compression_filter_set_compression_params(_handle.Ptr, mode, param, ref error);
-            if(error != IntPtr.Zero)
+            if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
         }
     }
 
+    [Obsolete]
     public class DecompressionFilter : Filter
     {
         public DecompressionFilter()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr handle = obNative.ob_create_decompression_filter(ref error);
-            if(error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            _handle = new NativeHandle(handle, Delete);
-        }
-    }
-
-    public class HDRMergeFilter : Filter
-    {
-        public HDRMergeFilter()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_filter("HDRMerge", ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
@@ -475,38 +1219,4 @@ namespace Orbbec
         }
     }
 
-    public class AlignFilter : Filter
-    {
-        public AlignFilter()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_filter("Align", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            _handle = new NativeHandle(handle, Delete);
-        }
-
-        public void SetAlignMode(StreamType mode)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_filter_set_config_value(_handle.Ptr, "AlignType", (double) mode, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        public StreamType GetAlignMode()
-        {
-            IntPtr error = IntPtr.Zero;
-            double mode = obNative.ob_filter_get_config_value(_handle.Ptr, "AlignType", ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return (StreamType) mode;
-        }
-    }
 }

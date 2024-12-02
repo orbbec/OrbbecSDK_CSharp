@@ -142,15 +142,39 @@ namespace Orbbec
             }
         }
 
-        public RecommendedFilterList CreateRecommendedFilters()
+        public List<Filter> CreateRecommendedFilters()
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_sensor_create_recommended_filter_list(_handle.Ptr, ref error);
+            IntPtr listPtr = obNative.ob_sensor_create_recommended_filter_list(_handle.Ptr, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
             }
-            return new RecommendedFilterList(handle);
+
+            uint count = obNative.ob_filter_list_get_count(listPtr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+
+            List<Filter> filters = new List<Filter>();
+            for (uint i = 0; i < count; i++)
+            {
+                IntPtr filterPtr = obNative.ob_filter_list_get_filter(listPtr, i, ref error);
+                if (error != IntPtr.Zero)
+                {
+                    throw new NativeException(new Error(error));
+                }
+                Filter filter = new Filter(filterPtr);
+                filters.Add(filter);
+            }
+
+            obNative.ob_delete_filter_list(listPtr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return filters;
         }
 
         internal void Delete(IntPtr handle)

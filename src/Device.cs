@@ -292,23 +292,32 @@ namespace Orbbec
         * @brief Set structured data type of device property
         *
         * @param propertyId Property id
-        * @param data Property data to be set
-        * @param dataSize The size of the attribute to be set
+        * @param T Property data to be set
         * \else
         * @brief 设置structured data类型的设备属性
         *
         * @param propertyId 属性id
-        * @param data 要设置的属性数据
-        * @param dataSize 要设置的属性大小
+        * @param T 要设置的属性数据
         * \endif
         */
-        public void SetStructuredData(PropertyId propertyId, IntPtr data, UInt32 dataSize)
+        public void SetStructuredData<T>(PropertyId propertyId, T data) where T : struct
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_set_structured_data(_handle.Ptr, propertyId, data, dataSize, ref error);
-            if(error != IntPtr.Zero)
+            IntPtr dataPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(T)));
+            try
             {
-                throw new NativeException(new Error(error));
+                Marshal.StructureToPtr(data, dataPtr, false);
+                uint dataSize = (uint)Marshal.SizeOf(typeof(T));
+
+                obNative.ob_device_set_structured_data(_handle.Ptr, propertyId, dataPtr, dataSize, ref error);
+                if (error != IntPtr.Zero)
+                {
+                    throw new NativeException(new Error(error));
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(dataPtr);
             }
         }
 
@@ -844,6 +853,89 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
+        public bool IsSupportedGlobalTimestamp()
+        {
+            IntPtr error = IntPtr.Zero;
+            bool result = obNative.ob_device_is_global_timestamp_supported(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return result;
+        }
+
+        public bool EnableGlobalTimestamp(bool enable)
+        {
+            IntPtr error = IntPtr.Zero;
+            bool result = obNative.ob_device_enable_global_timestamp(_handle.Ptr, enable, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return result;
+        }
+
+        public String GetCurrentPresetName()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_device_get_current_preset_name(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return Marshal.PtrToStringAnsi(ptr);
+        }
+
+        public void LoadPreset(String presetName)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_load_preset(_handle.Ptr, presetName, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void LoadPresetFromJsonFile(String jsonFilePath)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_load_preset_from_json_file(_handle.Ptr, jsonFilePath, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void LoadPresetFromJsonData(String presetName, IntPtr data, UInt32 size)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_load_preset_from_json_data(_handle.Ptr, presetName, data, size, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void ExportCurrentSettingsAsPresetJsonFile(String jsonFilePath)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_export_current_settings_as_preset_json_file(_handle.Ptr, jsonFilePath, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        public void ExportCurrentSettingsAsPresetJsonData(String presetName, IntPtr data, UInt32 size)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_device_export_current_settings_as_preset_json_data(_handle.Ptr, presetName, data, size, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
@@ -852,6 +944,17 @@ namespace Orbbec
             {
                 throw new NativeException(new Error(error));
             }
+        }
+
+        public PresetList GetPresetList()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr ptr = obNative.ob_device_get_available_preset_list(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return new PresetList(ptr);
         }
 
         public void Dispose()

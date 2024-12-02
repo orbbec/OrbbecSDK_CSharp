@@ -90,14 +90,14 @@ namespace Orbbec
         OB_PROP_LDP_STATUS_BOOL = 32,
 
         /**
-         * @brief soft filter maxdiff param
+         * @brief maxdiff for depth noise removal filter
          */
-        OB_PROP_DEPTH_MAX_DIFF_INT = 40,
+        OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_MAX_DIFF_INT = 40,
 
         /**
-         * @brief soft filter maxSpeckleSize
+         * @brief maxSpeckleSize for depth noise removal filter
          */
-        OB_PROP_DEPTH_MAX_SPECKLE_SIZE_INT = 41,
+        OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_MAX_SPECKLE_SIZE_INT = 41,
 
         /**
          * @brief Hardware d2c is on
@@ -376,11 +376,6 @@ namespace Orbbec
          * @brief Query the status of laser pulse width protection (read-only)
          */
         OB_PROP_LASER_PULSE_WIDTH_PROTECTION_STATUS_BOOL = 149,
-
-        /**
-        * @brief depth noise removal filter
-        */
-        OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_BOOL = 165,
 
         /**
         * @brief Laser always on, true: always on, false: off, laser will be turned off when out of exposure time
@@ -725,6 +720,21 @@ namespace Orbbec
          * @brief Calibration JSON file read from device (Femto Mega, read only)
          */
         OB_RAW_DATA_CAMERA_CALIB_JSON_FILE = 4029,
+
+        /**
+        * @brief depth noise removal filter
+        */
+        OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_BOOL = OB_PROP_DEPTH_SOFT_FILTER_BOOL,
+
+        /**
+         * @brief soft filter maxdiff param
+         */
+        OB_PROP_DEPTH_MAX_DIFF_INT = OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_MAX_DIFF_INT,
+
+        /**
+         * @brief soft filter maxSpeckleSize
+         */
+        OB_PROP_DEPTH_MAX_SPECKLE_SIZE_INT = OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_MAX_SPECKLE_SIZE_INT,
     }
 
     public enum PropertyType

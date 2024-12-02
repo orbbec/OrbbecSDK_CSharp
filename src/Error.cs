@@ -18,6 +18,12 @@ namespace Orbbec
             return new Error(ptr);
         }
 
+        public Status GetStatus()
+        {
+            Status status = obNative.ob_error_get_status(_handle.Ptr);
+            return status;
+        }
+
         /**
         * \if English
         * @brief Obtain detailed error logs of SDK internal exceptions.

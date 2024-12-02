@@ -59,30 +59,10 @@ namespace Orbbec
             return workMode;
         }
 
-        public void LoadPresetFromJsonData(String presetName, IntPtr data, UInt32 size)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_load_preset_from_json_data(_handle.Ptr, presetName, data, size, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
-        public void ExportCurrentSettingsAsPresetJsonData(String presetName, IntPtr data, UInt32 size)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_device_export_current_settings_as_preset_json_data(_handle.Ptr, presetName, data, size, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-        }
-
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_delete_camera_param_list(handle, ref error);
+            obNative.ob_delete_depth_work_mode_list(handle, ref error);
             if(error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));
