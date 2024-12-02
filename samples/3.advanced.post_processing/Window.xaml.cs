@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -6,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Orbbec
 {
@@ -15,6 +18,7 @@ namespace Orbbec
     public partial class PostProcessingWindow : Window
     {
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Task postProcessingTask;
 
         private static Action<VideoFrame> UpdateImage(Image img)
         {
@@ -60,18 +64,19 @@ namespace Orbbec
                 Pipeline pipeline = new Pipeline();
 
                 Device device = pipeline.GetDevice();
-
                 Sensor sensor = device.GetSensor(SensorType.OB_SENSOR_DEPTH);
-
-                RecommendedFilterList filterList = sensor.CreateRecommendedFilters();
+                List<Filter> filterList = sensor.CreateRecommendedFilters();
 
                 Config config = new Config();
-
                 config.EnableStream(StreamType.OB_STREAM_DEPTH);
 
                 pipeline.Start(config);
 
-                Task.Factory.StartNew(() =>
+                PrintFiltersInfo(filterList, true);
+
+                Task.Run(() => FilterControl(filterList));
+
+                postProcessingTask = Task.Factory.StartNew(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -81,14 +86,14 @@ namespace Orbbec
                             if (depthFrame == null) continue;
 
                             var processedFrame = depthFrame;
-                            for (uint i = 0; i < filterList.FilterCount(); i++)
+                            foreach (var filter in filterList)
                             {
-                                Filter filter = filterList.GetFilter(i);
-                                if (filter.IsEnable())
+                                if (filter.IsEnabled())
                                 {
                                     processedFrame = filter.Process(processedFrame).As<DepthFrame>();
                                 }
                             }
+
                             updateDepth = UpdateFrame(imgDepth, updateDepth, depthFrame);
                             updateDepthPP = UpdateFrame(imgDepthPP, updateDepthPP, processedFrame);
                         }
@@ -103,6 +108,168 @@ namespace Orbbec
             {
                 MessageBox.Show(e.Message);
                 Application.Current.Shutdown();
+            }
+        }
+
+        private void PrintFiltersInfo(List<Filter> filterList, bool isInit)
+        {
+            Console.WriteLine($"{filterList.Count} post processing filters recommended:");
+            foreach (var filter in filterList)
+            {
+                Console.WriteLine($" - {filter.Name()}: {(filter.IsEnabled() ? "enabled" : "disabled")}");
+                var configSchemaList = filter.GetConfigSchemaList();
+
+                foreach (var configSchema in configSchemaList)
+                {
+                    Console.WriteLine($"    - {{ {Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, " +
+                        $"{configSchema.min}, {configSchema.max}, {configSchema.step}, {configSchema.def}, {Marshal.PtrToStringAnsi(configSchema.desc)} }}");
+                }
+
+                if (isInit)
+                {
+                    filter.Enable(false); // Disable the filter
+                    AddCheckBox(filter);
+                }
+            }
+        }
+
+        private void AddCheckBox(Filter filter)
+        {
+            var checkBox = new CheckBox
+            {
+                Content = filter.Name(),
+                Tag = filter,
+                Margin = new Thickness(8),
+                FontSize = 14
+            };
+
+            checkBox.Click += CheckBox_Click;
+            checkBox.IsChecked = filter.IsEnabled();
+
+            FilterPanel.Children.Add(checkBox);
+        }
+
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            if (checkBox != null)
+            {
+                var filter = checkBox.Tag as Filter;
+                bool isChecked = checkBox.IsChecked ?? false;
+                filter.Enable(isChecked);
+            }
+        }
+
+        private void FilterControl(List<Filter> filterList)
+        {
+            Action PrintHelp = () =>
+            {
+                Console.WriteLine("Available commands:");
+                Console.WriteLine("- Enter `[Filter]` to list the config values for the filter");
+                Console.WriteLine("- Enter `[Filter] list` to list the config schema for the filter");
+                Console.WriteLine("- Enter `[Filter] [Config]` to show the config values for the filter");
+                Console.WriteLine("- Enter `[Filter] [Config] [Value]` to set a config value");
+                Console.WriteLine("- Enter `L` or `l` to list all available filters");
+                Console.WriteLine("- Enter `H` or `h` to print this help message");
+                Console.WriteLine("- Enter `Q` or `q` to quit");
+            };
+
+            PrintHelp();
+
+            while (!tokenSource.IsCancellationRequested)
+            {
+                Console.WriteLine("---------------------------");
+                Console.Write("Enter your input (h for help): ");
+
+                string input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input)) continue;
+
+                if (input.Equals("q", StringComparison.OrdinalIgnoreCase))
+                {
+                    tokenSource.Cancel();
+                    postProcessingTask.Wait();
+                    Console.WriteLine("Exiting the post-processing ...");
+                    Environment.Exit(0);
+                }
+                else if (input.Equals("l", StringComparison.OrdinalIgnoreCase))
+                {
+                    PrintFiltersInfo(filterList, false);
+                    continue;
+                }
+                else if (input.Equals("h", StringComparison.OrdinalIgnoreCase))
+                {
+                    PrintHelp();
+                    continue;
+                }
+
+                string[] tokens = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (tokens.Length == 0) continue;
+
+                bool foundFilter = false;
+                foreach (var filter  in filterList)
+                {
+                    if (filter.Name() != tokens[0]) continue;
+
+                    foundFilter = true;
+                    if (tokens.Length == 1)
+                    {
+                        Console.WriteLine($"Config values for {filter.Name()}:");
+                        foreach (var configSchema in filter.GetConfigSchemaList())
+                        {
+                            string name = Marshal.PtrToStringAnsi(configSchema.name);
+                            Console.WriteLine($" - {name}: {filter.GetConfigValue(name)}");
+                        }   
+                    }
+                    else if (tokens.Length == 2)
+                    {
+                        if (tokens[1].Equals("list", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine($"Config schema for {filter.Name()}:");
+                            foreach (var configSchema in filter.GetConfigSchemaList())
+                            {
+                                Console.WriteLine($" - {{ {Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, {configSchema.min}, {configSchema.max}, {configSchema.step}, {configSchema.def}, {Marshal.PtrToStringAnsi(configSchema.desc)} }}");
+                            }
+                        }
+                        else
+                        {
+                            var configSchemaList = filter.GetConfigSchemaList();
+                            bool foundConfig = false;
+                            foreach ( var configSchema in configSchemaList)
+                            {
+                                string name = Marshal.PtrToStringAnsi(configSchema.name);
+                                if (name.Equals(tokens[1], StringComparison.OrdinalIgnoreCase))
+                                {
+                                    foundConfig = true;
+                                    Console.WriteLine($"Config values for {filter.Name()}@{name}: {filter.GetConfigValue(name)}");
+                                    break;
+                                }
+                            }
+                            if (!foundConfig)
+                            {
+                                Console.WriteLine($"Error: Config {tokens[1]} not found for filter {filter.Name()}");
+                            }
+                        }
+                    }
+                    else if (tokens.Length == 3)
+                    {
+                        try
+                        {
+                            double value = double.Parse(tokens[2]);
+                            filter.SetConfigValue(tokens[1], value);
+                            Console.WriteLine($"Success: Config value of {tokens[1]} for filter {filter.Name()} is set to {value}.");
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Error: {e.Message}");
+                        }
+                    }
+                    break;
+                }
+
+                if (!foundFilter)
+                {
+                    Console.WriteLine($"Error: Filter {tokens[0]} not found.");
+                }
             }
         }
 
@@ -121,7 +288,7 @@ namespace Orbbec
             return updateAction;
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
         }

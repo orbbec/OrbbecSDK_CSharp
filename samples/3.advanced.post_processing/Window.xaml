@@ -12,13 +12,18 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
             <TextBlock Text="Depth Stream" HorizontalAlignment="Center" FontSize="16" />
             <Image x:Name="imgDepth" />
         </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+        <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
             <TextBlock Text="Post Processing Depth Stream" HorizontalAlignment="Center" FontSize="16" />
             <Image x:Name="imgDepthPP" />
         </StackPanel>
+        <WrapPanel x:Name="FilterPanel" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>
