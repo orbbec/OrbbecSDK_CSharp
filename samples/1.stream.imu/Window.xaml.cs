@@ -1,10 +1,7 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Orbbec
@@ -69,12 +66,6 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Stop();
-            tokenSource.Cancel();
-        }
-
         private void OnFrame(Frame frame)
         {
             if (frame.GetFrameType() == FrameType.OB_FRAME_ACCEL)
@@ -129,6 +120,12 @@ namespace Orbbec
                 gyroSensor.Stop();
                 gyroSensor.Dispose();
             }
+        }
+
+        private void Control_Closing(object sender, CancelEventArgs e)
+        {
+            tokenSource.Cancel();
+            Stop();
         }
     }
 }

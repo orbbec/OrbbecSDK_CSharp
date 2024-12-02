@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -77,7 +78,7 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
             if (curDeviceList != null)
             {

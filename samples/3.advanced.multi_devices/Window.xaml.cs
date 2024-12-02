@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Orbbec
 {
@@ -322,8 +323,9 @@ namespace Orbbec
             return updateAction;
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
+            tokenSource.Cancel();
             if (deviceInfoTexts != null)
             {
                 deviceInfoTexts.Clear();
@@ -344,7 +346,6 @@ namespace Orbbec
             {
                 updateDepths.Clear();
             }
-            tokenSource.Cancel();
         }
     }
 }

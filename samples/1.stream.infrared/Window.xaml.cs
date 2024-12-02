@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -149,7 +150,7 @@ namespace Orbbec
             return updateAction;
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
         }

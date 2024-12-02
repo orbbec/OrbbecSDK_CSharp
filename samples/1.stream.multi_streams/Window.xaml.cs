@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -206,12 +207,6 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            tokenSource.Cancel();
-            Stop();
-        }
-
         private void SetupWindow(StreamProfile colorProfile, StreamProfile depthProfile, StreamProfile irLeftProfile, StreamProfile irRightProfile,
                                     out Action<VideoFrame> color, out Action<VideoFrame> depth, out Action<VideoFrame> irLeft, out Action<VideoFrame> irRight)
         {
@@ -304,6 +299,12 @@ namespace Orbbec
             {
                 device.Dispose();
             }
+        }
+
+        private void Control_Closing(object sender, CancelEventArgs e)
+        {
+            tokenSource.Cancel();
+            Stop();
         }
     }
 }

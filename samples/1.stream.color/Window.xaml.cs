@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -75,11 +76,6 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            tokenSource.Cancel();
-        }
-
         private void SetupWindow(StreamProfile colorProfile, out Action<VideoFrame> color)
         {
             using (var p = colorProfile.As<VideoStreamProfile>())
@@ -87,6 +83,11 @@ namespace Orbbec
                 imgColor.Source = new WriteableBitmap((int)p.GetWidth(), (int)p.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
                 color = UpdateImage(imgColor);
             }
+        }
+
+        private void Control_Closing(object sender, CancelEventArgs e)
+        {
+            tokenSource.Cancel();
         }
     }
 }

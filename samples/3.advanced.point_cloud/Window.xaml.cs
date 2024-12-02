@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.ComponentModel;
 
 namespace Orbbec
 {
@@ -40,8 +41,7 @@ namespace Orbbec
                 pipeline.Start(config);
 
                 pointCloud = new PointCloudFilter();
-                AlignFilter align = new AlignFilter();
-                align.SetAlignMode(StreamType.OB_STREAM_COLOR);
+                AlignFilter align = new AlignFilter(StreamType.OB_STREAM_COLOR);
 
                 Task.Factory.StartNew(() =>
                 {
@@ -226,7 +226,7 @@ namespace Orbbec
             save = true;
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
         }

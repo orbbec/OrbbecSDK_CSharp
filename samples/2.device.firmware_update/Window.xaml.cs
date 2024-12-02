@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Win32;
 using System.Text;
 using System.Linq;
+using System.ComponentModel;
 
 namespace Orbbec
 {
@@ -210,7 +211,7 @@ namespace Orbbec
             deviceInfoTextBlock.Text = sb.ToString();
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
             foreach (var device in devices.Values)
             {

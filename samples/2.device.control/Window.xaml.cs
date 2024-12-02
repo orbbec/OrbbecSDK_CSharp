@@ -4,6 +4,7 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.ComponentModel;
 
 namespace Orbbec
 {
@@ -316,7 +317,7 @@ namespace Orbbec
             logScrollViewer.ScrollToEnd();
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Control_Closing(object sender, CancelEventArgs e)
         {
             if (devices != null)
             {
