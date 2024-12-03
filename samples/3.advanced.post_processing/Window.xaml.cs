@@ -61,6 +61,7 @@ namespace Orbbec
 
             try
             {
+                Context.SetLoggerToFile(LogSeverity.OB_LOG_SEVERITY_DEBUG, "C:\\Log\\OrbbecSDK");
                 Pipeline pipeline = new Pipeline();
 
                 Device device = pipeline.GetDevice();
@@ -227,7 +228,8 @@ namespace Orbbec
                             Console.WriteLine($"Config schema for {filter.Name()}:");
                             foreach (var configSchema in filter.GetConfigSchemaList())
                             {
-                                Console.WriteLine($" - {{ {Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, {configSchema.min}, {configSchema.max}, {configSchema.step}, {configSchema.def}, {Marshal.PtrToStringAnsi(configSchema.desc)} }}");
+                                Console.WriteLine($" - {{ {Marshal.PtrToStringAnsi(configSchema.name)}, {configSchema.type}, " +
+                                    $"{configSchema.min}, {configSchema.max}, {configSchema.step}, {configSchema.def}, {Marshal.PtrToStringAnsi(configSchema.desc)} }}");
                             }
                         }
                         else
@@ -277,7 +279,8 @@ namespace Orbbec
         {
             Dispatcher.Invoke(() =>
             {
-                if (!(image.Source is WriteableBitmap) && updateAction == null)
+                if (!(image.Source is WriteableBitmap writeableBitmap) ||
+                    writeableBitmap.PixelWidth != (int)frame.GetWidth() || writeableBitmap.PixelHeight != (int)frame.GetHeight())
                 {
                     image.Visibility = Visibility.Visible;
                     image.Source = new WriteableBitmap((int)frame.GetWidth(), (int)frame.GetHeight(), 96d, 96d, PixelFormats.Rgb24, null);
