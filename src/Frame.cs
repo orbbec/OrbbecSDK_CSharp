@@ -342,6 +342,101 @@ namespace Orbbec
             return new StreamProfile(handle);
         }
 
+        /**
+        * \if English
+        * @brief Get the metadata of the frame
+        *
+        * @return Byte[] returns the metadata of the frame
+        * \else
+        * @brief 获取帧的元数据
+        *
+        * @return Byte[] 返回帧的元数据
+        * \endif
+        */
+        public Byte[] GetMetadata()
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr data = obNative.ob_frame_get_metadata(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            UInt32 dataSize = GetMetadataSize();
+            Byte[] buffer = new Byte[dataSize];
+            Marshal.Copy(data, buffer, 0, (int)dataSize);
+            return buffer;
+        }
+
+        /**
+        * \if English
+        * @brief Get the metadata size of the frame
+        *
+        * @return UInt32 returns the metadata size of the frame
+        * \else
+        * @brief 获取帧的元数据大小
+        *
+        * @return UInt32 返回帧的元数据大小
+        * \endif
+        */
+        public UInt32 GetMetadataSize()
+        {
+            IntPtr error = IntPtr.Zero;
+            UInt32 size = obNative.ob_frame_get_metadata_size(_handle.Ptr, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return size;
+        }
+
+        /**
+        * \if English
+        * @brief Check if the frame object has metadata of a given type
+        *
+        * @param type The metadata type. refer to @ref FrameMetadataType
+        * @return bool The result
+        * \else
+        * @brief 检查帧对象是否具有给定类型的元数据
+        *
+        * @param type 元数据类型。请参考@ref FrameMetadataType
+        * @return bool 结果
+        * \endif
+        */
+        public bool HasMetadata(FrameMetadataType type)
+        {
+            IntPtr error = IntPtr.Zero;
+            bool result = obNative.ob_frame_has_metadata(_handle.Ptr, (uint)type, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return result;
+        }
+
+        /**
+        * \if English
+        * @brief Get the metadata value
+        *
+        * @param type The metadata type. refer to @ref FrameMetadataType
+        * @return long The result
+        * \else
+        * @brief 获取元数据值
+        *
+        * @param type 元数据类型。请参考@ref FrameMetadataType
+        * @return long 元数据值
+        * \endif
+        */
+        public long GetMetadataValue(FrameMetadataType type)
+        {
+            IntPtr error = IntPtr.Zero;
+            long value = obNative.ob_frame_get_metadata_value(_handle.Ptr, (uint)type, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+            return value;
+        }
+
         internal void Delete(IntPtr handle)
         {
             IntPtr error = IntPtr.Zero;
@@ -396,44 +491,6 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             return obNative.ob_video_frame_get_height(_handle.Ptr, ref error);
-        }
-
-        /**
-        * \if English
-        * @brief Get the metadata of the frame
-        *
-        * @return Byte[] returns the metadata of the frame
-        * \else
-        * @brief 获取帧的元数据
-        *
-        * @return Byte[] 返回帧的元数据
-        * \endif
-        */
-        public Byte[] GetMetadata()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr data = obNative.ob_frame_get_metadata(_handle.Ptr, ref error);
-            UInt32 dataSize = obNative.ob_frame_get_metadata_size(_handle.Ptr, ref error);
-            Byte[] buffer = new Byte[dataSize];
-            Marshal.Copy(data, buffer, 0, (int)dataSize);
-            return buffer;
-        }
-
-        /**
-        * \if English
-        * @brief Get the metadata size of the frame
-        *
-        * @return UInt32 returns the metadata size of the frame
-        * \else
-        * @brief 获取帧的元数据大小
-        *
-        * @return UInt32 返回帧的元数据大小
-        * \endif
-        */
-        public UInt32 GetMetadataSize()
-        {
-            IntPtr error = IntPtr.Zero;
-            return obNative.ob_frame_get_metadata_size(_handle.Ptr, ref error);
         }
 
         /**

@@ -281,17 +281,6 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(ptr);
         }
 
-        public static string GetVendorSpecificCode(string name)
-        {
-            IntPtr error = IntPtr.Zero;
-            string res = obNative.ob_filter_get_vendor_specific_code(name, ref error);
-            if (error != IntPtr.Zero)
-            {
-                throw new NativeException(new Error(error));
-            }
-            return res;
-        }
-
         public string GetConfigSchema()
         {
             IntPtr error = IntPtr.Zero;

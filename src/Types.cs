@@ -1529,10 +1529,11 @@ namespace Orbbec
         */
         public float zpd;
     }
-    
+
     /**
     * @brief HDR Configuration
     */
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct HdrConfig
     {
 
