@@ -303,11 +303,12 @@ namespace Orbbec
         public void SetStructuredData<T>(PropertyId propertyId, T data) where T : struct
         {
             IntPtr error = IntPtr.Zero;
-            IntPtr dataPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(T)));
+
+            uint dataSize = (uint)Marshal.SizeOf(typeof(T));
+            IntPtr dataPtr = Marshal.AllocHGlobal((int)dataSize);
             try
             {
                 Marshal.StructureToPtr(data, dataPtr, false);
-                uint dataSize = (uint)Marshal.SizeOf(typeof(T));
 
                 obNative.ob_device_set_structured_data(_handle.Ptr, propertyId, dataPtr, dataSize, ref error);
                 if (error != IntPtr.Zero)
@@ -336,13 +337,25 @@ namespace Orbbec
         * @param dataSize 获取的属性大小
         * \endif
         */
-        public void GetStructuredData(PropertyId propertyId, IntPtr data, ref UInt32 dataSize)
+        public void GetStructuredData<T>(PropertyId propertyId, ref T data) where T : struct
         {
             IntPtr error = IntPtr.Zero;
-            obNative.ob_device_get_structured_data(_handle.Ptr, propertyId, data, ref dataSize, ref error);
-            if(error != IntPtr.Zero)
+
+            uint dataSize = (uint)Marshal.SizeOf(typeof(T));
+            IntPtr dataPtr = Marshal.AllocHGlobal((int)dataSize);
+            try
             {
-                throw new NativeException(new Error(error));
+                obNative.ob_device_get_structured_data(_handle.Ptr, propertyId, dataPtr, ref dataSize, ref error);
+                if (error != IntPtr.Zero)
+                {
+                    throw new NativeException(new Error(error));
+                }
+
+                data = Marshal.PtrToStructure<T>(dataPtr);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(dataPtr);
             }
         }
 
