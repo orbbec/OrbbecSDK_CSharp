@@ -103,12 +103,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token).ContinueWith(t =>
-                {
-                    config.Dispose();
-                    pipeline.Stop();
-                    pipeline.Dispose();
-                });
+                }, tokenSource.Token);
             }
             catch (Exception e)
             {

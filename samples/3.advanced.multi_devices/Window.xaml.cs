@@ -186,14 +186,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token).ContinueWith(t =>
-                {
-                    foreach (Pipeline pipe in pipes.Values)
-                    {
-                        pipe.Stop();
-                        pipe.Dispose();
-                    }
-                });
+                }, tokenSource.Token);
             }
             catch (Exception e)
             {

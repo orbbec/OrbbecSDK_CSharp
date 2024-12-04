@@ -121,12 +121,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token).ContinueWith(t =>
-                {
-                    pipeline.Stop();
-                    pipeline.Dispose();
-                    device.Dispose();
-                });
+                }, tokenSource.Token);
             }
             catch (Exception e)
             {

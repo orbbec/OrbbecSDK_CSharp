@@ -76,13 +76,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token).ContinueWith(t =>
-                {
-                    pointCloud.Dispose();
-                    align.Dispose();
-                    pipeline.Stop();
-                    pipeline.Dispose();
-                });
+                }, tokenSource.Token);
             }
             catch (Exception e)
             {
@@ -229,6 +223,10 @@ namespace Orbbec
         private void Control_Closing(object sender, CancelEventArgs e)
         {
             tokenSource.Cancel();
+            if (pointCloud != null)
+            {
+                pointCloud.Dispose();
+            }
         }
     }
 }

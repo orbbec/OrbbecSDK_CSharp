@@ -61,7 +61,6 @@ namespace Orbbec
 
             try
             {
-                Context.SetLoggerToFile(LogSeverity.OB_LOG_SEVERITY_DEBUG, "C:\\Log\\OrbbecSDK");
                 Pipeline pipeline = new Pipeline();
 
                 Device device = pipeline.GetDevice();
@@ -99,11 +98,7 @@ namespace Orbbec
                             updateDepthPP = UpdateFrame(imgDepthPP, updateDepthPP, processedFrame);
                         }
                     }
-                }, tokenSource.Token).ContinueWith(t =>
-                {
-                    pipeline.Stop();
-                    pipeline.Dispose();
-                });
+                }, tokenSource.Token);
             }
             catch (Exception e)
             {
@@ -219,7 +214,7 @@ namespace Orbbec
                         {
                             string name = Marshal.PtrToStringAnsi(configSchema.name);
                             Console.WriteLine($" - {name}: {filter.GetConfigValue(name)}");
-                        }   
+                        }
                     }
                     else if (tokens.Length == 2)
                     {

@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -11,7 +10,6 @@ namespace Orbbec
     /// </summary>
     public partial class ImuWindow : Window
     {
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private readonly FrameCallback frameCallback;
         private Sensor accelSensor;
         private Sensor gyroSensor;
@@ -124,7 +122,6 @@ namespace Orbbec
 
         private void Control_Closing(object sender, CancelEventArgs e)
         {
-            tokenSource.Cancel();
             Stop();
         }
     }
