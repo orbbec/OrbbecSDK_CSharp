@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
@@ -17,6 +19,25 @@ namespace Orbbec
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private Device device;
         private HdrConfig hdrConfig;
+
+        public delegate bool ControlCtrlDelegate(int CtrlType);
+        [DllImport("kernel32.dll")]
+        private static extern bool SetConsoleCtrlHandler(ControlCtrlDelegate HandlerRoutine, bool Add);
+        private ControlCtrlDelegate cancelHandler;
+        private bool HandlerRoutine(int CtrlType)
+        {
+            switch (CtrlType)
+            {
+                case 0: // Ctrl+C close
+                    CleanupDevice();
+                    Environment.Exit(0);
+                    break;
+                case 2: // Press the console close button to close
+                    CleanupDevice();
+                    break;
+            }
+            return false; // Return false to indicate continued message delivery
+        }
 
         private static Action<VideoFrame> UpdateImage(Image img, Format format)
         {
@@ -98,6 +119,9 @@ namespace Orbbec
         public HDRWindow()
         {
             InitializeComponent();
+            
+            cancelHandler = new ControlCtrlDelegate(HandlerRoutine);
+            SetConsoleCtrlHandler(cancelHandler, true);
 
             Action<VideoFrame> updateDepth1;
             Action<VideoFrame> updateIrLeft1;
@@ -164,7 +188,7 @@ namespace Orbbec
                                 Dispatcher.Invoke(DispatcherPriority.Render, updateDepth1, depthFrame);
                                 Dispatcher.Invoke(DispatcherPriority.Render, updateIrLeft1, irLeftFrame);
                                 Dispatcher.Invoke(DispatcherPriority.Render, updateIrRight1, irRightFrame);
-                            } 
+                            }
                             else if (groupId == 1)
                             {
                                 Dispatcher.Invoke(DispatcherPriority.Render, updateDepth2, depthFrame);
@@ -181,18 +205,14 @@ namespace Orbbec
                                 var resultDepthFrame = resultFrameSet.GetFrame(FrameType.OB_FRAME_DEPTH).As<DepthFrame>();
 
                                 Dispatcher.Invoke(DispatcherPriority.Render, updateHDR, resultDepthFrame);
-                            } 
-                            catch(Exception e)
+                            }
+                            catch (Exception e)
                             {
                                 Console.WriteLine("HDRMerge error: " + e.Message);
                             }
                         }
                     }
-                }, tokenSource.Token).ContinueWith(t =>
-                {
-                    pipeline.Stop();
-                    pipeline.Dispose();
-                });
+                }, tokenSource.Token);
             }
             catch (Exception e)
             {
@@ -237,17 +257,23 @@ namespace Orbbec
             }
         }
 
-        private void Control_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void CleanupDevice()
         {
-            hdrConfig.enable = 0;
-            device.SetStructuredData(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, hdrConfig);
-
-            tokenSource.Cancel();
-
             if (device != null)
             {
+                hdrConfig.enable = 0;
+                device.SetStructuredData(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, hdrConfig);
+
                 device.Dispose();
+                device = null;
             }
+        }
+
+        private void Control_Closing(object sender, CancelEventArgs e)
+        {
+            tokenSource.Cancel();
+
+            CleanupDevice();
         }
     }
 }
