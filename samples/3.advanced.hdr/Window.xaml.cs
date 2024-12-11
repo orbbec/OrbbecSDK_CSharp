@@ -261,8 +261,11 @@ namespace Orbbec
         {
             if (device != null)
             {
-                hdrConfig.enable = 0;
-                device.SetStructuredData(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, hdrConfig);
+                if (device.IsPropertySupported(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, PermissionType.OB_PERMISSION_READ_WRITE))
+                {
+                    hdrConfig.enable = 0;
+                    device.SetStructuredData(PropertyId.OB_STRUCT_DEPTH_HDR_CONFIG, hdrConfig);
+                }
 
                 device.Dispose();
                 device = null;

@@ -21,7 +21,6 @@ namespace Orbbec
         private string curFilePath;
         private bool isUpgradeSuccess = false;
 
-
         public FirmwareUpdateWindow()
         {
             InitializeComponent();
@@ -31,8 +30,8 @@ namespace Orbbec
             try
             {
                 context = new Context();
-                context.SetDeviceChangedCallback((removedList, addedList) => 
-                { 
+                context.SetDeviceChangedCallback((removedList, addedList) =>
+                {
                     for (uint i = 0; i < removedList.DeviceCount(); i++)
                     {
                         string rmSN = removedList.SerialNumber(i);

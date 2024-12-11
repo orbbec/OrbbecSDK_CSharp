@@ -89,7 +89,7 @@ namespace Orbbec
                         sensorType == SensorType.OB_SENSOR_IR_LEFT ||
                         sensorType == SensorType.OB_SENSOR_IR_RIGHT)
                     {
-                        config.EnableVideoStream(sensorType, 0, 0, 30, Format.OB_FORMAT_Y8);
+                        config.EnableVideoStream(sensorType, 0, 0, 30, Format.OB_FORMAT_ANY);
                     }
                 }
 

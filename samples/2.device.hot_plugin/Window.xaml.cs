@@ -74,7 +74,14 @@ namespace Orbbec
             Dispatcher.Invoke(() => DeviceInfoTextBlock.Text = "Rebooting devices...");
             for (uint i = 0; i < curDeviceList.DeviceCount(); i++)
             {
-                curDeviceList.GetDevice(i).Reboot();
+                try
+                {
+                    curDeviceList.GetDevice(i).Reboot();
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine(error);
+                }
             }
         }
 

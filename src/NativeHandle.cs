@@ -47,7 +47,7 @@ namespace Orbbec
 
         public void Release()
         {
-            if (--ReferenceCount > 0) 
+            if (--ReferenceCount > 0)
                 return;
 
             ThrowIfInvalid();

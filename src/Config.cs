@@ -117,7 +117,7 @@ namespace Orbbec
         * \endif
         */
         public void EnableVideoStream(StreamType streamType, int width = 0, int height = 0,
-            int fps = 0, Format format = Format.OB_FORMAT_UNKNOWN)
+            int fps = 0, Format format = Format.OB_FORMAT_ANY)
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_config_enable_video_stream(_handle.Ptr, streamType, width, height, fps, format, ref error);
@@ -153,6 +153,68 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             StreamType streamType = TypeHelper.ConvertSensorTypeToStreamType(sensorType);
             obNative.ob_config_enable_video_stream(_handle.Ptr, streamType, width, height, fps, format, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+         * \if English
+         * @brief Enable an accelerometer stream to be used in the pipeline.
+         *
+         * This function allows users to enable an accelerometer stream with customizable parameters.
+         * If no parameters are specified, the stream will be enabled with default settings.
+         * Users who wish to set custom full-scale ranges or sample rates should refer to the product manual, as available settings vary by device model.
+         *
+         * @param fullScaleRange The full-scale range of the accelerometer (default is OB_ACCEL_FULL_SCALE_RANGE_ANY, which selects the default range).
+         * @param sampleRate The sample rate of the accelerometer (default is OB_ACCEL_SAMPLE_RATE_ANY, which selects the default rate).
+         * \else
+         * @brief 启用pipeline中使用的加速计流
+         * 
+         * 此功能允许用户启用具有可自定义参数的加速计流
+         * 如果未指定参数，则将使用默认设置启用流
+         * 希望设置自定义满标度范围或采样率的用户应参考产品手册，因为可用设置因设备型号而异
+         * 
+         * @param fullScaleRange 加速计的满标度范围（默认为OB_ACCEL_full_scale_range_ANY，用于选择默认范围）
+         * @param sampleRate 加速计的采样率（默认值为OB_ACCEL_AMPLE_rate_ANY，用于选择默认速率）
+         */
+        public void EnableAccelStream(AccelFullScaleRange fullScaleRange = AccelFullScaleRange.OB_ACCEL_FULL_SCALE_RANGE_ANY,
+            AccelSampleRate sampleRate = AccelSampleRate.OB_ACCEL_SAMPLE_RATE_ANY)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_enable_accel_stream(_handle.Ptr, fullScaleRange, sampleRate, ref error);
+            if (error != IntPtr.Zero)
+            {
+                throw new NativeException(new Error(error));
+            }
+        }
+
+        /**
+         * \if English
+         * @brief Enable an gyroscope stream to be used in the pipeline.
+         *
+         * This function allows users to enable an gyroscope stream with customizable parameters.
+         * If no parameters are specified, the stream will be enabled with default settings.
+         * Users who wish to set custom full-scale ranges or sample rates should refer to the product manual, as available settings vary by device model.
+         *
+         * @param fullScaleRange The full-scale range of the accelerometer (default is OB_GYRO_FULL_SCALE_RANGE_ANY, which selects the default range).
+         * @param sampleRate The sample rate of the accelerometer (default is OB_GYRO_SAMPLE_RATE_ANY, which selects the default rate).
+         * \else
+         * @brief 启用pipeline中使用的陀螺仪流
+         * 
+         * 此功能允许用户启用具有可自定义参数的陀螺仪流
+         * 如果未指定参数，则将使用默认设置启用流
+         * 希望设置自定义满标度范围或采样率的用户应参考产品手册，因为可用设置因设备型号而异
+         * 
+         * @param fullScaleRange 加速计的满标度范围（默认为OB_GYRO_FULL_SCALE_RANGE_ANY，用于选择默认范围）
+         * @param sampleRate 加速计的采样率（默认值为OB_GYRO_SAMPLE_RATE_ANY，用于选择默认速率）
+         */
+        public void EnableGyroStream(GyroFullScaleRange fullScaleRange = GyroFullScaleRange.OB_GYRO_FULL_SCALE_RANGE_ANY,
+            GyroSampleRate sampleRate = GyroSampleRate.OB_GYRO_SAMPLE_RATE_ANY)
+        {
+            IntPtr error = IntPtr.Zero;
+            obNative.ob_config_enable_gyro_stream(_handle.Ptr, fullScaleRange, sampleRate, ref error);
             if (error != IntPtr.Zero)
             {
                 throw new NativeException(new Error(error));

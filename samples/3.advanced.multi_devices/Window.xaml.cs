@@ -8,6 +8,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
+using SystemDrawing = System.Drawing;
 
 namespace Orbbec
 {
@@ -33,13 +36,48 @@ namespace Orbbec
                 int stride = wbmp.BackBufferStride;
                 byte[] data = new byte[frame.GetDataSize()];
                 frame.CopyData(ref data);
-                if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
+                if (frame.GetFrameType() == FrameType.OB_FRAME_COLOR &&
+                    frame.GetFormat() == Format.OB_FORMAT_MJPG)
+                {
+                    data = ConvertMJPGToRGB(data);
+                }
+                else if(frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
                 {
                     data = ConvertDepthToRGBData(data);
                 }
                 var rect = new Int32Rect(0, 0, width, height);
                 wbmp.WritePixels(rect, data, stride, 0);
             });
+        }
+
+        private static byte[] ConvertMJPGToRGB(byte[] mjpgData)
+        {
+            using (var ms = new MemoryStream(mjpgData))
+            {
+                using (var jpegImage = new SystemDrawing.Bitmap(ms))
+                {
+                    SystemDrawing.Rectangle rect = new SystemDrawing.Rectangle(0, 0, jpegImage.Width, jpegImage.Height);
+                    SystemDrawing.Imaging.BitmapData bmpData =
+                        jpegImage.LockBits(rect, SystemDrawing.Imaging.ImageLockMode.ReadOnly, SystemDrawing.Imaging.PixelFormat.Format24bppRgb);
+
+                    IntPtr ptr = bmpData.Scan0;
+                    int size = Math.Abs(bmpData.Stride) * jpegImage.Height;
+                    byte[] rgbData = new byte[size];
+
+                    Marshal.Copy(ptr, rgbData, 0, size);
+
+                    jpegImage.UnlockBits(bmpData);
+
+                    for (int i = 0; i < rgbData.Length; i += 3)
+                    {
+                        byte temp = rgbData[i];
+                        rgbData[i] = rgbData[i + 2];
+                        rgbData[i + 2] = temp;
+                    }
+
+                    return rgbData;
+                }
+            }
         }
 
         private static byte[] ConvertDepthToRGBData(byte[] depthData)
@@ -200,8 +238,8 @@ namespace Orbbec
             try
             {
                 Config config = new Config();
-                config.EnableVideoStream(StreamType.OB_STREAM_COLOR, 0, 0, 30, Format.OB_FORMAT_RGB);
-                config.EnableVideoStream(StreamType.OB_STREAM_DEPTH, 0, 0, 30, Format.OB_FORMAT_Y16);
+                config.EnableVideoStream(StreamType.OB_STREAM_COLOR);
+                config.EnableVideoStream(StreamType.OB_STREAM_DEPTH);
 
                 pipe.Start(config);
                 

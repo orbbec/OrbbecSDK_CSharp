@@ -17,6 +17,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DOTNET_REFERENCES
     "System"
     "System.Xaml"
+    "System.Drawing"
     "PresentationCore"
     "PresentationFramework"
     "WindowsBase"

@@ -184,6 +184,7 @@ namespace Orbbec
         OB_FORMAT_RGBA       = 31, /**< RGBA format */
         OB_FORMAT_BYR2       = 32, /**< byr2 format */
         OB_FORMAT_RW16       = 33, /**< RAW16 format */
+        OB_FORMAT_ANY        = OB_FORMAT_UNKNOWN
     }
 
     /**
@@ -588,6 +589,7 @@ namespace Orbbec
         OB_SAMPLE_RATE_8_KHZ,         /**< 8KHz */
         OB_SAMPLE_RATE_16_KHZ,        /**< 16KHz */
         OB_SAMPLE_RATE_32_KHZ,        /**< 32Hz */
+        OB_GYRO_SAMPLE_RATE_ANY = OB_SAMPLE_RATE_UNKNOWN
     }
 
     public enum AccelSampleRate
@@ -608,6 +610,7 @@ namespace Orbbec
         OB_SAMPLE_RATE_8_KHZ,         /**< 8KHz */
         OB_SAMPLE_RATE_16_KHZ,        /**< 16KHz */
         OB_SAMPLE_RATE_32_KHZ,        /**< 32Hz */
+        OB_ACCEL_SAMPLE_RATE_ANY = OB_SAMPLE_RATE_UNKNOWN
     }
 
     public enum IMUSampleRate
@@ -648,6 +651,7 @@ namespace Orbbec
         OB_GYRO_FS_500dps,      /**< 500 degrees per second */
         OB_GYRO_FS_1000dps,     /**< 1000 degrees per second */
         OB_GYRO_FS_2000dps,     /**< 2000 degrees per second */
+        OB_GYRO_FULL_SCALE_RANGE_ANY = OB_GYRO_FS_UNKNOWN
     }
 
     /**
@@ -664,6 +668,7 @@ namespace Orbbec
         OB_ACCEL_FS_4g,          /**< 4x the acceleration of gravity */
         OB_ACCEL_FS_8g,          /**< 8x the acceleration of gravity */
         OB_ACCEL_FS_16g,         /**< 16x the acceleration of gravity */
+        OB_ACCEL_FULL_SCALE_RANGE_ANY = OB_ACCEL_FS_UNKNOWN
     }
 
     /**

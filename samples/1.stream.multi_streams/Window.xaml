@@ -19,19 +19,19 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="0">
+            <Image x:Name="imgColor" />
             <TextBlock Text="Color Stream" 
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Center"
                        FontSize="16" FontWeight="Bold"
-                       Margin="0,5,0,0" />
-            <Image x:Name="imgColor" />
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1">
             <TextBlock Text="Accel Data" 
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Center"
                        FontSize="16" FontWeight="Bold"
-                       Margin="0,5,0,0" />
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
             <TextBlock Name="tbAccel" Text="" FontSize="16"
                    VerticalAlignment="Center" HorizontalAlignment="Center"
                    TextWrapping="Wrap" />
@@ -41,34 +41,42 @@
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Center"
                        FontSize="16" FontWeight="Bold"
-                       Margin="0,5,0,0" />
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
             <TextBlock Name="tbGyro" Text="" FontSize="16"
                    VerticalAlignment="Center" HorizontalAlignment="Center"
                    TextWrapping="Wrap" />
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">
+            <Image x:Name="imgDepth" />
             <TextBlock Text="Depth Stream" 
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Center"
                        FontSize="16" FontWeight="Bold"
-                       Margin="0,5,0,0" />
-            <Image x:Name="imgDepth" />
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
         </Grid>
-        <Grid Grid.Row="1" Grid.Column="1">
+        <Grid x:Name="irGrid" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="Collapsed">
+            <Image x:Name="imgIr" />
+            <TextBlock Text="IR Stream" 
+                       VerticalAlignment="Top" 
+                       HorizontalAlignment="Center"
+                       FontSize="16" FontWeight="Bold"
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
+        </Grid>
+        <Grid x:Name="irLeftGrid" Grid.Row="1" Grid.Column="1" Visibility="Collapsed">
+            <Image x:Name="imgIrLeft" />
             <TextBlock Text="IR Left Stream" 
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Center"
                        FontSize="16" FontWeight="Bold"
-                       Margin="0,5,0,0" />
-            <Image x:Name="imgIrLeft" />
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
         </Grid>
-        <Grid Grid.Row="1" Grid.Column="2">
+        <Grid x:Name="irRightGrid" Grid.Row="1" Grid.Column="2" Visibility="Collapsed">
+            <Image x:Name="imgIrRight" />
             <TextBlock Text="IR Right Stream" 
                        VerticalAlignment="Top" 
                        HorizontalAlignment="Center"
                        FontSize="16" FontWeight="Bold"
-                       Margin="0,5,0,0" />
-            <Image x:Name="imgIrRight" />
+                       Margin="0,5,0,0" Foreground="GreenYellow" />
         </Grid>
     </Grid>
 </Window>
