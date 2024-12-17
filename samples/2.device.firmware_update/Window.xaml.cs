@@ -43,6 +43,12 @@ namespace Orbbec
 
                     for (uint i = 0; i < addedList.DeviceCount(); i++)
                     {
+                        int pid = addedList.Pid(i);
+                        if (pid == 0x066B || pid == 0x0669)
+                        {
+                            MessageBox.Show(addedList.Name(i) + " 不支持当前固件升级方法");
+                            continue;
+                        }
                         string serialNumber = addedList.SerialNumber(0);
                         if (!devices.ContainsKey(serialNumber))
                         {
@@ -58,6 +64,10 @@ namespace Orbbec
                             curDevice = devices.Values.ElementAt(0);
                             UpdateDeviceInfo(curDevice.GetDeviceInfo());
                         }
+                        else
+                        {
+                            UpdateDeviceInfo(null);
+                        }
                     });
                 });
                 DeviceList deviceList = context.QueryDeviceList();
@@ -65,6 +75,12 @@ namespace Orbbec
                 {
                     for (uint i = 0; i < deviceList.DeviceCount(); i++)
                     {
+                        int pid = deviceList.Pid(i);
+                        if (pid == 0x066B || pid == 0x0669)
+                        {
+                            MessageBox.Show(deviceList.Name(i) + " 不支持当前固件升级方法");
+                            continue;
+                        }
                         var device = deviceList.GetDevice(i);
                         string sn = deviceList.SerialNumber(i);
                         if (!devices.ContainsKey(sn))
@@ -201,13 +217,20 @@ namespace Orbbec
 
         private void UpdateDeviceInfo(DeviceInfo deviceInfo)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Device name: {deviceInfo.Name()}");
-            sb.AppendLine($"Device pid: {deviceInfo.Pid()}");
-            sb.AppendLine($"Firmware version: {deviceInfo.FirmwareVersion()}");
-            sb.AppendLine($"Serial number: {deviceInfo.SerialNumber()}");
+            if (deviceInfo != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"Device name: {deviceInfo.Name()}");
+                sb.AppendLine($"Device pid: {deviceInfo.Pid()}");
+                sb.AppendLine($"Firmware version: {deviceInfo.FirmwareVersion()}");
+                sb.AppendLine($"Serial number: {deviceInfo.SerialNumber()}");
 
-            deviceInfoTextBlock.Text = sb.ToString();
+                deviceInfoTextBlock.Text = sb.ToString();
+            }
+            else
+            {
+                deviceInfoTextBlock.Text = "";
+            }
         }
 
         private void Control_Closing(object sender, CancelEventArgs e)
