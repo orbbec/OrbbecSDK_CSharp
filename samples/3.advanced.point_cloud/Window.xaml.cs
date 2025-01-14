@@ -25,18 +25,57 @@ namespace Orbbec
         {
             InitializeComponent();
 
+            Pipeline pipeline = null;
             dirPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             dirPath += "Low";
             dirPath = Path.Combine(dirPath, "Orbbec");
 
             try
             {
+                Console.WriteLine("\n--- NOTE ---");
+                Console.WriteLine("Ensure network devices are set up in Orbbec Viewer before enabling them.\n");
+                
+                Console.Write("Turn on the network device? (Y/YES or N/NO): ");
+                string userInput = Console.ReadLine()?.Trim().ToLower();
+                if (userInput == "y" || userInput == "yes")
+                {
+                    Console.WriteLine("\n--- Network Device Setup ---");
+                    Context context = new Context();
+                    context.EnableNetDeviceEnumeration(true);
+                    Console.WriteLine("Network device enumeration enabled.\n");
+
+                    Console.Write("Please enter IP address: ");
+                    string ip = Console.ReadLine();
+                    Console.Write("Please enter the port: ");
+                    string portStr = Console.ReadLine();
+                    if (ushort.TryParse(portStr, out ushort port))
+                    {
+                        Device netDevice = context.CreateNetDevice(ip, port);
+                        pipeline = new Pipeline(netDevice);
+                        Console.WriteLine("\nPipeline created successfully with the network device.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nInvalid port input! Please enter a valid port number.");
+                        Environment.Exit(0);
+                    }
+                }
+                else if (userInput == "n" || userInput == "no")
+                {
+                    pipeline = new Pipeline();
+                    Console.WriteLine("\nPipeline created successfully without the network device.");
+                }
+                else
+                {
+                    Console.WriteLine("\nInput error! Please enter Y/YES or N/NO.");
+                    Environment.Exit(0);
+                }
+
                 Config config = new Config();
                 config.EnableVideoStream(StreamType.OB_STREAM_DEPTH, 0, 0, 0, Format.OB_FORMAT_Y16);
                 config.EnableVideoStream(StreamType.OB_STREAM_COLOR, 0, 0, 0, Format.OB_FORMAT_RGB);
                 config.SetFrameAggregateOutputMode(FrameAggregateOutputMode.OB_FRAME_AGGREGATE_OUTPUT_ALL_TYPE_FRAME_REQUIRE);
 
-                Pipeline pipeline = new Pipeline();
                 pipeline.EnableFrameSync();
                 pipeline.Start(config);
 
@@ -76,7 +115,7 @@ namespace Orbbec
                             }
                         }
                     }
-                }, tokenSource.Token);
+                }, tokenSource.Token).ContinueWith(t => pipeline.Stop());
             }
             catch (Exception e)
             {
