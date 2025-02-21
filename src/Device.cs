@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Orbbec
 {
@@ -487,6 +488,29 @@ namespace Orbbec
             IntPtr intPtr = gcHandle.AddrOfPinnedObject();
             obNative.ob_device_update_firmware_from_data(_handle.Ptr, intPtr, (UInt32)fileData.Length, _nativeDeviceUpgradeCallback, async, IntPtr.Zero, ref error);
             gcHandle.Free();
+            NativeException.HandleError(error);
+        }
+
+        private const int OB_PATH_MAX = 1024;
+        public void UpdateOptionalDepthPresets(string[] filePaths, int pathCount, DeviceUpgradeCallback callback)
+        {
+            _deviceUpgradeCallback = callback;
+            IntPtr error = IntPtr.Zero;
+            IntPtr filesPtr = Marshal.AllocHGlobal(filePaths.Length * OB_PATH_MAX);
+            for (int i = 0; i < filePaths.Length; i++)
+            {
+                byte[] buffer = new byte[OB_PATH_MAX];
+                byte[] pathBytes = Encoding.UTF8.GetBytes(filePaths[i]);
+                int copyLength = Math.Min(pathBytes.Length, OB_PATH_MAX - 1);
+
+                Array.Copy(pathBytes, 0, buffer, 0, copyLength);
+                buffer[copyLength] = 0;
+
+                IntPtr filePtr = IntPtr.Add(filesPtr, i * OB_PATH_MAX);
+                Marshal.Copy(buffer, 0, filePtr, OB_PATH_MAX);
+            }
+            obNative.ob_device_update_optional_depth_presets(_handle.Ptr, filesPtr, (uint)pathCount, _nativeDeviceUpgradeCallback, IntPtr.Zero, ref error);
+            Marshal.FreeHGlobal(filesPtr);
             NativeException.HandleError(error);
         }
 

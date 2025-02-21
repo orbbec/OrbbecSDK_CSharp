@@ -216,6 +216,10 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_device_update_firmware_from_data")]
         public static extern void ob_device_update_firmware_from_data(IntPtr device, IntPtr fileData, UInt32 fileSize, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceUpgradeCallback callback, bool asycn, IntPtr userData, ref IntPtr error);
 
+        //void ob_device_update_optional_depth_presets(ob_device *device, const char file_path_list[][OB_PATH_MAX], uint8_t path_count, ob_device_fw_update_callback callback, void* user_data, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_update_optional_depth_presets")]
+        public static extern void ob_device_update_optional_depth_presets(IntPtr device, IntPtr filePathList, uint pathCount, [MarshalAs(UnmanagedType.FunctionPtr)] NativeDeviceUpgradeCallback callback, IntPtr userData, ref IntPtr error);
+
         //ob_device_state ob_device_get_device_state( ob_device* device, ob_error** error );
         [DllImport(obsdk, EntryPoint = "ob_device_get_device_state")]
         public static extern UInt64 ob_device_get_device_state(IntPtr device, ref IntPtr error);
