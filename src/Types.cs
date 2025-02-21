@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
-
     /**
     * \if English
     * @brief the permission type of api or property
@@ -141,6 +140,42 @@ namespace Orbbec
         OB_FRAME_TYPE_COUNT,     /**< The total number of frame types, is not a valid frame type */
     }
 
+    public enum PixelType
+    {
+        /**
+        * \if English
+        * Unknown pixel type, or undefined pixel type for current frame
+        * \else
+        * 像素类型未知，或当前帧的像素类型未定义
+        * \endif
+        */
+        OB_PIXEL_UNKNOWN = -1,
+        /**
+        * \if English
+        * Depth pixel type, the value of the pixel is the distance from the camera to the object
+        * \else
+        * 深度像素类型，像素的值是从相机到对象的距离
+        * \endif
+        */
+        OB_PIXEL_DEPTH = 0,
+        /**
+        * \if English
+        * Disparity for structured light camera
+        * \else
+        * 结构光相机的视差
+        * \endif
+        */
+        OB_PIXEL_DISPARITY = 2,
+        /**
+        * \if English
+        * Raw phase for tof camera
+        * \else
+        * tof相机的原始阶段
+        * \endif
+        */
+        OB_PIXEL_RAW_PHASE = 3,
+    }
+
     /**
     * \if English
     * @brief Enumeration value describing the pixel format
@@ -196,20 +231,24 @@ namespace Orbbec
     */
     public enum UpgradeState
     {
-        STAT_VERIFY_SUCCESS = 5,  /**< Image file verifify success */
-        STAT_FILE_TRANSFER  = 4,  /**< file transfer */
-        STAT_DONE           = 3,  /**< update completed */
-        STAT_IN_PROGRESS    = 2,  /**< upgrade in process */
-        STAT_START          = 1,  /**< start the upgrade */
-        STAT_VERIFY_IMAGE   = 0,  /**< Image file verification */
-        ERR_VERIFY          = -1, /**< Verification failed */
-        ERR_PROGRAM         = -2, /**< Program execution failed */
-        ERR_ERASE           = -3, /**< Flash parameter failed */
-        ERR_FLASH_TYPE      = -4, /**< Flash type error */
-        ERR_IMAGE_SIZE      = -5, /**< Image file size error */
-        ERR_OTHER           = -6, /**< other errors */
-        ERR_DDR             = -7, /**< DDR access error */
-        ERR_TIMEOUT         = -8  /**< timeout error */
+        STAT_DONE_WITH_DUPLICATES = 6,   /**< update completed, but some files were duplicated and ignored */
+        STAT_VERIFY_SUCCESS       = 5,   /**< Image file verifify success */
+        STAT_FILE_TRANSFER        = 4,   /**< file transfer */
+        STAT_DONE                 = 3,   /**< update completed */
+        STAT_IN_PROGRESS          = 2,   /**< upgrade in process */
+        STAT_START                = 1,   /**< start the upgrade */
+        STAT_VERIFY_IMAGE         = 0,   /**< Image file verification */
+        ERR_VERIFY                = -1,  /**< Verification failed */
+        ERR_PROGRAM               = -2,  /**< Program execution failed */
+        ERR_ERASE                 = -3,  /**< Flash parameter failed */
+        ERR_FLASH_TYPE            = -4,  /**< Flash type error */
+        ERR_IMAGE_SIZE            = -5,  /**< Image file size error */
+        ERR_OTHER                 = -6,  /**< other errors */
+        ERR_DDR                   = -7,  /**< DDR access error */
+        ERR_TIMEOUT               = -8,  /**< timeout error */
+        ERR_MISMATCH              = -9,  /**< Mismatch firmware error */
+        ERR_UNSUPPORT_DEV         = -10, /**< Unsupported device error */
+        ERR_INVALID_COUNT         = -11, /**< invalid firmware/preset count */
     }
 
     /**
@@ -997,6 +1036,11 @@ namespace Orbbec
         OB_SYNC_MODE_SECONDARY_SOFT_TRIGGER = 0x07,
 
         /**
+         * @brief IR and IMU sync signal
+         */
+        OB_SYNC_MODE_IR_IMU_SYNC = 0x08,
+
+        /**
         * @brief Unknown type
         */
         OB_SYNC_MODE_UNKNOWN = 0xff,
@@ -1011,8 +1055,6 @@ namespace Orbbec
     * @brief 单机内不同 Sensor 的同步 及 多机间同步 配置
     * \endif
     */
-    
-    
     public struct DeviceSyncConfig
     {
         /**
@@ -1108,6 +1150,19 @@ namespace Orbbec
     }
 
     /**
+     * \if English
+     * @brief Preset tag
+     * \else
+     * @brief 预设标签
+     * \endif
+     */
+    public enum DepthWorkModeTag
+    {
+        OB_DEVICE_DEPTH_WORK_MODE = 0,
+        OB_CUSTOM_DEPTH_WORK_MODE = 1,
+    }
+
+    /**
     * \if English
     * @brief Depth work mode
     * \else
@@ -1119,9 +1174,10 @@ namespace Orbbec
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
         public byte[] checksum;  ///< \if English Checksum of work mode \else 相机深度模式对应哈希二进制数组 \endif
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        public char[]    name;      ///< \if English 名称 \else Name of work mode \endif
+        public char[]    name;      ///< \if English Name of work mode \else 名称 \endif
+        public DepthWorkModeTag tag; ///< \if English Preset tag \else 预设标签 \endif
     }
-    
+
     /**
     * @brief SequenceId fliter list item
     */
@@ -1316,6 +1372,13 @@ namespace Orbbec
         * @attention In this mode, the user may return null when getting the specified type of data frame from the acquired FrameSet
         */
         OB_FRAME_AGGREGATE_OUTPUT_ANY_SITUATION,
+
+        /**
+         * @brief Disable Frame Aggreate
+         *
+         * @attention In this mode, All types of data frames will output independently.
+         */
+        OB_FRAME_AGGREGATE_OUTPUT_DISABLE,
     } 
 
     /**
@@ -1428,6 +1491,10 @@ namespace Orbbec
         */
         OB_MULTI_DEVICE_SYNC_MODE_HARDWARE_TRIGGERING = 1 << 6,
 
+        /**
+         * @brief IR and IMU sync mode
+         */
+        OB_MULTI_DEVICE_SYNC_MODE_IR_IMU_SYNC = 1 << 7,
     }
 
     /**
@@ -1566,6 +1633,43 @@ namespace Orbbec
         public Int16 y0_top;
         public Int16 x1_right;
         public Int16 y1_bottom;
+    }
+
+    public enum FilterConfigValueType
+    {
+        OB_FILTER_CONFIG_VALUE_TYPE_INVALID = -1,
+        OB_FILTER_CONFIG_VALUE_TYPE_INT = 0,
+        OB_FILTER_CONFIG_VALUE_TYPE_FLOAT = 1,
+        OB_FILTER_CONFIG_VALUE_TYPE_BOOLEAN = 2,
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct FilterConfigSchemaItem
+    {
+        public IntPtr name;  ///< Name of the configuration item
+        public FilterConfigValueType type;  ///< Value type of the configuration item
+        public double min;   ///< Minimum value casted to double
+        public double max;   ///< Maximum value casted to double
+        public double step;  ///< Step value casted to double
+        public double def;   ///< Default value casted to double
+        public IntPtr desc;  ///< Description of the configuration item
+    }
+
+    public struct DeviceSerialNumber
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        public char[] numberStr;
+    }
+
+    /**
+     * @brief Disparity offset interleaving configuration
+     */
+    public struct DispOffsetConfig
+    {
+        public byte enable;
+        public byte offset0;
+        public byte offset1;
+        public byte reserved;
     }
 
     /**
@@ -1753,72 +1857,20 @@ namespace Orbbec
         OB_FRAME_METADATA_TYPE_GPIO_INPUT_DATA = 31,
 
         /**
+         * @brief disparity search offset value
+         */
+        OB_FRAME_METADATA_TYPE_DISPARITY_SEARCH_OFFSET = 32,
+
+        /**
+         * @brief disparity search range
+         */
+        OB_FRAME_METADATA_TYPE_DISPARITY_SEARCH_RANGE = 33,
+
+        /**
         * @brief The number of frame metadata types, using for types iterating
         * @attention It is not a valid frame metadata type
         */
         OB_FRAME_METADATA_TYPE_COUNT,
-    }
-
-    public enum PixelType
-    {
-        /**
-        * \if English
-        * Unknown pixel type, or undefined pixel type for current frame
-        * \else
-        * 像素类型未知，或当前帧的像素类型未定义
-        * \endif
-        */
-        OB_PIXEL_UNKNOWN = -1,
-        /**
-        * \if English
-        * Depth pixel type, the value of the pixel is the distance from the camera to the object
-        * \else
-        * 深度像素类型，像素的值是从相机到对象的距离
-        * \endif
-        */
-        OB_PIXEL_DEPTH = 0,
-        /**
-        * \if English
-        * Disparity for structured light camera
-        * \else
-        * 结构光相机的视差
-        * \endif
-        */
-        OB_PIXEL_DISPARITY = 2,
-        /**
-        * \if English
-        * Raw phase for tof camera
-        * \else
-        * tof相机的原始阶段
-        * \endif
-        */
-        OB_PIXEL_RAW_PHASE = 3,
-    }
-
-    public enum FilterConfigValueType
-    {
-        OB_FILTER_CONFIG_VALUE_TYPE_INVALID = -1,
-        OB_FILTER_CONFIG_VALUE_TYPE_INT = 0,
-        OB_FILTER_CONFIG_VALUE_TYPE_FLOAT = 1,
-        OB_FILTER_CONFIG_VALUE_TYPE_BOOLEAN = 2,
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct FilterConfigSchemaItem
-    {
-        public IntPtr name;  ///< Name of the configuration item
-        public FilterConfigValueType type;  ///< Value type of the configuration item
-        public double min;   ///< Minimum value casted to double
-        public double max;   ///< Maximum value casted to double
-        public double step;  ///< Step value casted to double
-        public double def;   ///< Default value casted to double
-        public IntPtr desc;  ///< Description of the configuration item
-    }
-
-    public struct DeviceSerialNumber
-    {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-        public char[] numberStr;
     }
 
     public struct DisparityParam
