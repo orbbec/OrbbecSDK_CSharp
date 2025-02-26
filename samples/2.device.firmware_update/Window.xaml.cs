@@ -19,7 +19,7 @@ namespace Orbbec
         private Device curDevice;
 
         private string curFilePath;
-        private bool isUpgradeSuccess = false;
+        private bool firstCall = true;
 
         public FirmwareUpdateWindow()
         {
@@ -113,9 +113,8 @@ namespace Orbbec
         {
             if (devices.Count > 0)
             {
-                curDevice = devices.Values.ElementAt(0);
+                OnDeviceSelect(0);
                 UpdateDeviceSelector();
-                UpdateDeviceInfo(curDevice.GetDeviceInfo());
             }
         }
 
@@ -126,14 +125,7 @@ namespace Orbbec
             {
                 deviceSelector.Items.Add(device.GetDeviceInfo().Name());
             }
-            if (devices.Count > 0)
-            {
-                deviceSelector.SelectedIndex = 0;
-            }
-            else
-            {
-                deviceSelector.SelectedIndex = -1;
-            }
+            deviceSelector.SelectedIndex = devices.Count > 0 ? 0 : -1;
         }
 
         private void OnDeviceSelect(int index)
@@ -152,13 +144,13 @@ namespace Orbbec
 
             if (openFileDialog.ShowDialog() == true)
             {
+                curFilePath = openFileDialog.FileName;
                 filePathTextBox.Text = openFileDialog.FileName;
             }
         }
 
         private void OnFilePathChange()
         {
-            curFilePath = filePathTextBox.Text;
             Console.WriteLine(curFilePath);
         }
 
@@ -175,26 +167,24 @@ namespace Orbbec
             {
                 var upgradeTask = new TaskCompletionSource<bool>();
 
-                curDevice.DeviceUpgrade(curFilePath, (state, percent, msg) =>
+                curDevice.DeviceUpgrade(curFilePath, (state, msg, percent) =>
                 {
-                    Console.WriteLine($"state={state}, percent={percent}, msg={msg}");
+                    FirmwareUpdateCallback(state, msg, percent);
                     if (state == UpgradeState.STAT_DONE)
                     {
-                        isUpgradeSuccess = true;
                         upgradeTask.SetResult(true);
                     }
                     else if (state == UpgradeState.ERR_VERIFY || state == UpgradeState.ERR_PROGRAM || state == UpgradeState.ERR_ERASE ||
                             state == UpgradeState.ERR_FLASH_TYPE || state == UpgradeState.ERR_IMAGE_SIZE || state == UpgradeState.ERR_OTHER ||
                             state == UpgradeState.ERR_DDR || state == UpgradeState.ERR_TIMEOUT)
                     {
-                        isUpgradeSuccess = false;
                         upgradeTask.SetResult(false);
                     }
                 });
 
-                await upgradeTask.Task;
+                bool success = await upgradeTask.Task;
 
-                if (isUpgradeSuccess)
+                if (success)
                 {
                     firmwareUpdateButton.IsEnabled = true;
                     curDevice.Reboot();
@@ -231,6 +221,48 @@ namespace Orbbec
             {
                 deviceInfoTextBlock.Text = "";
             }
+        }
+
+        private void FirmwareUpdateCallback(UpgradeState state, string message, byte percent)
+        {
+            if (firstCall)
+            {
+                firstCall = !firstCall;
+            }
+            else
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 3); // Move cursor up 3 lines
+            }
+
+            Console.WriteLine($"Progress: {percent}%");
+
+            Console.Write("Status  : ");
+            switch (state)
+            {
+                case UpgradeState.STAT_VERIFY_SUCCESS:
+                    Console.WriteLine("Image file verification success");
+                    break;
+                case UpgradeState.STAT_FILE_TRANSFER:
+                    Console.WriteLine("File transfer in progress");
+                    break;
+                case UpgradeState.STAT_DONE:
+                    Console.WriteLine("Update completed");
+                    break;
+                case UpgradeState.STAT_IN_PROGRESS:
+                    Console.WriteLine("Update in progress");
+                    break;
+                case UpgradeState.STAT_START:
+                    Console.WriteLine("Starting the update");
+                    break;
+                case UpgradeState.STAT_VERIFY_IMAGE:
+                    Console.WriteLine("Verifying image file");
+                    break;
+                default:
+                    Console.WriteLine("Unknown status or error");
+                    break;
+            }
+
+            Console.WriteLine($"Message : {message}");
         }
 
         private void Control_Closing(object sender, CancelEventArgs e)
