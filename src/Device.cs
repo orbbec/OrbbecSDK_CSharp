@@ -839,7 +839,7 @@ namespace Orbbec
             NativeException.HandleError(error);
         }
 
-        public PresetList GetPresetList()
+        public PresetList GetAvailablePresetList()
         {
             IntPtr error = IntPtr.Zero;
             IntPtr ptr = obNative.ob_device_get_available_preset_list(_handle.Ptr, ref error);
