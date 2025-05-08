@@ -12,7 +12,7 @@ namespace Orbbec
 
     public class Device : IDisposable
     {
-        private NativeHandle _handle;
+        protected NativeHandle _handle;
         private DeviceStateCallback _deviceStateCallback;
         private NativeDeviceStateCallback _nativeDeviceStateCallback;
         private SetDataCallback _setDataCallback;

@@ -112,6 +112,10 @@ namespace Orbbec
         [DllImport(obsdk, EntryPoint = "ob_device_list_get_device_ip_address")]
         public static extern IntPtr ob_device_list_get_device_ip_address(IntPtr deviceList, UInt32 index, ref IntPtr error);
 
+        //const char *ob_device_list_get_device_local_mac(const ob_device_list *list, uint32_t index, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_device_list_get_device_local_mac")]
+        public static extern IntPtr ob_device_list_get_device_local_mac(IntPtr deviceList, UInt32 index, ref IntPtr error);
+
         //const char *ob_device_info_get_extension_info(ob_device_list *list, uint32_t index, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_device_info_get_extension_info")]
         public static extern IntPtr ob_device_info_get_extension_info(IntPtr deviceList, UInt32 index, ref IntPtr error);
@@ -1157,7 +1161,7 @@ namespace Orbbec
         //void ob_delete_recorder(ob_recorder *recorder, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_delete_recorder")]
         public static extern void ob_delete_recorder(IntPtr recorder, ref IntPtr error);
-        
+
         //void ob_recorder_start(ob_recorder *recorder, const char *filename, bool async, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_recorder_start")]
         public static extern void ob_recorder_start(IntPtr recorder, String fileName, bool async, ref IntPtr error);
@@ -1191,7 +1195,7 @@ namespace Orbbec
         //void ob_set_playback_state_callback(ob_playback *playback, ob_media_state_callback callback, void *user_data, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_set_playback_state_callback")]
         public static extern void ob_set_playback_state_callback(IntPtr playback, NativeMediaStateCallback callback, IntPtr userData, ref IntPtr error);
-        
+
         //ob_device_info *ob_playback_get_device_info(ob_playback *playback, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_playback_get_device_info")]
         public static extern IntPtr ob_playback_get_device_info(IntPtr playback, ref IntPtr error);

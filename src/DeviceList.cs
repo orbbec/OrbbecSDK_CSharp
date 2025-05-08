@@ -152,6 +152,29 @@ namespace Orbbec
             return Marshal.PtrToStringAnsi(handle);
         }
 
+        /**
+        * \if English
+        * @brief Get device local mac address
+        * 
+        * @attention Only valid for network devices, otherwise it will return "0:0:0:0:0:0".
+        *
+        * @param index Device index
+        * @return const char* returns the device mac address
+        * \else
+        * @brief 获取指定设备的本地mac地址
+        *
+        * @param index 设备索引
+        * @return String 返回设备的序列号
+        * \endif
+        */
+        public string LocalMac(UInt32 index)
+        {
+            IntPtr error = IntPtr.Zero;
+            IntPtr handle = obNative.ob_device_list_get_device_local_mac(_handle.Ptr, index, ref error);
+            NativeException.HandleError(error);
+            return Marshal.PtrToStringAnsi(handle);
+        }
+
         public String ExtensionInfo(UInt32 index)
         {
             IntPtr error = IntPtr.Zero;
