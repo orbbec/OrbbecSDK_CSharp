@@ -67,29 +67,6 @@ namespace Orbbec
 
         /**
         * \if English
-        * @brief Use the playback file to create a pipeline object
-        *
-        * @param fileName The playback file path used to create the pipeline
-        * @return Pipeline returns the pipeline object
-        * \else
-        * @brief 使用回放文件来创建pipeline对象
-        *
-        * @param fileName 用于创建pipeline的回放文件路径
-        * @return Pipeline 返回pipeline对象
-        * \endif
-        */
-        [Obsolete]
-        public Pipeline(string fileName)
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_create_pipeline_with_playback_file(fileName, ref error);
-            NativeException.HandleError(error);
-            _handle = new NativeHandle(handle, Delete);
-            _nativeCallback = new NativeFramesetCallback(OnFrameset);
-        }
-
-        /**
-        * \if English
         * @brief Start the pipeline with configuration parameters
         *
         * @param config Parameter configuration of pipeline
@@ -202,26 +179,6 @@ namespace Orbbec
             IntPtr handle = obNative.ob_pipeline_get_device(_handle.Ptr, ref error);
             NativeException.HandleError(error);
             return new Device(handle);
-        }
-
-        /**
-        * \if English
-        * @brief Get playback object
-        *
-        * @return std::shared_ptr<Playback> returns the playback object
-        * \else
-        * @brief 获取回放对象
-        *
-        * @return std::shared_ptr<Playback> 返回回放对象
-        * \endif
-        */
-        [Obsolete]
-        public Playback GetPlayback()
-        {
-            IntPtr error = IntPtr.Zero;
-            IntPtr handle = obNative.ob_pipeline_get_playback(_handle.Ptr, ref error);
-            NativeException.HandleError(error);
-            return new Playback(handle);
         }
 
         /**
@@ -344,40 +301,6 @@ namespace Orbbec
         {
             IntPtr error = IntPtr.Zero;
             obNative.ob_pipeline_switch_config(_handle.Ptr, config.GetNativeHandle().Ptr, ref error);
-            NativeException.HandleError(error);
-        }
-
-        /**
-        * \if English
-        * @brief start recording
-        *
-        * @param filename Record file name
-        * \else
-        * @brief 开始录制
-        *
-        * @param filename 录制文件名
-        * \endif
-        */
-        [Obsolete]
-        public void StartRecord(String fileName)
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_pipeline_start_record(_handle.Ptr, fileName, ref error);
-            NativeException.HandleError(error);
-        }
-
-        /**
-        * \if English
-        * @brief Stop recording
-        * \else
-        * @brief 停止录制
-        * \endif
-        */
-        [Obsolete]
-        public void StopRecord()
-        {
-            IntPtr error = IntPtr.Zero;
-            obNative.ob_pipeline_stop_record(_handle.Ptr, ref error);
             NativeException.HandleError(error);
         }
 
