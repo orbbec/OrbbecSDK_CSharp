@@ -546,6 +546,40 @@ namespace Orbbec
             IntPtr error = IntPtr.Zero;
             return obNative.ob_points_frame_get_coordinate_value_scale(_handle.Ptr, ref error);
         }
+
+        /**
+        * \if English
+        * @brief Get point cloud frame width
+        *
+        * @return uint32_t return the point cloud frame width
+        * \else
+        * @brief 获取点云帧的宽
+        *
+        * @return uint32_t 返回点云帧的宽
+        * \endif
+        */
+        public UInt32 GetWidth()
+        {
+            IntPtr error = IntPtr.Zero;
+            return obNative.ob_point_cloud_frame_get_width(_handle.Ptr, ref error);
+        }
+
+        /**
+        * \if English
+        * @brief Get point cloud frame height
+        *
+        * @return uint32_t return the point cloud frame height
+        * \else
+        * @brief 获取点云帧的高
+        *
+        * @return uint32_t 返回点云帧的高
+        * \endif
+        */
+        public UInt32 GetHeight()
+        {
+            IntPtr error = IntPtr.Zero;
+            return obNative.ob_point_cloud_frame_get_height(_handle.Ptr, ref error);
+        }
     }
 
     public class AccelFrame : Frame

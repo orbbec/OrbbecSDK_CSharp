@@ -997,6 +997,14 @@ namespace Orbbec
         //void ob_frame_set_timestamp_us(ob_frame *frame, uint64_t device_timestamp_us, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_frame_set_timestamp_us")]
         public static extern void ob_frame_set_timestamp_us(IntPtr frame, UInt64 timestamp, ref IntPtr error);
+
+        //uint32_t ob_point_cloud_frame_get_width(const ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_point_cloud_frame_get_width")]
+        public static extern UInt32 ob_point_cloud_frame_get_width(IntPtr frame, ref IntPtr error);
+
+        //uint32_t ob_point_cloud_frame_get_height(const ob_frame *frame, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_point_cloud_frame_get_height")]
+        public static extern UInt32 ob_point_cloud_frame_get_height(IntPtr frame, ref IntPtr error);
         #endregion
 
         #region Pipeline
