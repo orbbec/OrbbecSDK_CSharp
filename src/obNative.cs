@@ -1473,6 +1473,10 @@ namespace Orbbec
         //bool ob_transformation_2d_to_2d(const OBPoint2f source_point2f, const float source_depth_pixel_value, const OBCameraIntrinsic source_intrinsic, const OBCameraDistortion source_distortion, const OBCameraIntrinsic target_intrinsic, const OBCameraDistortion target_distortion, OBExtrinsic extrinsic, OBPoint2f* target_point2f, ob_error **error);
         [DllImport(obsdk, EntryPoint = "ob_transformation_2d_to_2d")]
         public static extern bool ob_transformation_2d_to_2d(Point2f sourcePoint3f, float sourceDepthPixelValue, CameraIntrinsic sourceIntrinsic, CameraDistortion sourceDistortion, CameraIntrinsic targetIntrinsic, CameraDistortion targetDistortion, Extrinsic extrinsic, ref Point2f targetPoint2f, ref IntPtr error);
+
+        //bool ob_save_pointcloud_to_ply(const char *file_name, ob_frame *frame, bool save_binary, bool use_mesh, float mesh_threshold, ob_error **error);
+        [DllImport(obsdk, EntryPoint = "ob_save_pointcloud_to_ply")]
+        public static extern bool ob_save_pointcloud_to_ply(string fileName, IntPtr frame, bool saveBinary, bool useMesh, float meshThreshold, ref IntPtr error);
         #endregion
 
         #region Version
