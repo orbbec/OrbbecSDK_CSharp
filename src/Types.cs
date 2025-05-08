@@ -565,6 +565,19 @@ namespace Orbbec
 
     /**
      * \if English
+     * @brief Camera performance mode
+     * \else
+     * @brief 相机性能模式
+     * \endif
+     */
+    public enum CameraPerformanceMode
+    {
+        ADAPTIVE_PERFORMANCE_MODE, /**< Camera adaptive mode */
+        HIGH_PERFORMANCE_MODE      /**< High Performance Mode */
+    }
+
+    /**
+     * \if English
      * @brief rectangle
      * \else
      * @brief 矩形
@@ -1887,5 +1900,21 @@ namespace Orbbec
         public int invalidDisp;      // invalid disparity，usually is 0，dual IR add a auxiliary value.
         public int dispIntPlace;     // disp integer digits，default is 8，Gemini2 XL is 10
         public UInt32 isDualCamera;  // 0 monocular camera，1 dual camera
+    }
+
+    /**
+    * \if English
+    * @brief The playback status of the media
+    * \else
+    * @brief 媒体播放状态
+    * \endif
+    */
+    public enum PlaybackStatus
+    {
+        OB_PLAYBACK_UNKNOWN ,
+        OB_PLAYBACK_PLAYING,  /**< The media is playing */
+        OB_PLAYBACK_PAUSED,   /**< The media is paused */
+        OB_PLAYBACK_STOPPED,  /**< The media is stopped */
+        OB_PLAYBACK_COUNT,
     }
 }
