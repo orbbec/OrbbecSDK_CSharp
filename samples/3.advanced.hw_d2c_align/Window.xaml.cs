@@ -38,10 +38,6 @@ namespace Orbbec
                     {
                         data = ImageConverter.ConvertMJPGToRGBData(data);
                     }
-                    //else if (frame.GetFormat() == Format.OB_FORMAT_BGRA)
-                    //{
-                    //    data = ConvertBGRAToRGBData(data);
-                    //}
                 }
                 else if (frame.GetFrameType() == FrameType.OB_FRAME_DEPTH)
                 {
@@ -173,10 +169,12 @@ namespace Orbbec
             if (enableAlignMode)
             {
                 config.SetAlignMode(AlignMode.ALIGN_D2C_HW_MODE);
+                btnToggleAlign.Content = "HwD2C Align: Enabled";
             }
             else
             {
                 config.SetAlignMode(AlignMode.ALIGN_DISABLE);
+                btnToggleAlign.Content = "HwD2C Align: Disabled";
             }
 
             pipeline.Stop();

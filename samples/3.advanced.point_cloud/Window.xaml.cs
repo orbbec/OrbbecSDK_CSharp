@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.ComponentModel;
+using System.Net;
 
 namespace Orbbec
 {
@@ -29,46 +30,61 @@ namespace Orbbec
             dirPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             dirPath += "Low";
             dirPath = Path.Combine(dirPath, "Orbbec");
+            bool? useNetworkDevice = null;
 
             try
             {
                 Console.WriteLine("\n--- NOTE ---");
                 Console.WriteLine("Ensure network devices are set up in Orbbec Viewer before enabling them.\n");
                 
-                Console.Write("Turn on the network device? (Y/YES or N/NO): ");
-                string userInput = Console.ReadLine()?.Trim().ToLower();
-                if (userInput == "y" || userInput == "yes")
+                while (useNetworkDevice == null)
+                {
+                    Console.Write("Turn on the network device? (Y/YES or N/NO): ");
+
+                    string userInput = Console.ReadLine()?.Trim().ToLower();
+
+                    if (userInput == "y" || userInput == "yes")
+                    {
+                        useNetworkDevice = true;
+                    }
+                    else if (userInput == "n" || userInput == "no")
+                    {
+                        useNetworkDevice = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nInput error! Please enter Y/YES or N/NO.\n");
+                    }
+                }
+
+                if (useNetworkDevice == true)
                 {
                     Console.WriteLine("\n--- Network Device Setup ---");
                     Context context = new Context();
                     context.EnableNetDeviceEnumeration(true);
                     Console.WriteLine("Network device enumeration enabled.\n");
 
-                    Console.Write("Please enter IP address: ");
-                    string ip = Console.ReadLine();
-                    Console.Write("Please enter the port: ");
-                    string portStr = Console.ReadLine();
-                    if (ushort.TryParse(portStr, out ushort port))
+                    while (true)
                     {
-                        Device netDevice = context.CreateNetDevice(ip, port);
-                        pipeline = new Pipeline(netDevice);
-                        Console.WriteLine("\nPipeline created successfully with the network device.");
+                        Console.Write("Please enter IP address: ");
+                        string ip = Console.ReadLine();
+                        if (IPAddress.TryParse(ip, out _))
+                        {
+                            Device netDevice = context.CreateNetDevice(ip, 8090);
+                            pipeline = new Pipeline(netDevice);
+                            Console.WriteLine("\nPipeline created successfully with the network device.");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nInvalid IP address format. Please try again.\n");
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("\nInvalid port input! Please enter a valid port number.");
-                        Environment.Exit(0);
-                    }
-                }
-                else if (userInput == "n" || userInput == "no")
-                {
-                    pipeline = new Pipeline();
-                    Console.WriteLine("\nPipeline created successfully without the network device.");
                 }
                 else
                 {
-                    Console.WriteLine("\nInput error! Please enter Y/YES or N/NO.");
-                    Environment.Exit(0);
+                    pipeline = new Pipeline();
+                    Console.WriteLine("\nPipeline created successfully without the network device.");
                 }
 
                 Config config = new Config();

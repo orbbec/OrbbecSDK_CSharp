@@ -10,7 +10,7 @@
     <Grid>
         <Image x:Name="imgColor" />
         <Image x:Name="imgDepth" Opacity="0.5"/>
-        <Button x:Name="btnToggleAlign" Content="Toggle Align Mode" 
+        <Button x:Name="btnToggleAlign" Content="HwD2C Align: Enabled" 
                 VerticalAlignment="Bottom" HorizontalAlignment="Center" 
                 Margin="10" Height="40" Width="200" 
                 Click="ToggleAlign_Click"/>

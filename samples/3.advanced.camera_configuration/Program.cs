@@ -21,10 +21,10 @@ namespace Orbbec
                 pipeline.Start(config);
                 var profile_list = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_COLOR);
                 // Get color_profile
-                var color_profile = profile_list.GetVideoStreamProfile(0,0, Format.OB_FORMAT_UNKNOWN,0);
+                var color_profile = profile_list.GetVideoStreamProfile(0, 0, Format.OB_FORMAT_ANY, 0);
                 profile_list = pipeline.GetStreamProfileList(SensorType.OB_SENSOR_DEPTH);
                 //Get depth_profile
-                var depth_profile = profile_list.GetVideoStreamProfile(0, 0, Format.OB_FORMAT_UNKNOWN, 0);
+                var depth_profile = profile_list.GetVideoStreamProfile(0, 0, Format.OB_FORMAT_ANY, 0);
                 //Get D2C external parameters
                 var extrinsicD2C = depth_profile.GetExtrinsicTo(color_profile);
                 Console.WriteLine($"D2C extrinsic£º\n  -[rot={string.Join(", ", extrinsicD2C.rot)}, trans={string.Join(", ", extrinsicD2C.trans)}]");
@@ -38,7 +38,7 @@ namespace Orbbec
                     $" k5={depth_distortion.k5}, k6={depth_distortion.k6}, p1={depth_distortion.p1}, p2={depth_distortion.p2}]");
                 //Get C2D external parameters
                 var extrinsicC2D = color_profile.GetExtrinsicTo(depth_profile);
-                Console.WriteLine($"D2C extrinsic£º\n  -[rot={string.Join(", ", extrinsicC2D.rot)}, trans={string.Join(", ", extrinsicC2D.trans)}]");
+                Console.WriteLine($"C2D extrinsic£º\n  -[rot={string.Join(", ", extrinsicC2D.rot)}, trans={string.Join(", ", extrinsicC2D.trans)}]");
                 //Get color internala parameters
                 var color_intrinsics = color_profile.GetIntrinsic();
                 Console.WriteLine($"color_intrinsics£º\n  -[cx={color_intrinsics.cx}, cy={color_intrinsics.cy}, fx={color_intrinsics.fx}" +
