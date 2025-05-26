@@ -174,6 +174,14 @@ namespace Orbbec
         * \endif
         */
         OB_PIXEL_RAW_PHASE = 3,
+        /**
+        * \if English
+        * Depth for tof camera
+        * \else
+        * tof相机的深度
+        * \endif
+        */
+        OB_PIXEL_TOF_DEPTH = 4,
     }
 
     /**
@@ -618,6 +626,10 @@ namespace Orbbec
         FORMAT_YUYV_TO_BGRA,    /**< YUYV to BGRA */
         FORMAT_YUYV_TO_Y16,     /**< YUYV to Y16 */
         FORMAT_YUYV_TO_Y8,      /**< YUYV to Y8 */
+        FORMAT_RGBA_TO_RGB,     /**< RGBA to RGB */
+        FORMAT_BGRA_TO_BGR,     /**< BGRA to BGR */
+        FORMAT_Y16_TO_RGB,      /**< Y16 to RGB */
+        FORMAT_Y8_TO_RGB,       /**< Y8 to RGB */
     }
 
     /**

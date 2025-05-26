@@ -795,6 +795,11 @@ namespace Orbbec
         OB_PROP_SDK_IR_RIGHT_FRAME_UNPACK_BOOL = 3012,
 
         /**
+         * @brief Read the current network bandwidth type of the network device, whether it is Gigabit Ethernet or Fast Ethernet, such as G335LE.
+         */
+        OB_PROP_NETWORK_BANDWIDTH_TYPE_INT = 3027,
+
+        /**
          * @brief Switch device performance mode, currently available in Adaptive Mode and High Performance Mode, such as G335LE.
          */
         OB_PROP_DEVICE_PERFORMANCE_MODE_INT = 3028,
