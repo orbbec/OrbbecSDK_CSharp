@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Orbbec
 {
@@ -189,7 +190,7 @@ namespace Orbbec
             foreach (var property in propertyItems)
             {
                 string permission = PermissionTypeToString(property.permission);
-                propertySelector.Items.Add(permission + property.id.ToString());
+                propertySelector.Items.Add(permission + Marshal.PtrToStringAnsi(property.name));
             }
             if (propertyItems.Count > 0)
             {
@@ -203,6 +204,7 @@ namespace Orbbec
             {
                 curPropertyItem = propertyItems[index];
                 PropertyId id = curPropertyItem.id;
+                string name = Marshal.PtrToStringAnsi(curPropertyItem.name);
 
                 setText.Text = string.Empty;
                 getText.Text = string.Empty;
@@ -225,7 +227,7 @@ namespace Orbbec
                         default:
                             break;
                     }
-                    PrintLog("PropertySelect: " + id.ToString() + "\n");
+                    PrintLog("PropertySelect: " + name + "\n");
                 }
                 catch (NativeException e)
                 {
@@ -244,6 +246,7 @@ namespace Orbbec
             try
             {
                 PropertyId id = curPropertyItem.id;
+                string name = Marshal.PtrToStringAnsi(curPropertyItem.name);
                 switch (curPropertyItem.type)
                 {
                     case PropertyType.OB_BOOL_PROPERTY:
@@ -261,7 +264,7 @@ namespace Orbbec
                     default:
                         break;
                 }
-                PrintLog("GetProperty: " + id.ToString() + " " + getText.Text + "\n");
+                PrintLog("GetProperty: " + name + " " + getText.Text + "\n");
             }
             catch (NativeException e)
             {
@@ -276,6 +279,7 @@ namespace Orbbec
             try
             {
                 PropertyId id = curPropertyItem.id;
+                string name = Marshal.PtrToStringAnsi(curPropertyItem.name);
                 int value = -1;
                 switch (curPropertyItem.type)
                 {
@@ -302,7 +306,7 @@ namespace Orbbec
                     default:
                         break;
                 }
-                PrintLog("SetProperty: " + id.ToString() + " " + setText.Text + "\n");
+                PrintLog("SetProperty: " + name + " " + setText.Text + "\n");
             }
             catch (NativeException e)
             {
