@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8.2)
 
-project(ob_csharp VERSION 2.3.0 LANGUAGES CSharp)
+project(ob_csharp VERSION 2.4.0 LANGUAGES CSharp)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 
 include(CSharpUtilities)
