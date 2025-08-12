@@ -23,6 +23,16 @@ The v2-main branch, C# Wrapper is based the open source version of [Orbbec SDK v
 | Femto Mega        | 1.3.0                  |
 
 
+# Environment Setup
+
+## windows
+
+For windows, you need to register the metadata associated with frames (this includes things like timestamps and other information about the video frame).
+
+- Metadata registration follow this:[/scripts/obsensor_metadata_win10.md](scripts/obsensor_metadata_win10.md)
+
+*Notes: If the metadata is not registered, the device timestamp will be abnormal, thereby affecting the SDK’s internal frame synchronization functionality.*
+
 # Documentation
 
 For compilation and API reference, please refer to [UserGuide](https://orbbec.github.io/OrbbecSDK_CSharp/index.html) documentation.
